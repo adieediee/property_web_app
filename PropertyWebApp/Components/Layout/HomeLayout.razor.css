@@ -1,0 +1,78 @@
+﻿/* Základné nastavenie hlavičky */
+.site-header {
+    background-color: transparent; /* Zmeň podľa potreby */
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Jemný spodný okraj */
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 15px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Logo */
+.logo img {
+    height: 60px; /* Veľkosť loga */
+}
+
+/* Navigácia */
+.nav-menu ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+    .nav-menu ul li {
+        margin-right: 20px; /* Rozostup medzi prvkami */
+    }
+
+        .nav-menu ul li a {
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+
+.nav-icon {
+    height: 24px;
+    margin-right: 10px; /* Rozostup medzi ikonkou a textom */
+}
+
+/* Login Button */
+.login {
+    display: flex;
+    align-items: center;
+}
+
+.login-btn {
+    display: flex;
+    align-items: center;
+    background-color: #000000; /* Modré pozadie */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-icon {
+    height: 24px;
+    margin-left: 10px; /* Rozostup medzi textom a ikonou prihlásenia */
+}
+
+.login-btn:hover {
+    background-color: #0056b3; /* Tmavšia modrá pri hover */
+}

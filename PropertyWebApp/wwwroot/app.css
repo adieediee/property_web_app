@@ -1,9 +1,17 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-image: url('img/7b09bc1c-7fcb-498f-b055-41229c3f14a8.jpg');
+  
+    background-size: cover; /* Uprav pozadie tak, aby pokrylo celú obrazovku */
+    background-position: center; /* Umiestni pozadie na stred */
+    background-repeat: no-repeat; /* Zabraò opakovaniu pozadia */
+    height: 100vh; /* Nastav výšku na 100% výšky okna */
+    width: 100vw; /* Nastav šírku na 100% šírky okna */
+    margin: 0; /* Odstráni predvolené okraje */
 }
 
 a, .btn-link {
-    color: #006bb7;
+    color: #ff6a00;
 }
 
 .btn-primary {
