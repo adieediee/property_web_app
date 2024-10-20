@@ -49,3 +49,90 @@
     flex-grow: 1;
     padding: 20px;
 }
+
+
+.site-header {
+    background-color: transparent; 
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 15px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+
+.logo {
+    flex: 1;
+}
+
+    .logo img {
+        height: 60px;
+    }
+
+/* Navigácia */
+.nav-menu {
+    flex: 2;
+    display: flex;
+    justify-content: center; 
+}
+
+    .nav-menu ul {
+        list-style: none;
+        display: flex;
+        margin: 0;
+        padding: 0;
+    }
+
+        .nav-menu ul li {
+            margin-right: 20px; 
+        }
+
+            .nav-menu ul li a {
+                text-decoration: none;
+                font-size: 18px;
+                color: white;
+                display: flex;
+                align-items: center;
+                font-weight: bold;
+            }
+
+
+.login {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center;
+}
+
+.login-btn {
+    display: flex;
+    align-items: center;
+    background-color: #000000; 
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-icon {
+    height: 24px;
+    margin-left: 10px; 
+}
+
+.login-btn:hover {
+    background-color: #0056b3; 
+}
+

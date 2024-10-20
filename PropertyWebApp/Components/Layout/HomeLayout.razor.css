@@ -1,31 +1,41 @@
-﻿/* Základné nastavenie hlavičky */
-.site-header {
+﻿.site-header {
     background-color: transparent; /* Zmeň podľa potreby */
     padding: 20px 0;
-    display: flex;
-    justify-content: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Jemný spodný okraj */
+    max-width: 2000px;
 }
 
 .container {
-    width: 100%;
-    max-width: 1200px;
+    
+    max-width: 2000px;
     padding: 0 15px;
+    margin: 0 auto;
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    
 }
 
 /* Logo */
+.logo {
+    flex: 0 1 auto;
+    
+}
+
 .logo img {
-    height: 60px; /* Veľkosť loga */
+    height: 45px; /* Veľkosť loga */
 }
 
 /* Navigácia */
+.nav-menu {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+}
+
 .nav-menu ul {
     list-style: none;
     display: flex;
@@ -33,26 +43,26 @@
     padding: 0;
 }
 
-    .nav-menu ul li {
-        margin-right: 20px; /* Rozostup medzi prvkami */
-    }
+.nav-menu ul li {
+    margin-right: 20px; /* Rozostup medzi prvkami */
+}
 
-        .nav-menu ul li a {
-            text-decoration: none;
-            font-size: 18px;
-            color: white;
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-        }
+.nav-menu ul li:last-child {
+    margin-right: 0;
+}
 
-.nav-icon {
-    height: 24px;
-    margin-right: 10px; /* Rozostup medzi ikonkou a textom */
+.nav-menu ul li a {
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
 }
 
 /* Login Button */
 .login {
+    flex: 0 1 auto;
     display: flex;
     align-items: center;
 }
@@ -68,11 +78,27 @@
     font-weight: bold;
 }
 
-.login-icon {
-    height: 24px;
-    margin-left: 10px; /* Rozostup medzi textom a ikonou prihlásenia */
-}
-
 .login-btn:hover {
     background-color: #0056b3; /* Tmavšia modrá pri hover */
+}
+
+.layout-container {
+    display: flex;
+}
+
+.side-panel {
+    width: 240px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.content-container {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.nav-icon {
+    height: 24px;
+    margin-right: 10px;
 }

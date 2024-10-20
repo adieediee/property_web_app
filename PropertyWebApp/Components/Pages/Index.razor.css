@@ -1,7 +1,7 @@
 ﻿/* General page settings */
 
 .home-page {
-	padding: 100px 150px; /* Priestor hore/dole a po stranách */
+	padding: 100px 0px; /* Priestor hore/dole a po stranách */
 	text-align: center;
 	width: 100%;
 	box-sizing: border-box; /* Padding sa započíta do šírky */
