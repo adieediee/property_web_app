@@ -6,7 +6,6 @@
 }
 
 .container {
-    
     max-width: 2000px;
     padding: 0 15px;
     margin: 0 auto;
@@ -16,18 +15,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
 }
 
 /* Logo */
 .logo {
     flex: 0 1 auto;
-    
 }
 
-.logo img {
-    height: 45px; /* Veľkosť loga */
-}
+    .logo img {
+        height: 45px; /* Veľkosť loga */
+    }
 
 /* Navigácia */
 .nav-menu {
@@ -36,29 +33,29 @@
     justify-content: center;
 }
 
-.nav-menu ul {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-}
+    .nav-menu ul {
+        list-style: none;
+        display: flex;
+        margin: 0;
+        padding: 0;
+    }
 
-.nav-menu ul li {
-    margin-right: 20px; /* Rozostup medzi prvkami */
-}
+        .nav-menu ul li {
+            margin-right: 20px; /* Rozostup medzi prvkami */
+        }
 
-.nav-menu ul li:last-child {
-    margin-right: 0;
-}
+            .nav-menu ul li:last-child {
+                margin-right: 0;
+            }
 
-.nav-menu ul li a {
-    text-decoration: none;
-    font-size: 18px;
-    color: white;
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-}
+            .nav-menu ul li a {
+                text-decoration: none;
+                font-size: 18px;
+                color: white;
+                display: flex;
+                align-items: center;
+                font-weight: bold;
+            }
 
 /* Login Button */
 .login {
@@ -78,9 +75,9 @@
     font-weight: bold;
 }
 
-.login-btn:hover {
-    background-color: #0056b3; /* Tmavšia modrá pri hover */
-}
+    .login-btn:hover {
+        background-color: #0056b3; /* Tmavšia modrá pri hover */
+    }
 
 .layout-container {
     display: flex;
