@@ -1,7 +1,7 @@
 ﻿.site-header {
-    background-color: transparent; /* Zmeň podľa potreby */
+    background-color: transparent; 
     padding: 20px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Jemný spodný okraj */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
     max-width: 2000px;
 }
 
@@ -17,16 +17,16 @@
     align-items: center;
 }
 
-/* Logo */
+
 .logo {
     flex: 0 1 auto;
 }
 
     .logo img {
-        height: 45px; /* Veľkosť loga */
+        height: 45px; 
     }
 
-/* Navigácia */
+
 .nav-menu {
     flex: 1 1 auto;
     display: flex;
@@ -41,7 +41,7 @@
     }
 
         .nav-menu ul li {
-            margin-right: 20px; /* Rozostup medzi prvkami */
+            margin-right: 20px; 
         }
 
             .nav-menu ul li:last-child {
@@ -57,7 +57,6 @@
                 font-weight: bold;
             }
 
-/* Login Button */
 .login {
     flex: 0 1 auto;
     display: flex;
@@ -67,7 +66,7 @@
 .login-btn {
     display: flex;
     align-items: center;
-    background-color: #000000; /* Modré pozadie */
+    background-color: #000000; 
     color: white;
     padding: 10px 20px;
     border-radius: 20px;
@@ -76,7 +75,7 @@
 }
 
     .login-btn:hover {
-        background-color: #0056b3; /* Tmavšia modrá pri hover */
+        background-color: #0056b3; 
     }
 
 .layout-container {

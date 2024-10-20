@@ -16,12 +16,12 @@
 html, body {
     font-family: 'Albert Sans', sans-serif;
     background-image: url('img/7b09bc1c-7fcb-498f-b055-41229c3f14a8.jpg');
-    background-size: cover; /* Uprav pozadie tak, aby pokrylo celú obrazovku */
-    background-position: center; /* Umiestni pozadie na stred */
-    background-repeat: no-repeat; /* Zabraò opakovaniu pozadia */
-    height: 100vh; /* Nastav výšku na 100% výšky okna */
-    width: 100vw; /* Nastav šírku na 100% šírky okna */
-    margin: 0; /* Odstráni predvolené okraje */
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    height: 100vh; 
+    width: 100vw; 
+    margin: 0;
 }
 
 a, .btn-link {
