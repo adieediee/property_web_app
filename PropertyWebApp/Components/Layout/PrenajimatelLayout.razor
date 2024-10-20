@@ -1,0 +1,44 @@
+﻿@inherits LayoutComponentBase
+<div class="layout-container">
+    <div class="side-panel">
+        <div class="logo">
+            <img src="logo.png" alt="Logo">
+        </div>
+        <nav class="menu">
+            <ul>
+                <li class="menu-item active">
+                    <i class="icon-overview"></i>
+                    <span>Overview</span>
+                </li>
+                <li class="menu-item">
+                    <i class="icon-employees"></i>
+                    <span>Employees</span>
+                </li>
+                <li class="menu-item">
+                    <i class="icon-analytics"></i>
+                    <span>Analytics</span>
+                </li>
+                <li class="menu-item">
+                    <i class="icon-property"></i>
+                    <span>Property</span>
+                </li>
+                <li class="menu-item">
+                    <i class="icon-settings"></i>
+                    <span>Settings</span>
+                </li>
+                <li class="menu-item">
+                    <i class="icon-help"></i>
+                    <span>Help Center</span>
+                </li>
+                <li class="menu-item">
+                    <i class="icon-report"></i>
+                    <span>Report</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content-container">
+        @Body
+    </div>
+</div>

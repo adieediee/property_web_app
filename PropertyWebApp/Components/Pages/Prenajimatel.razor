@@ -1,2 +1,87 @@
 ﻿@page "/Prenajimatel"
+@layout Layout.PrenajimatelLayout
 <PageTitle>Prenajimatel </PageTitle>
+
+<div class="dashboard-container">
+    <div class="search-bar">
+        <input type="text" placeholder="Search anything..." />
+    </div>
+
+    <div class="dashboard-cards">
+        <div class="card">
+            <div class="card-title">Income</div>
+            <div class="card-value">$119,234.01</div>
+            <div class="card-change">3.1% vs last month</div>
+            <button class="view-report">View Report</button>
+        </div>
+        <div class="card">
+            <div class="card-title">Outcome</div>
+            <div class="card-value">$524,039</div>
+            <div class="card-change">11% vs last month</div>
+            <button class="view-report">View Report</button>
+        </div>
+        <div class="card">
+            <div class="card-title">Visitor</div>
+            <div class="card-value">234,200</div>
+            <div class="card-change">2.3% vs last month</div>
+            <button class="view-report">View Report</button>
+        </div>
+        <div class="card">
+            <div class="card-title">Properties</div>
+            <div class="card-value">1,200</div>
+            <div class="card-change">0.5% vs last month</div>
+            <button class="view-report">View Report</button>
+        </div>
+    </div>
+
+    <div class="calendar">
+        <div class="calendar-header">
+            <div class="calendar-title">Calendar</div>
+            <div class="calendar-month">January 2024</div>
+        </div>
+        <div class="calendar-content">
+            <!-- Calendar content should be implemented here -->
+        </div>
+    </div>
+
+    <div class="property-list">
+        <div class="property">
+            <img src="property1.jpg" alt="Elite Heights Residences">
+            <div class="property-info">
+                <div class="property-title">Elite Heights Residences</div>
+                <div class="property-location">Heights, Prime</div>
+                <div class="property-price">$3,700</div>
+                <button class="edit-property">Edit Property</button>
+            </div>
+        </div>
+        <div class="property">
+            <img src="property2.jpg" alt="Grand Oaks Villas">
+            <div class="property-info">
+                <div class="property-title">Grand Oaks Villas</div>
+                <div class="property-location">Oak, Prime</div>
+                <div class="property-price">$3,700</div>
+                <button class="edit-property">Edit Property</button>
+            </div>
+        </div>
+        <div class="property">
+            <img src="property3.jpg" alt="Serene Crest Apartment">
+            <div class="property-info">
+                <div class="property-title">Serene Crest Apartment</div>
+                <div class="property-location">Crest, Prime</div>
+                <div class="property-price">$3,700</div>
+                <button class="edit-property">Edit Property</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="property-channel">
+        <div class="property-channel-title">Property Channel</div>
+        <!-- Placeholder for property chart -->
+        <div class="property-chart">
+            <div class="chart-label">Residency 40%</div>
+        </div>
+    </div>
+</div>
+
+
+

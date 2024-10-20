@@ -1,7 +1,21 @@
+@font-face {
+    font-family: 'Vilane';
+    src: url('fonts/Vilane Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Albert Sans';
+    src: url('fonts/AlbertSans-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Albert Sans', sans-serif;
     background-image: url('img/7b09bc1c-7fcb-498f-b055-41229c3f14a8.jpg');
-  
     background-size: cover; /* Uprav pozadie tak, aby pokrylo celú obrazovku */
     background-position: center; /* Umiestni pozadie na stred */
     background-repeat: no-repeat; /* Zabraò opakovaniu pozadia */

@@ -15,7 +15,9 @@
 
 
 .hero-nadpis {
+	font-family: 'Vilane', sans-serif;
 	font-size: 75px;
+	letter-spacing: 2px;
 	text-align: center; /* Tento riadok zabezpečuje, že text bude centrovaný v rámci nadpisu */
 	color: aliceblue;
 	padding: 0;

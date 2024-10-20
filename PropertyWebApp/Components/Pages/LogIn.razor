@@ -1,0 +1,37 @@
+﻿@page "/login"
+@layout Layout.EmptyLayout
+
+<PageTitle>LogIn</PageTitle>
+<div class="login-container">
+    <div class="login-left">
+        <div class="login-logo">
+            <img src="logo.png" alt="Logo">
+        </div>
+        <div class="login-card">
+            <h2>Vitajte späť</h2>
+            <p>Zadajte svoje prihlasovacie údaje</p>
+            <form class="login-form">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Zadaj svoj email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Zadaj svoje heslo" required>
+                </div>
+                <div class="login-options">
+                    <div>
+                        <input type="checkbox" id="remember" />
+                        <label for="remember">Zapamätať</label>
+                    </div>
+                    <a href="#" class="forgot-password">Zabudnuté heslo</a>
+                </div>
+                <button type="submit" class="login-button">Prihlásiť sa</button>
+            </form>
+            <p class="signup-link">Nemáš účet? <a href="#">Registrácia</a></p>
+        </div>
+    </div>
+    <div class="login-right">
+        <!-- Placeholder for background image or any decorative elements -->
+    </div>
+</div>
