@@ -1,0 +1,78 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using PropertyWebApp.Data
+@using PropertyWebApp.Models
+@page "/propertyScreen"
+
+<h3>Zoznam porúch</h3>
+
+@if (issues == null)
+{
+    <p>Načítavam údaje...</p>
+}
+else if (!issues.Any())
+{
+    <p>Žiadne poruchy na zobrazenie.</p>
+}
+else
+{
+    <div class="list-container">
+        @foreach (var issue in issues)
+        {
+            <div class="card" @onclick="() => ToggleDetails(issue.IssueId)">
+                <div class="card-header">
+                    <div class="issue-header">
+                        <span class="status-circle @(issue.StatusId == 1 ? "open" : "closed")"></span>
+                        <div>
+                            <h4 class="issue-title">@issue.Title</h4>
+                            <p class="issue-date">@issue.ReportDate.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                    <div class="issue-actions">
+                        <span class="issue-cost">@($"{issue.RepairCost ?? 0:C}")</span>
+                        <button class="resolve-btn">@((issue.StatusId == 1) ? "Rieši sa" : "Vyriešené")</button>
+                    </div>
+                </div>
+                @if (expandedIssueId == issue.IssueId)
+                {
+                    <div class="card-details">
+                        <p class="issue-description">@issue.Description</p>
+                        <div class="image-gallery">
+                            @foreach (var image in issue.Images ?? Enumerable.Empty<IssueImage>())
+                            {
+                                <img src="@image.ImagePath" alt="Obrázok poruchy" class="image-box" />
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Issue> issues;
+    private int? expandedIssueId;
+
+    @inject AppDbContext DbContext
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Načítanie porúch vrátane obrázkov a stavu
+        issues = await DbContext.Issues
+            .Include(i => i.Images)
+            .ToListAsync();
+    }
+
+    private void ToggleDetails(int issueId)
+    {
+        // Zatvorí aktuálnu kartu alebo otvorí novú
+        if (expandedIssueId == issueId)
+        {
+            expandedIssueId = null;
+        }
+        else
+        {
+            expandedIssueId = issueId;
+        }
+    }
+}

@@ -1,4 +1,22 @@
-﻿.layout-container {
+﻿
+
+.nav-link {
+    text-decoration: none; /* Odstráni podčiarknutie pre všetky `NavLink` */
+    color: inherit; /* Dedí farbu z rodiča */
+}
+
+    .nav-link.active {
+        text-decoration: none; /* Uistí sa, že ani aktívne odkazy nie sú podčiarknuté */
+        font-weight: bold; /* Voliteľné: zvýraznenie aktívneho odkazu */
+        background-color: #e9ecef; /* Voliteľné: pozadie pre aktívny odkaz */
+        border-radius: 8px;
+        padding-left: 10px;
+        color: black; /* Nastavte farbu podľa potreby */
+    }
+
+
+
+.layout-container {
     display: flex;
 }
 
@@ -24,32 +42,50 @@
 }
 
 .menu-item {
+    text-decoration: none;
     display: flex;
     align-items: center;
     padding: 10px 0;
     cursor: pointer;
+    color: black;     
 }
 
-    .menu-item.active {
-        font-weight: bold;
-        background-color: #e9ecef;
+    .menu-item:hover {
+        background-color: #e9ecef; /* Zvýraznenie pri hover */
         border-radius: 8px;
         padding-left: 10px;
     }
+
+    .menu-item a {
+        text-decoration: none; /* Odstráni podčiarknutie z odkazu */
+        
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+    }
+
+        .menu-item a.active {
+            font-weight: bold; /* Zvýrazní aktívny odkaz */
+            background-color: #e9ecef; /* Zvýraznenie aktívneho odkazu */
+            border-radius: 8px;
+            padding-left: 10px;
+            color: black; /* Zachová pôvodnú farbu textu pre aktívny odkaz */
+        }
 
     .menu-item i {
         margin-right: 10px;
     }
 
     .menu-item span {
+        text-decoration: none;
         font-size: 16px;
+        color: black;
     }
 
 .content-container {
     flex-grow: 1;
     padding: 20px;
 }
-
 
 .site-header {
     background-color: transparent;
@@ -72,7 +108,6 @@
     width: 100%;
 }
 
-
 .logo {
     flex: 1;
 }
@@ -80,7 +115,6 @@
     .logo img {
         height: 60px;
     }
-
 
 .nav-menu {
     flex: 2;
@@ -107,7 +141,6 @@
                 align-items: center;
                 font-weight: bold;
             }
-
 
 .login {
     flex: 1;

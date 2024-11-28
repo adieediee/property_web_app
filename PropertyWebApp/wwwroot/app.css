@@ -24,8 +24,8 @@ html, body {
     margin: 0;
 }
 
-a, .btn-link {
-    color: #ff6a00;
+ .btn-link {
+    color: #232323;
 }
 
 .btn-primary {
@@ -71,3 +71,14 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+.nav-link {
+    text-decoration: none; /* Odstráni podèiarknutie */
+    color: inherit; /* Zachová dedenie farby z rodièa */
+}
+
+    .nav-link.active {
+        text-decoration: none;
+        font-weight: bold;
+        background-color: transparent; /* Volite¾né: bez pozadia */
+        color: black; /* Nastavte farbu pod¾a potreby */
+    }

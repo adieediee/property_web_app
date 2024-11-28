@@ -1,0 +1,118 @@
+﻿/* Kontajner pre zoznam */
+.list-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Kartička */
+.card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+    .card:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+/* Hlavička kartičky */
+.card-header {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+
+.issue-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+    .status-circle.open {
+        background-color: #ff6b6b; /* Farba pre otvorené poruchy */
+    }
+
+    .status-circle.closed {
+        background-color: #51cf66; /* Farba pre zatvorené poruchy */
+    }
+
+.issue-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.issue-date {
+    font-size: 12px;
+    color: #666;
+}
+
+.issue-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.issue-cost {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.resolve-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+    .resolve-btn:hover {
+        background-color: #0056b3;
+    }
+
+/* Detaily kartičky */
+.card-details {
+    padding: 15px;
+    background-color: #f1f3f5;
+    border-top: 1px solid #ddd;
+}
+
+.issue-description {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.image-gallery {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.image-box {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}

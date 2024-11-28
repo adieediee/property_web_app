@@ -1,10 +1,19 @@
 using PropertyWebApp.Components;
+using Microsoft.EntityFrameworkCore;
+using PropertyWebApp.Data;
+using PropertyWebApp;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// DbContext a pripojenie
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
 var app = builder.Build();
 
@@ -23,5 +32,9 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+await DatabaseSeeder.Seed(app.Services);
+
+
 
 app.Run();

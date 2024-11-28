@@ -3,22 +3,23 @@
 
 <div class="layout-container">
     <div class="side-panel">
-
         <nav class="menu">
             <ul>
-                <li class="menu-item active">
-
-                    <span>Dashboard</span>
+                <li class="menu-item">
+                    <NavLink href="/" class="nav-link" active-class="active">
+                        <span>Dashboard</span>
+                    </NavLink>
                 </li>
                 <li class="menu-item">
-
-                    <span>Poruchy</span>
+                    <NavLink href="/propertyScreen" class="nav-link" active-class="active">
+                        <span>Nehnuteľnosti</span>
+                    </NavLink>
                 </li>
                 <li class="menu-item">
-
-                    <span>Nastavenia</span>
+                    <NavLink href="/settings" class="nav-link" active-class="active">
+                        <span>Nastavenia</span>
+                    </NavLink>
                 </li>
-                <!-- TODO pridat ikonky a dalsie karty -->
             </ul>
         </nav>
     </div>
