@@ -24,10 +24,12 @@
 }
 
 .side-panel {
-    width: 240px;
+    width: 150px;
+    height: 600px;
     background-color: #f8f9fa;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius:00px;
 }
 
 .logo {

@@ -8,17 +8,43 @@
     gap: 20px;
 }
 
-/* Kartička */
+
+
+
+
+
+
 .card {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    background-color: white;
+    padding: 15px;
+}
+
+.image-gallery img {
+    width: 200px;
+    height: 200px;
+    border-radius: 20px;
+    
+}
+
+.issue-details {
+    margin-top: 25px;
+}
+
+/* Kartička */
+.issue-header {
     display: flex; /* Horizontálne rozloženie */
     align-items: center; /* Vertikálne zarovnanie všetkých prvkov */
     gap: 15px; /* Priestor medzi hlavnými sekciami */
-    padding: 15px;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease-in-out;
+   
+    
+    
+   
+    
+    
 }
 
     .card:hover {
@@ -63,7 +89,7 @@
 .card-center {
     display: flex;
     align-items: center; /* Zarovná všetky prvky na stred vertikálne */
-    gap: 20px; /* Priestor medzi dátumom, tagmi a cenou */
+    gap: 40px; /* Priestor medzi dátumom, tagmi a cenou */
     flex: 1; /* Zaberie dostupný priestor */
     justify-content: center; /* Zarovná na stred horizontálne */
 }
@@ -175,7 +201,7 @@
     margin-bottom: 20px;
     padding: 10px 20px;
     background-color: #f8f9fa;
-    border-radius: 8px;
+    border-radius: 30px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 

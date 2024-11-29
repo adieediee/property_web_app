@@ -1,0 +1,74 @@
+﻿@page "/properties"
+@using PropertyWebApp.Models
+@using PropertyWebApp.Models.Services
+@inject PropertyService PropertyService
+
+<h3>Property Table</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Property Name</th>
+            <th>City</th>
+            <th>Price</th>
+            <th>Available</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (properties != null && properties.Any())
+        {
+            @foreach (var property in properties)
+            {
+                <tr>
+                    <td>@property.PropertyName</td>
+                    <td>@property.City</td>
+                    <td>@property.Price</td>
+                    <td>@(property.IsAvailable ? "Yes" : "No")</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => DeleteProperty(property.PropertyId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">No properties available</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button class="btn btn-primary" @onclick="AddProperty">Add Property</button>
+
+@code {
+    private List<Property> properties;
+
+    protected override async Task OnInitializedAsync()
+    {
+        properties = await PropertyService.GetPropertiesAsync();
+    }
+
+    private async Task AddProperty()
+    {
+        var newProperty = new Property
+            {
+                PropertyId = properties.Count + 1,
+                PropertyName = "New Property",
+                City = "New City",
+                Price = 1000,
+                IsAvailable = true
+            };
+
+        await PropertyService.AddPropertyAsync(newProperty);
+        properties = await PropertyService.GetPropertiesAsync();
+    }
+
+    private async Task DeleteProperty(int propertyId)
+    {
+        await PropertyService.DeletePropertyAsync(propertyId);
+        properties = await PropertyService.GetPropertiesAsync();
+    }
+}
+

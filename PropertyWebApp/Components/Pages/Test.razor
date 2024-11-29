@@ -1,7 +1,7 @@
-﻿@using Microsoft.EntityFrameworkCore
+﻿﻿@using Microsoft.EntityFrameworkCore
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
-@page "/propertyScreen"
+@page "/propertyScreen2"
 @rendermode InteractiveServer
 @layout Layout.PrenajimatelLayout
 
@@ -19,12 +19,10 @@
             <i class="icon-search"></i>
         </button>
     </div>
-    
+
     <a href="/add-issue" class="circle-btn add">
-            <i class="icon-add"></i>
-        </a>
-    
-    
+        <i class="icon-add"></i>
+    </a>
 </div>
 
 
@@ -43,36 +41,23 @@ else
         @foreach (var issue in issues)
         {
             <div class="card">
-                <div class="issue-header" @onclick="() => ToggleDetails(issue.IssueId)"> 
-                <!-- Ľavá časť: obrázok a texty -->
-                <div class="card-left">
-                    <img class="property-image" src="/img/placeholder.png" alt="Property Image" />
-                    <div class="card-text">
-                        <h4 class="issue-title">Pokazené kúrenie</h4>
-                        <p class="issue-subtitle">Názov Nehnuteľnosti</p>
-                    </div>
-                </div>
 
-                <!-- Stredná časť: dátum, tagy, cena -->
-                <div class="card-center">
-                    <p class="issue-date">26/11/2024</p>
-                    <div class="tags">
-                        <span class="tag">Kuchyňa</span>
-                        <span class="tag">Kúpeľňa</span>
-                        <span class="tag">Obývačka</span>
+                <div class="card-header" @onclick="() => ToggleDetails(issue.IssueId)">
+                    <div class="issue-header">
+                        <span class="status-circle" style="background-color: @issue.Status.Color;"></span>
+                        <div>
+                            <h4 class="issue-title">@issue.Title</h4>
+                            <p class="issue-date">@issue.ReportDate.ToString("dd/MM/yyyy")</p>
+                        </div>
                     </div>
-                    <p class="issue-cost">50.00 €</p>
-                </div>
-
-                <!-- Pravá časť: stav a menu -->
-                <div class="card-right">
-                    <span class="status">Rieši sa</span>
-                    <button class="menu-btn">⋮</button>
-                </div>
+                    <div class="issue-actions">
+                        <span class="issue-cost">@($"{issue.RepairCost ?? 0:C}")</span>
+                        <button class="resolve-btn">@(@issue.Status?.StatusName)</button>
+                    </div>
                 </div>
                 @if (expandedIssueId == issue.IssueId)
                 {
-                    <div class="issue-details">
+                    <div class="card-details">
                         <p class="issue-description">@issue.Description</p>
                         <div class="image-gallery">
                             @foreach (var image in issue.Images ?? Enumerable.Empty<IssueImage>())
@@ -82,20 +67,17 @@ else
                         </div>
                     </div>
                 }
-                
             </div>
-            
-           
         }
     </div>
-
 }
 
 @code {
     private List<Issue> issues;
     private int? expandedIssueId;
 
-    @inject AppDbContext DbContext;
+    @inject AppDbContext DbContext
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -106,17 +88,6 @@ else
             .ToListAsync();
     }
 
-    public void EditIssue(int issueId)
-    {
-        // Logika pre úpravu poruchy
-        Console.WriteLine($"Editing issue: {issueId}");
-    }
-
-    public void DeleteIssue(int issueId)
-    {
-        // Logika pre vymazanie poruchy
-        Console.WriteLine($"Deleting issue: {issueId}");
-    }
     public void ToggleDetails(int issueId)
     {
         if (expandedIssueId == issueId)
@@ -128,7 +99,9 @@ else
             expandedIssueId = issueId;
         }
     }
-  
+
+    public void AddToDatabase()
+    {
+
+    }
 }
-
-
