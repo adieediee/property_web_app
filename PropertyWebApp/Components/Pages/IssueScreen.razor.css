@@ -1,6 +1,4 @@
-﻿
-
-/* Kontajner pre zoznam */
+﻿/* Kontajner pre zoznam */
 .list-container {
     width: 90%;
     max-width: 1200px;
@@ -12,111 +10,161 @@
 
 /* Kartička */
 .card {
+    display: flex; /* Horizontálne rozloženie */
+    align-items: center; /* Vertikálne zarovnanie všetkých prvkov */
+    gap: 15px; /* Priestor medzi hlavnými sekciami */
+    padding: 15px;
     background-color: white;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-    overflow: hidden;
+    transition: box-shadow 0.3s ease-in-out;
 }
 
     .card:hover {
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
-/* Hlavička kartičky */
-.card-header {
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f8f9fa;
-}
-
-.issue-header {
+/* Obrázok a názvy */
+.card-left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 10px; /* Priestor medzi obrázkom a textami */
 }
 
-.status-circle {
-    width: 15px;
-    height: 15px;
+.property-image {
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
+    object-fit: cover;
+    background-color: #ddd; /* Placeholder farba */
 }
 
-    .status-circle.open {
-        background-color: #ff6b6b; /* Farba pre otvorené poruchy */
-    }
-
-    .status-circle.closed {
-        background-color: #51cf66; /* Farba pre zatvorené poruchy */
-    }
+.card-text {
+    display: flex;
+    flex-direction: column; /* Texty pod sebou */
+    justify-content: center;
+}
 
 .issue-title {
     font-size: 16px;
     font-weight: bold;
+    color: #333;
     margin: 0;
 }
 
-.issue-date {
-    font-size: 12px;
+.issue-subtitle {
+    font-size: 14px;
     color: #666;
+    margin: 0;
 }
 
-.issue-actions {
+/* Stredná časť: dátum, tagy, cena */
+.card-center {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    align-items: center; /* Zarovná všetky prvky na stred vertikálne */
+    gap: 20px; /* Priestor medzi dátumom, tagmi a cenou */
+    flex: 1; /* Zaberie dostupný priestor */
+    justify-content: center; /* Zarovná na stred horizontálne */
+}
+
+.issue-date {
+    font-size: 14px;
+    color: #999;
+    margin: 0;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
     gap: 5px;
 }
 
+.tag {
+    font-size: 12px;
+    color: #4a90e2;
+    padding: 5px 10px;
+    border: 1px solid #4a90e2;
+    border-radius: 20px;
+}
+
 .issue-cost {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     color: #333;
+    margin: 0;
 }
 
-.resolve-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
+/* Pravá sekcia: stav a menu */
+.card-right {
+    display: flex; /* Zarovná stav a menu vedľa seba */
+    align-items: center; /* Vertikálne zarovnanie na stred */
+    gap: 10px; /* Priestor medzi stavom a tlačidlom */
+    justify-content: flex-end; /* Zarovnané napravo */
+}
+
+.status {
     padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
+    color: white;
+    border-radius: 20px;
+    background-color: red; /* Príklad farby stavu */
 }
 
-    .resolve-btn:hover {
-        background-color: #0056b3;
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #999;
+}
+
+
+
+
+/* Dropdown menu */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+    .dropdown-toggle img {
+        width: 20px;
+        height: 20px;
     }
 
-/* Detaily kartičky */
-.card-details {
-    padding: 15px;
-    background-color: #f1f3f5;
-    border-top: 1px solid #ddd;
-}
-
-.issue-description {
-    font-size: 14px;
-    margin-bottom: 10px;
-    color: #444;
-}
-
-.image-gallery {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.image-box {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 5px;
+.dropdown-menu {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background-color: white;
     border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 10;
+}
+
+    .dropdown-menu li {
+        padding: 10px 15px;
+        list-style: none;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+    }
+
+        .dropdown-menu li:hover {
+            background-color: #f0f0f0;
+        }
+
+.dropdown:hover .dropdown-menu {
+    display: block;
 }
 
 /* Toolbar */
@@ -155,8 +203,6 @@
         font-size: 16px;
         color: #333;
     }
-
-    
 
 /* Kontajner pre vyhľadávanie */
 .search-container {
@@ -204,4 +250,3 @@
         color: white;
         font-size: 14px;
     }
-
