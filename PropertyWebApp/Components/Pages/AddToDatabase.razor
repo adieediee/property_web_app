@@ -1,0 +1,166 @@
+﻿@page "/add-issue"
+@using Microsoft.AspNetCore.Components.Forms
+@using PropertyWebApp.Data
+@using PropertyWebApp.Models
+@inject AppDbContext DbContext
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<div class="upload-container">
+    <!-- Steps Progress -->
+  
+
+    <!-- Form Section -->
+    <EditForm Model="newIssue" OnValidSubmit="HandleValidSubmit" FormName="AddIssueForm">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <!-- Issue Fields -->
+        <div class="form-section">
+            <h3>Pridať novú poruchu</h3>
+
+            <div class="form-group">
+                <label for="title">Názov poruchy</label>
+                <InputText id="title" class="styled-input" placeholder="Zadaj názov poruchy" @bind-Value="newIssue.Title" />
+                <ValidationMessage For="() => newIssue.Title" />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Popis poruchy</label>
+                <InputTextArea id="description" class="styled-input desc" placeholder="Zadaj popis poruchy" @bind-Value="newIssue.Description" />
+            </div>
+
+            <div class="form-group">
+                <label for="rentalId">ID Nájmu (RentalId)</label>
+                <InputNumber id="rentalId" class="styled-input" placeholder="Zadaj ID nájmu" @bind-Value="newIssue.RentalId" />
+                <ValidationMessage For="() => newIssue.RentalId" />
+            </div>
+
+            <div class="actions">
+                <button class="btn-back" @onclick="NavigateBack">Zrušiť</button>
+                <button type="submit" class="btn-next">Pridať</button>
+            </div>
+        </div>
+        <!-- File Upload Section -->
+        <div class="upload-section">
+            <div class="upload-header">
+                <h3>Upload files for the issue</h3>
+                <p>Maximum file size: 512 KB</p>
+                <p>Supported formats: JPEG, PNG</p>
+            </div>
+
+            <!-- Drop Zone -->
+            <div class="upload-dropzone">
+                <label class="upload-label" for="file-upload">
+                    <i class="icon-upload"></i>
+                    Drag and drop or <span class="upload-link">browse</span> files here
+                    <InputFile id="file-upload" OnChange="HandleFileSelected" multiple />
+                </label>
+            </div>
+
+            <!-- Uploaded Files -->
+            <div class="uploaded-files">
+                @if (uploadedFiles.Any())
+                {
+                    @foreach (var file in uploadedFiles)
+                    {
+                        <div class="uploaded-file">
+                            <p>@file.Name - @(file.Size / 1024) KB</p>
+                            <button class="btn-remove" @onclick="() => RemoveFile(file)">X</button>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- Error Message -->
+            @if (fileUploadError != null)
+            {
+                <div class="alert alert-danger">
+                    @fileUploadError
+                </div>
+            }
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn-back" @onclick="NavigateBack">Back</button>
+            <button type="submit" class="btn-next">Next</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private Issue newIssue = new Issue
+        {
+            ReportDate = DateTime.Now,
+            StatusId = 1 // Predpokladáme, že ID statusu "Rieši sa" je 1
+        };
+
+    private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
+    private string? fileUploadError; // Ukladá chybovú správu
+    private const long MaxFileSize = 512 * 1024; // 512 KB
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        fileUploadError = null;
+        var files = e.GetMultipleFiles();
+
+        foreach (var file in files)
+        {
+            if (file.Size > MaxFileSize)
+            {
+                fileUploadError = $"Súbor {file.Name} prekračuje maximálnu veľkosť 512 KB.";
+                continue;
+            }
+
+            try
+            {
+                using var stream = file.OpenReadStream(MaxFileSize); // Explicitné nastavenie limitu
+                uploadedFiles.Add(file);
+            }
+            catch (IOException ex)
+            {
+                fileUploadError = $"Nahrávanie súboru {file.Name} zlyhalo: {ex.Message}";
+            }
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        // Uloženie poruchy
+        await DbContext.Issues.AddAsync(newIssue);
+        await DbContext.SaveChangesAsync();
+
+        // Uloženie obrázkov
+        foreach (var file in uploadedFiles)
+        {
+            var imagePath = Path.Combine("wwwroot/uploads", file.Name);
+            await using var fileStream = new FileStream(imagePath, FileMode.Create);
+            await file.OpenReadStream().CopyToAsync(fileStream);
+
+            var issueImage = new IssueImage
+                {
+                    IssueId = newIssue.IssueId,
+                    ImagePath = $"/uploads/{file.Name}"
+                };
+
+            await DbContext.IssueImage.AddAsync(issueImage);
+        }
+
+        await DbContext.SaveChangesAsync();
+
+        // Presmerovanie na obrazovku s poruchami
+        Navigation.NavigateTo("/propertyScreen");
+    }
+
+    private void NavigateBack()
+    {
+        Navigation.NavigateTo("/propertyScreen");
+    }
+
+    private void RemoveFile(IBrowserFile file)
+    {
+        uploadedFiles.Remove(file);
+    }
+}

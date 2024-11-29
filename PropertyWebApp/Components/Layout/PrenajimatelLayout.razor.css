@@ -1,4 +1,7 @@
 ﻿
+.dashboard-body {
+    background-color: #E3EAE8;
+}
 
 .nav-link {
     text-decoration: none; /* Odstráni podčiarknutie pre všetky `NavLink` */

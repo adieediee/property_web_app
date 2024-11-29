@@ -7,11 +7,11 @@ namespace PropertyWebApp.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Property> Properties { get; set; }
-        public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<Property> Property { get; set; }
+        public DbSet<Tenant> Tenant { get; set; }
         public DbSet<Issue> Issues { get; set; }
-        public DbSet<IssueStatus> IssueStatuses { get; set; }
-        public DbSet<IssueImage> IssueImages { get; set; }
+        public DbSet<IssueStatus> IssueStatus { get; set; }
+        public DbSet<IssueImage> IssueImage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +32,8 @@ namespace PropertyWebApp.Data
                 .HasOne(ii => ii.Issue)
                 .WithMany(i => i.Images)
                 .HasForeignKey(ii => ii.IssueId);
+
+
         }
     }
 }

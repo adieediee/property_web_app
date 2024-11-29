@@ -12,8 +12,8 @@ using PropertyWebApp.Data;
 namespace PropertyWebApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241127125011_AddIssueTable")]
-    partial class AddIssueTable
+    [Migration("20241129084557_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,6 @@ namespace PropertyWebApp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IssueId"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RentalId")
@@ -82,7 +81,7 @@ namespace PropertyWebApp.Migrations
 
                     b.HasIndex("IssueId");
 
-                    b.ToTable("IssueImages");
+                    b.ToTable("IssueImage");
                 });
 
             modelBuilder.Entity("PropertyWebApp.Models.IssueStatus", b =>
@@ -93,13 +92,17 @@ namespace PropertyWebApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StatusId"));
 
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StatusName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("IssueStatuses");
+                    b.ToTable("IssueStatus");
                 });
 
             modelBuilder.Entity("PropertyWebApp.Models.Property", b =>
@@ -126,7 +129,7 @@ namespace PropertyWebApp.Migrations
 
                     b.HasKey("PropertyId");
 
-                    b.ToTable("Properties");
+                    b.ToTable("Property");
                 });
 
             modelBuilder.Entity("PropertyWebApp.Models.Tenant", b =>
@@ -156,7 +159,7 @@ namespace PropertyWebApp.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("Tenants");
+                    b.ToTable("Tenant");
                 });
 
             modelBuilder.Entity("PropertyWebApp.Models.Issue", b =>

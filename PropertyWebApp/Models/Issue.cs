@@ -8,8 +8,11 @@ namespace PropertyWebApp.Models
     {
         [Key]
         public int IssueId { get; set; }
+
+        [Required(ErrorMessage = "Názov poruchy je povinný.")]
         public string Title { get; set; }
-        public string Description { get; set; }
+    
+        public string? Description { get; set; }
         public DateTime ReportDate { get; set; }
         public DateTime? SolvedDate { get; set; }
         public decimal? RepairCost { get; set; }

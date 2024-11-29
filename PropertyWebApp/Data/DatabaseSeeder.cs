@@ -17,15 +17,15 @@ namespace PropertyWebApp
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                 // Skontroluje, či už sú dáta v IssueStatus
-                if (!context.IssueStatuses.Any())
+                if (!context.IssueStatus.Any())
                 {
                     var statuses = new List<IssueStatus>
                     {
-                        new IssueStatus { StatusName = "Rieši sa" },
-                        new IssueStatus { StatusName = "Vyriešené" }
+                        new IssueStatus { StatusName = "Rieši sa", Color = "#E34848"},
+                        new IssueStatus { StatusName = "Vyriešené", Color = "#3FBD5A"}
                     };
 
-                    context.IssueStatuses.AddRange(statuses);
+                    context.IssueStatus.AddRange(statuses);
                     await context.SaveChangesAsync();
                 }
 
@@ -60,15 +60,15 @@ namespace PropertyWebApp
                 }
 
                 // Skontroluje, či už sú dáta v IssueImages
-                if (!context.IssueImages.Any())
+                if (!context.IssueImage.Any())
                 {
                     var images = new List<IssueImage>
                     {
-                        new IssueImage { ImagePath = "/images/heating_issue.jpg", IssueId = 1 },
-                        new IssueImage { ImagePath = "/images/drain_issue.jpg", IssueId = 2 }
+                        new IssueImage { ImagePath = "/img/heatingIssue.jpg", IssueId = 1 },
+                        new IssueImage { ImagePath = "/img/drainIssue.jpeg", IssueId = 2 }
                     };
 
-                    context.IssueImages.AddRange(images);
+                    context.IssueImage.AddRange(images);
                     await context.SaveChangesAsync();
                 }
             }
