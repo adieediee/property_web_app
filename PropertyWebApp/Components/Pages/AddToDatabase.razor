@@ -1,5 +1,6 @@
 ﻿@page "/add-issue"
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
 @inject AppDbContext DbContext
@@ -8,9 +9,6 @@
 @rendermode InteractiveServer
 
 <div class="upload-container">
-    <!-- Steps Progress -->
-  
-
     <!-- Form Section -->
     <EditForm Model="newIssue" OnValidSubmit="HandleValidSubmit" FormName="AddIssueForm">
         <DataAnnotationsValidator />
@@ -45,16 +43,16 @@
         <!-- File Upload Section -->
         <div class="upload-section">
             <div class="upload-header">
-                <h3>Upload files for the issue</h3>
-                <p>Maximum file size: 512 KB</p>
-                <p>Supported formats: JPEG, PNG</p>
+                <h3>Nahrať súbory pre poruchu</h3>
+                <p>Maximálna veľkosť súboru: 512 KB</p>
+                <p>Podporované formáty: JPEG, PNG</p>
             </div>
 
             <!-- Drop Zone -->
             <div class="upload-dropzone">
                 <label class="upload-label" for="file-upload">
                     <i class="icon-upload"></i>
-                    Drag and drop or <span class="upload-link">browse</span> files here
+                    Presuňte súbory alebo <span class="upload-link">preklikajte</span> sem
                     <InputFile id="file-upload" OnChange="HandleFileSelected" multiple />
                 </label>
             </div>
@@ -81,28 +79,32 @@
                 </div>
             }
         </div>
-
-        <!-- Actions -->
-        <div class="actions">
-            <button class="btn-back" @onclick="NavigateBack">Back</button>
-            <button type="submit" class="btn-next">Next</button>
-        </div>
     </EditForm>
 </div>
 
 @code {
-    private Issue newIssue = new Issue
-        {
-            ReportDate = DateTime.Now,
-            StatusId = 1 // Predpokladáme, že ID statusu "Rieši sa" je 1
-        };
-
+    private Issue newIssue = new Issue();
     private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
     private string? fileUploadError; // Ukladá chybovú správu
     private const long MaxFileSize = 512 * 1024; // 512 KB
 
+    protected override async Task OnInitializedAsync()
+    {
+        // Dynamicky nastaví ID statusu "Rieši sa"
+        var status = await DbContext.IssueStatus.FirstOrDefaultAsync(s => s.StatusName == "Rieši sa");
+        newIssue.StatusId = status?.StatusId ?? 1; // Predpokladáme, že ID statusu "Rieši sa" je 1
+        newIssue.ReportDate = DateTime.Now;
+        newIssue.PropertyId = 1; //TESTOVANIE
+    }
+
+   
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
+        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        if (!Directory.Exists(uploadsFolder))
+        {
+            Directory.CreateDirectory(uploadsFolder);
+        }
         fileUploadError = null;
         var files = e.GetMultipleFiles();
 
@@ -128,24 +130,46 @@
 
     private async Task HandleValidSubmit()
     {
+        // Skontroluje či zadaný RentalId existuje
+        var rentalExists = await DbContext.Rentals.AnyAsync(r => r.RentalId == newIssue.RentalId);
+        if (!rentalExists)
+        {
+            fileUploadError = "Zadané ID nájmu neexistuje.";
+            return;
+        }
+
         // Uloženie poruchy
         await DbContext.Issues.AddAsync(newIssue);
         await DbContext.SaveChangesAsync();
 
+        // Vytvor priečinok na nahrávanie súborov, ak neexistuje
+        var uploadsFolder = Path.Combine("wwwroot", "uploads");
+        if (!Directory.Exists(uploadsFolder))
+        {
+            Directory.CreateDirectory(uploadsFolder);
+        }
+
         // Uloženie obrázkov
         foreach (var file in uploadedFiles)
         {
-            var imagePath = Path.Combine("wwwroot/uploads", file.Name);
-            await using var fileStream = new FileStream(imagePath, FileMode.Create);
-            await file.OpenReadStream().CopyToAsync(fileStream);
+            try
+            {
+                var filePath = Path.Combine(uploadsFolder, file.Name);
+                await using var fileStream = new FileStream(filePath, FileMode.Create);
+                await file.OpenReadStream(MaxFileSize).CopyToAsync(fileStream);
 
-            var issueImage = new IssueImage
-                {
-                    IssueId = newIssue.IssueId,
-                    ImagePath = $"/uploads/{file.Name}"
-                };
+                var issueImage = new IssueImage
+                    {
+                        IssueId = newIssue.IssueId,
+                        ImagePath = $"/uploads/{file.Name}"
+                    };
 
-            await DbContext.IssueImage.AddAsync(issueImage);
+                await DbContext.IssueImages.AddAsync(issueImage);
+            }
+            catch (Exception ex)
+            {
+                fileUploadError = $"Nahrávanie súboru {file.Name} zlyhalo: {ex.Message}";
+            }
         }
 
         await DbContext.SaveChangesAsync();

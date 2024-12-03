@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PropertyWebApp.Models
 {
@@ -10,7 +11,7 @@ namespace PropertyWebApp.Models
 
         public string Color { get; set; }
 
-        // Navigačná vlastnosť
+        // Navigation properties
         public ICollection<Issue> Issues { get; set; }
     }
 }

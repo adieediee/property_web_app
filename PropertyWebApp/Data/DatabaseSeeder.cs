@@ -16,20 +16,115 @@ namespace PropertyWebApp
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                // Skontroluje, či už sú dáta v IssueStatus
+                // Vlož IssueStatus
                 if (!context.IssueStatus.Any())
                 {
                     var statuses = new List<IssueStatus>
                     {
-                        new IssueStatus { StatusName = "Rieši sa", Color = "#E34848"},
-                        new IssueStatus { StatusName = "Vyriešené", Color = "#3FBD5A"}
+                        new IssueStatus { StatusName = "Rieši sa", Color = "#E34848" },
+                        new IssueStatus { StatusName = "Vyriešené", Color = "#3FBD5A" }
                     };
 
                     context.IssueStatus.AddRange(statuses);
                     await context.SaveChangesAsync();
                 }
 
-                // Skontroluje, či už sú dáta v Issues
+                // Vlož PropertyTypes
+                if (!context.PropertyTypes.Any())
+                {
+                    var propertyTypes = new List<PropertyType>
+                    {
+                        new PropertyType { TypeName = "Apartment" },
+                        new PropertyType { TypeName = "House" }
+                    };
+
+                    context.PropertyTypes.AddRange(propertyTypes);
+                    await context.SaveChangesAsync();
+                }
+
+                // Získaj TypeId pre PropertyTypes
+                var apartmentTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Apartment")?.TypeId;
+                var houseTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "House")?.TypeId;
+
+                // Vlož Properties
+                if (!context.Properties.Any())
+                {
+                    var properties = new List<Property>
+                    {
+                        new Property
+                        {
+                            PropertyName = "Moderný byt v centre",
+                            IsAvailable = true,
+                            TypeId = apartmentTypeId.Value, // Dynamicky získané TypeId
+                            ListingDate = DateTime.Now.AddDays(-30),
+                            Description = "Priestranný 2-izbový byt s balkónom v centre mesta.",
+                            StreetName = "Hlavná 1",
+                            City = "Bratislava",
+                            PostalCode = "81101",
+                            Country = "Slovensko",
+                            State = "Bratislava",
+                            Price = 850.00m,
+                            Area = 65,
+                            NumberOfBedrooms = 2,
+                            NumberOfBathrooms = 1,
+                            IsFurnished = true,
+                            ParkingAvailable = false
+                        },
+                        new Property
+                        {
+                            PropertyName = "Rodinný dom v tichom prostredí",
+                            IsAvailable = false,
+                            TypeId = houseTypeId.Value, // Dynamicky získané TypeId
+                            ListingDate = DateTime.Now.AddDays(-60),
+                            Description = "Štýlový rodinný dom s veľkou záhradou.",
+                            StreetName = "Záhradná 12",
+                            City = "Žilina",
+                            PostalCode = "01001",
+                            Country = "Slovensko",
+                            State = "Žilinský kraj",
+                            Price = 1200.00m,
+                            Area = 120,
+                            NumberOfBedrooms = 4,
+                            NumberOfBathrooms = 2,
+                            IsFurnished = false,
+                            ParkingAvailable = true
+                        }
+                    };
+
+                    context.Properties.AddRange(properties);
+                    await context.SaveChangesAsync();
+                }
+
+                // Vlož Rentals
+                if (!context.Rentals.Any())
+                {
+                    var rentals = new List<Rental>
+                    {
+                        new Rental
+                        {
+                            
+                            PropertyId = context.Properties.FirstOrDefault(p => p.PropertyName == "Moderný byt v centre")?.PropertyId ?? 1,
+                            StartDate = DateTime.Now.AddMonths(-6),
+                            EndDate = DateTime.Now.AddMonths(-3),
+                            //PaymentDay = 15,
+                            TenantId = 1
+                        },
+                        new Rental
+                        {
+                            
+                            PropertyId = context.Properties.FirstOrDefault(p => p.PropertyName == "Rodinný dom v tichom prostredí")?.PropertyId ?? 2,
+                            StartDate = DateTime.Now.AddMonths(-8),
+                            EndDate = DateTime.Now.AddMonths(-4),
+                            //PaymentDay = 1,
+                            TenantId = 2
+                        }
+                    };
+
+                    context.Rentals.AddRange(rentals);
+                    await context.SaveChangesAsync();
+                }
+
+                // Vlož Issues
                 if (!context.Issues.Any())
                 {
                     var issues = new List<Issue>
@@ -39,9 +134,9 @@ namespace PropertyWebApp
                             Title = "Pokazené kúrenie",
                             Description = "Kúrenie prestalo fungovať v obývačke.",
                             ReportDate = DateTime.Now.AddDays(-7),
-                            RepairCost = 120.50m,
-                            StatusId = 1, // Rieši sa
-                            RentalId = 1 // Musí byť v DB
+                            StatusId = context.IssueStatus.FirstOrDefault(s => s.StatusName == "Rieši sa")?.StatusId ?? 1,
+                            RentalId = 1,
+                            PropertyId = context.Properties.FirstOrDefault(p => p.PropertyName == "Moderný byt v centre")?.PropertyId ?? 1
                         },
                         new Issue
                         {
@@ -49,9 +144,9 @@ namespace PropertyWebApp
                             Description = "Voda presakuje cez sprchový odtok.",
                             ReportDate = DateTime.Now.AddDays(-15),
                             SolvedDate = DateTime.Now.AddDays(-5),
-                            RepairCost = 45.00m,
-                            StatusId = 2, // Vyriešené
-                            RentalId = 2 // Musí byť v DB
+                            StatusId = context.IssueStatus.FirstOrDefault(s => s.StatusName == "Vyriešené")?.StatusId ?? 2,
+                            RentalId = 2,
+                            PropertyId = context.Properties.FirstOrDefault(p => p.PropertyName == "Rodinný dom v tichom prostredí")?.PropertyId ?? 2
                         }
                     };
 
@@ -59,8 +154,8 @@ namespace PropertyWebApp
                     await context.SaveChangesAsync();
                 }
 
-                // Skontroluje, či už sú dáta v IssueImages
-                if (!context.IssueImage.Any())
+                // Vlož IssueImages
+                if (!context.IssueImages.Any())
                 {
                     var images = new List<IssueImage>
                     {
@@ -68,7 +163,7 @@ namespace PropertyWebApp
                         new IssueImage { ImagePath = "/img/drainIssue.jpeg", IssueId = 2 }
                     };
 
-                    context.IssueImage.AddRange(images);
+                    context.IssueImages.AddRange(images);
                     await context.SaveChangesAsync();
                 }
             }

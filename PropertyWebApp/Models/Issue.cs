@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,20 +8,25 @@ namespace PropertyWebApp.Models
     {
         [Key]
         public int IssueId { get; set; }
-
-        [Required(ErrorMessage = "Názov poruchy je povinný.")]
         public string Title { get; set; }
-    
-        public string? Description { get; set; }
+        public int StatusId { get; set; } // FK to IssueStatus
+        public int RentalId { get; set; } // FK to Rental
         public DateTime ReportDate { get; set; }
         public DateTime? SolvedDate { get; set; }
-        public decimal? RepairCost { get; set; }
-        public int StatusId { get; set; } // FK na IssueStatus
-        public int RentalId { get; set; } // FK na Rental
 
-        // Navigačné vlastnosti
+        public int PropertyId { get; set; } // FK to Property
+
+
+
+        public string Description { get; set; }
+
+        // Navigation properties
         public IssueStatus Status { get; set; }
-        //public Rental Rental { get; set; }
+        public Rental Rental { get; set; }
         public ICollection<IssueImage> Images { get; set; }
+        public ICollection<TaggedIssue> TaggedIssues { get; set; }
+        public ICollection<Repair> Repairs { get; set; } 
+        public Property Property { get; set; }
+
     }
 }

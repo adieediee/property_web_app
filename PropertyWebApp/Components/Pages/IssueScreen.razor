@@ -19,15 +19,11 @@
             <i class="icon-search"></i>
         </button>
     </div>
-    
+
     <a href="/add-issue" class="circle-btn add">
-            <i class="icon-add"></i>
-        </a>
-    
-    
+        <i class="icon-add"></i>
+    </a>
 </div>
-
-
 
 @if (issues == null)
 {
@@ -43,32 +39,36 @@ else
         @foreach (var issue in issues)
         {
             <div class="card">
-                <div class="issue-header" @onclick="() => ToggleDetails(issue.IssueId)"> 
-                <!-- Ľavá časť: obrázok a texty -->
-                <div class="card-left">
-                    <img class="property-image" src="/img/placeholder.png" alt="Property Image" />
-                    <div class="card-text">
-                        <h4 class="issue-title">Pokazené kúrenie</h4>
-                        <p class="issue-subtitle">Názov Nehnuteľnosti</p>
+                <div class="issue-header" @onclick="() => ToggleDetails(issue.IssueId)">
+                    <!-- Ľavá časť: obrázok a texty -->
+                    <div class="card-left">
+                        <img class="property-image" src="@GetPropertyImage(issue.PropertyId)" alt="Property Image" />
+                        <div class="card-text">
+                            <h4 class="issue-title">@issue.Title</h4>
+                            <p class="issue-subtitle">@GetPropertyName(issue.PropertyId)</p>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Stredná časť: dátum, tagy, cena -->
-                <div class="card-center">
-                    <p class="issue-date">26/11/2024</p>
-                    <div class="tags">
-                        <span class="tag">Kuchyňa</span>
-                        <span class="tag">Kúpeľňa</span>
-                        <span class="tag">Obývačka</span>
+                    <!-- Stredná časť: dátum, tagy, cena -->
+                    <div class="card-center">
+                        <p class="issue-date">@issue.ReportDate.ToString("dd/MM/yyyy")</p>
+                        <div class="tags">
+                            @if (issue.TaggedIssues != null)
+                            {
+                                @foreach (var tag in issue.TaggedIssues)
+                                {
+                                    <span class="tag">@tag.Tag.TagName</span>
+                                }
+                            }
+                        </div>
+                        <p class="issue-cost">@GetIssueCost(issue.IssueId)?.ToString("F2") €</p>
                     </div>
-                    <p class="issue-cost">50.00 €</p>
-                </div>
 
-                <!-- Pravá časť: stav a menu -->
-                <div class="card-right">
-                    <span class="status">Rieši sa</span>
-                    <button class="menu-btn">⋮</button>
-                </div>
+                    <!-- Pravá časť: stav a menu -->
+                    <div class="card-right">
+                        <span class="status">@issue.Status.StatusName</span>
+                        <button class="menu-btn">⋮</button>
+                    </div>
                 </div>
                 @if (expandedIssueId == issue.IssueId)
                 {
@@ -82,14 +82,11 @@ else
                         </div>
                     </div>
                 }
-                
             </div>
-            
-           
         }
     </div>
-
 }
+
 
 @code {
     private List<Issue> issues;
@@ -99,36 +96,39 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        // Načítanie porúch vrátane obrázkov a stavu
+        // Načítanie porúch vrátane obrázkov, stavu a tagov
         issues = await DbContext.Issues
             .Include(i => i.Images)
             .Include(i => i.Status)
+            .Include(i => i.TaggedIssues)
+                .ThenInclude(ti => ti.Tag)
             .ToListAsync();
     }
 
-    public void EditIssue(int issueId)
+    private string GetPropertyName(int propertyId)
     {
-        // Logika pre úpravu poruchy
-        Console.WriteLine($"Editing issue: {issueId}");
+        var property = DbContext.Properties.FirstOrDefault(p => p.PropertyId == propertyId);
+        return property?.PropertyName ?? "Neznáma nehnuteľnosť";
     }
 
-    public void DeleteIssue(int issueId)
+    private string GetPropertyImage(int propertyId)
     {
-        // Logika pre vymazanie poruchy
-        Console.WriteLine($"Deleting issue: {issueId}");
+        var propertyImage = DbContext.PropertyImages.FirstOrDefault(pi => pi.PropertyId == propertyId);
+        return propertyImage?.ImagePath ?? "/img/placeholder.png";
     }
+
+    private decimal? GetIssueCost(int issueId)
+    {
+        // Predpokladáme, že Issue má napojené náklady (napr. RepairCosts)
+        var repairCost = DbContext.RepairCosts.FirstOrDefault(rc => rc.RepairId == issueId);
+        return repairCost?.PaymentId ?? null;
+    }
+
     public void ToggleDetails(int issueId)
     {
-        if (expandedIssueId == issueId)
-        {
-            expandedIssueId = null;
-        }
-        else
-        {
-            expandedIssueId = issueId;
-        }
+        expandedIssueId = expandedIssueId == issueId ? null : issueId;
     }
-  
 }
+
 
 
