@@ -1,4 +1,5 @@
-﻿@page "/add-issue"
+﻿@page "/edit-issue/{IssueId:int?}"
+
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.EntityFrameworkCore
 @using PropertyWebApp.Data
@@ -9,14 +10,12 @@
 @rendermode InteractiveServer
 
 <div class="upload-container">
-    <!-- Form Section -->
-    <EditForm Model="newIssue" OnValidSubmit="HandleValidSubmit" FormName="AddIssueForm">
+    <EditForm Model="newIssue" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <!-- Issue Fields -->
         <div class="form-section">
-            <h3>Pridať novú poruchu</h3>
+            <h3>@(IssueId.HasValue ? "Upraviť poruchu" : "Pridať novú poruchu")</h3>
 
             <div class="form-group">
                 <label for="title">Názov poruchy</label>
@@ -27,6 +26,7 @@
             <div class="form-group">
                 <label for="description">Popis poruchy</label>
                 <InputTextArea id="description" class="styled-input desc" placeholder="Zadaj popis poruchy" @bind-Value="newIssue.Description" />
+                <ValidationMessage For="() => newIssue.Description" />
             </div>
 
             <div class="form-group">
@@ -37,18 +37,12 @@
 
             <div class="actions">
                 <button class="btn-back" @onclick="NavigateBack">Zrušiť</button>
-                <button type="submit" class="btn-next">Pridať</button>
+                <button type="submit" class="btn-next">@((IssueId.HasValue) ? "Uložiť" : "Pridať")</button>
             </div>
         </div>
-        <!-- File Upload Section -->
-        <div class="upload-section">
-            <div class="upload-header">
-                <h3>Nahrať súbory pre poruchu</h3>
-                <p>Maximálna veľkosť súboru: 512 KB</p>
-                <p>Podporované formáty: JPEG, PNG</p>
-            </div>
 
-            <!-- Drop Zone -->
+        <div class="upload-section">
+            <h3>Nahrať súbory pre poruchu</h3>
             <div class="upload-dropzone">
                 <label class="upload-label" for="file-upload">
                     <i class="icon-upload"></i>
@@ -57,80 +51,58 @@
                 </label>
             </div>
 
-            <!-- Uploaded Files -->
             <div class="uploaded-files">
-                @if (uploadedFiles.Any())
+                @foreach (var file in uploadedFiles)
                 {
-                    @foreach (var file in uploadedFiles)
-                    {
-                        <div class="uploaded-file">
-                            <p>@file.Name - @(file.Size / 1024) KB</p>
-                            <button class="btn-remove" @onclick="() => RemoveFile(file)">X</button>
-                        </div>
-                    }
+                    <div class="uploaded-file">
+                        <p>@file.Name - @(file.Size / 1024) KB</p>
+                        <button class="btn-remove" @onclick="() => RemoveFile(file)">X</button>
+                    </div>
                 }
             </div>
 
-            <!-- Error Message -->
             @if (fileUploadError != null)
             {
-                <div class="alert alert-danger">
-                    @fileUploadError
-                </div>
+                <div class="alert alert-danger">@fileUploadError</div>
             }
         </div>
     </EditForm>
 </div>
 
 @code {
+    [Parameter]
+    public int? IssueId { get; set; }
+
     private Issue newIssue = new Issue();
     private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
-    private string? fileUploadError; // Ukladá chybovú správu
-    private const long MaxFileSize = 512 * 1024; // 512 KB
+    private string? fileUploadError;
+    private const long MaxFileSize = 512 * 1024;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        // Dynamicky nastaví ID statusu "Rieši sa"
-        var status = await DbContext.IssueStatus.FirstOrDefaultAsync(s => s.StatusName == "Rieši sa");
-        newIssue.StatusId = status?.StatusId ?? 1; // Predpokladáme, že ID statusu "Rieši sa" je 1
-        newIssue.ReportDate = DateTime.Now;
-        newIssue.PropertyId = 1; //TESTOVANIE
-    }
-
-   
-    private async Task HandleFileSelected(InputFileChangeEventArgs e)
-    {
-        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-        if (!Directory.Exists(uploadsFolder))
+        if (IssueId.HasValue) // Úprava existujúcej poruchy
         {
-            Directory.CreateDirectory(uploadsFolder);
+            var existingIssue = await DbContext.Issues
+                .Include(i => i.Images)
+                .FirstOrDefaultAsync(i => i.IssueId == IssueId.Value);
+
+            if (existingIssue != null)
+            {
+                newIssue = existingIssue;
+            }
         }
-        fileUploadError = null;
-        var files = e.GetMultipleFiles();
-
-        foreach (var file in files)
+        else // Pridanie novej poruchy
         {
-            if (file.Size > MaxFileSize)
-            {
-                fileUploadError = $"Súbor {file.Name} prekračuje maximálnu veľkosť 512 KB.";
-                continue;
-            }
-
-            try
-            {
-                using var stream = file.OpenReadStream(MaxFileSize); // Explicitné nastavenie limitu
-                uploadedFiles.Add(file);
-            }
-            catch (IOException ex)
-            {
-                fileUploadError = $"Nahrávanie súboru {file.Name} zlyhalo: {ex.Message}";
-            }
+            newIssue = new Issue
+                {
+                    ReportDate = DateTime.Now,
+                    StatusId = (await DbContext.IssueStatus.FirstOrDefaultAsync(s => s.StatusName == "Rieši sa"))?.StatusId ?? 1
+                };
         }
     }
 
     private async Task HandleValidSubmit()
     {
-        // Skontroluje či zadaný RentalId existuje
         var rentalExists = await DbContext.Rentals.AnyAsync(r => r.RentalId == newIssue.RentalId);
         if (!rentalExists)
         {
@@ -138,18 +110,23 @@
             return;
         }
 
-        // Uloženie poruchy
-        await DbContext.Issues.AddAsync(newIssue);
+        if (IssueId.HasValue) // Ak upravujeme existujúcu poruchu
+        {
+            DbContext.Issues.Update(newIssue);
+        }
+        else // Ak pridávame novú poruchu
+        {
+            await DbContext.Issues.AddAsync(newIssue);
+        }
+
         await DbContext.SaveChangesAsync();
 
-        // Vytvor priečinok na nahrávanie súborov, ak neexistuje
         var uploadsFolder = Path.Combine("wwwroot", "uploads");
         if (!Directory.Exists(uploadsFolder))
         {
             Directory.CreateDirectory(uploadsFolder);
         }
 
-        // Uloženie obrázkov
         foreach (var file in uploadedFiles)
         {
             try
@@ -174,8 +151,38 @@
 
         await DbContext.SaveChangesAsync();
 
-        // Presmerovanie na obrazovku s poruchami
         Navigation.NavigateTo("/propertyScreen");
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        if (!Directory.Exists(uploadsFolder))
+        {
+            Directory.CreateDirectory(uploadsFolder);
+        }
+
+        fileUploadError = null;
+        var files = e.GetMultipleFiles();
+
+        foreach (var file in files)
+        {
+            if (file.Size > MaxFileSize)
+            {
+                fileUploadError = $"Súbor {file.Name} prekračuje maximálnu veľkosť 512 KB.";
+                continue;
+            }
+
+            try
+            {
+                using var stream = file.OpenReadStream(MaxFileSize);
+                uploadedFiles.Add(file);
+            }
+            catch (IOException ex)
+            {
+                fileUploadError = $"Nahrávanie súboru {file.Name} zlyhalo: {ex.Message}";
+            }
+        }
     }
 
     private void NavigateBack()

@@ -1,12 +1,11 @@
 ﻿@using Microsoft.EntityFrameworkCore
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
+@using PropertyWebApp.Models.Services.PropertyWebApp.Services
 @page "/propertyScreen"
 @rendermode InteractiveServer
 @layout Layout.PrenajimatelLayout
-
-
-
+@inject IssueService IssueService
 
 <div class="toolbar">
     <button class="circle-btn">
@@ -66,7 +65,7 @@ else
 
                     <!-- Pravá časť: stav a menu -->
                     <div class="card-right">
-                        <span class="status">@issue.Status.StatusName</span>
+                        <span class="status" style="background-color:@issue.Status.Color">@issue.Status.StatusName </span>
                         <button class="menu-btn">⋮</button>
                     </div>
                 </div>
@@ -80,6 +79,26 @@ else
                                 <img src="@image.ImagePath" alt="Obrázok poruchy" class="image-box" />
                             }
                         </div>
+
+                        <!-- Spodná časť: tlačidlá -->
+                        <div class="card-actions">
+                            <button class="delete-btn" @onclick="() => ShowConfirmDialog(issue.IssueId)">Delete</button>
+
+                            <a href="/edit-issue/@issue.IssueId" class="edit-btn">Edit</a>
+                        </div>
+                    </div>
+                }
+
+                @if (showConfirmDialog)
+                {
+                    <div class="confirm-dialog">
+                        <div class="dialog-content">
+                            <p>Chcete naozaj vymazať?</p>
+                            <div class="dialog-actions">
+                                <button class="confirm-btn" @onclick="ConfirmDelete">Áno</button>
+                                <button class="cancel-btn" @onclick="CancelDelete">Nie</button>
+                            </div>
+                        </div>
                     </div>
                 }
             </div>
@@ -92,17 +111,21 @@ else
     private List<Issue> issues;
     private int? expandedIssueId;
 
+    private bool showConfirmDialog = false;
+    private int? issueIdToDelete;
+
     @inject AppDbContext DbContext;
 
     protected override async Task OnInitializedAsync()
     {
         // Načítanie porúch vrátane obrázkov, stavu a tagov
         issues = await DbContext.Issues
-            .Include(i => i.Images)
-            .Include(i => i.Status)
-            .Include(i => i.TaggedIssues)
-                .ThenInclude(ti => ti.Tag)
-            .ToListAsync();
+    .Include(i => i.Images)
+    .Include(i => i.Status)
+    .Include(i => i.TaggedIssues)
+        .ThenInclude(ti => ti.Tag)
+    .AsNoTracking()
+    .ToListAsync();
     }
 
     private string GetPropertyName(int propertyId)
@@ -113,7 +136,19 @@ else
 
     private string GetPropertyImage(int propertyId)
     {
-        var propertyImage = DbContext.PropertyImages.FirstOrDefault(pi => pi.PropertyId == propertyId);
+        var propertyImage = DbContext.PropertyImages
+        //znizuje problemy ked iba citam data
+            .AsNoTracking()
+            .FirstOrDefault(pi => pi.PropertyId == propertyId);
+        return propertyImage?.ImagePath ?? "/img/placeholder.png";
+    }
+
+    //pre asynchronne opoeracie
+    private async Task<string> GetPropertyImageAsync(int propertyId)
+    {
+        var propertyImage = await DbContext.PropertyImages
+            .AsNoTracking()
+            .FirstOrDefaultAsync(pi => pi.PropertyId == propertyId);
         return propertyImage?.ImagePath ?? "/img/placeholder.png";
     }
 
@@ -128,7 +163,37 @@ else
     {
         expandedIssueId = expandedIssueId == issueId ? null : issueId;
     }
+
+    //vymazavanie
+
+    private void ShowConfirmDialog(int issueId)
+    {
+        issueIdToDelete = issueId;
+        showConfirmDialog = true;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (issueIdToDelete.HasValue)
+        {
+            bool success = await IssueService.DeleteIssueAsync(issueIdToDelete.Value);
+
+            if (success)
+            {
+                // Aktualizácia zoznamu issue po úspešnom vymazaní
+                issues = await IssueService.GetIssuesAsync();
+            }
+            else
+            {
+                Console.WriteLine("Error deleting issue.");
+            }
+        }
+        CancelDelete();
+    }
+
+    private void CancelDelete()
+    {
+        showConfirmDialog = false;
+        issueIdToDelete = null;
+    }
 }
-
-
-
