@@ -45,7 +45,7 @@ namespace PropertyWebApp
                 // Získaj TypeId pre PropertyTypes
                 var apartmentTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Apartment")?.TypeId;
                 var houseTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "House")?.TypeId;
-
+                
                 // Vlož Properties
                 if (!context.Properties.Any())
                 {
@@ -92,6 +92,19 @@ namespace PropertyWebApp
                     };
 
                     context.Properties.AddRange(properties);
+                    await context.SaveChangesAsync();
+                }
+
+                // Pridanie obrázkov pre nehnuteľnosti
+                if (!context.PropertyImages.Any())
+                {
+                    var propertyImages = new List<PropertyImage>
+        {
+            new PropertyImage { PropertyId = 1, ImagePath = "/img/property1.jpg" },
+            new PropertyImage { PropertyId = 2, ImagePath = "/img/property2.jpg" }
+        };
+
+                    context.PropertyImages.AddRange(propertyImages);
                     await context.SaveChangesAsync();
                 }
 

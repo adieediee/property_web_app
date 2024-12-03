@@ -11,10 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddScoped<IssueService>();
 
-// Register PropertyService
-builder.Services.AddSingleton<PropertyService>(); // Alebo AddScoped, ak závisí na DbContext
+
+//servisy pre databazu
+builder.Services.AddScoped<PropertyService>();
+builder.Services.AddScoped<IssueService>();
 //context factory aby som nemala koflikty
 builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

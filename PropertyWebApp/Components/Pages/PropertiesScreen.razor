@@ -1,74 +1,61 @@
 ﻿@page "/properties"
-@using PropertyWebApp.Models
-@using PropertyWebApp.Models.Services
-@inject PropertyService PropertyService
+@layout Layout.PrenajimatelLayout
+@using Microsoft.EntityFrameworkCore
+@using PropertyWebApp.Data
+@using PropertyWebApp.Data.ViewModels
+@inject AppDbContext DbContext
 
-<h3>Property Table</h3>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Property Name</th>
-            <th>City</th>
-            <th>Price</th>
-            <th>Available</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (properties != null && properties.Any())
-        {
+<div class="properties-container">
+    @if (properties == null)
+    {
+        <p>Načítavam nehnuteľnosti...</p>
+    }
+    else if (!properties.Any())
+    {
+        <p>Žiadne nehnuteľnosti na zobrazenie.</p>
+    }
+    else
+    {
+        <div class="cards-grid">
             @foreach (var property in properties)
             {
-                <tr>
-                    <td>@property.PropertyName</td>
-                    <td>@property.City</td>
-                    <td>@property.Price</td>
-                    <td>@(property.IsAvailable ? "Yes" : "No")</td>
-                    <td>
-                        <button class="btn btn-danger" @onclick="() => DeleteProperty(property.PropertyId)">Delete</button>
-                    </td>
-                </tr>
+                <div class="property-card">
+                    <!-- Obrázok na pozadí -->
+                    <div class="property-background" style="background-image: url('@property.MainImage')">
+                        <!-- Informácie o nehnuteľnosti -->
+                        <div class="property-info">
+                            <h4>@property.PropertyName</h4>
+                            <div class="tenant-info">
+                                <img class="tenant-avatar" src="@property.TenantAvatar" alt="Tenant Avatar" />
+                                <p>@property.TenantName</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="5">No properties available</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<button class="btn btn-primary" @onclick="AddProperty">Add Property</button>
+        </div>
+    }
+</div>
 
 @code {
-    private List<Property> properties;
+    private List<PropertyScreenViewModel> properties;
 
     protected override async Task OnInitializedAsync()
     {
-        properties = await PropertyService.GetPropertiesAsync();
-    }
-
-    private async Task AddProperty()
-    {
-        var newProperty = new Property
-            {
-                PropertyId = properties.Count + 1,
-                PropertyName = "New Property",
-                City = "New City",
-                Price = 1000,
-                IsAvailable = true
-            };
-
-        await PropertyService.AddPropertyAsync(newProperty);
-        properties = await PropertyService.GetPropertiesAsync();
-    }
-
-    private async Task DeleteProperty(int propertyId)
-    {
-        await PropertyService.DeletePropertyAsync(propertyId);
-        properties = await PropertyService.GetPropertiesAsync();
+        properties = await DbContext.Properties
+            .Include(p => p.PropertyImages)
+            //.Include(p => p.Rentals) // 
+                //.ThenInclude(r => r.Tenant)
+            
+            
+            .Select(p => new PropertyScreenViewModel
+                {
+                    PropertyId = p.PropertyId,
+                    PropertyName = p.PropertyName,
+                    MainImage = p.PropertyImages.FirstOrDefault() !=null ? p.PropertyImages.FirstOrDefault().ImagePath : "/img/default-placeholder-property.jpg",
+                    TenantAvatar = "/img/default-avatar.jpg",
+                    TenantName = "John Doe"
+                })
+            .ToListAsync();
     }
 }
-
