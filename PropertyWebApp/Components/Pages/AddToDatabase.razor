@@ -76,8 +76,9 @@
     private Issue newIssue = new Issue();
     private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
     private string? fileUploadError;
-    private const long MaxFileSize = 512 * 1024;
+    private const long MaxFileSize = 512 * 1024; // 512 KB
 
+    // Načítanie poruchy pri úprave
     protected override async Task OnParametersSetAsync()
     {
         if (IssueId.HasValue) // Úprava existujúcej poruchy
@@ -95,14 +96,18 @@
         {
             newIssue = new Issue
                 {
+                    RentalId = 1, // Default RentalId
+                    PropertyId = 1, // Default PropertyId //TODO
                     ReportDate = DateTime.Now,
                     StatusId = (await DbContext.IssueStatus.FirstOrDefaultAsync(s => s.StatusName == "Rieši sa"))?.StatusId ?? 1
                 };
         }
     }
 
+    // Ošetrenie validného formulára
     private async Task HandleValidSubmit()
     {
+        // Overenie, že RentalId existuje
         var rentalExists = await DbContext.Rentals.AnyAsync(r => r.RentalId == newIssue.RentalId);
         if (!rentalExists)
         {
@@ -116,10 +121,11 @@
         }
         else // Ak pridávame novú poruchu
         {
+            Console.WriteLine(newIssue.RentalId);
             await DbContext.Issues.AddAsync(newIssue);
         }
 
-        await DbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync(); // Uložíme poruchu a získame IssueId
 
         var uploadsFolder = Path.Combine("wwwroot", "uploads");
         if (!Directory.Exists(uploadsFolder))
@@ -127,6 +133,7 @@
             Directory.CreateDirectory(uploadsFolder);
         }
 
+        // Uloženie obrázkov
         foreach (var file in uploadedFiles)
         {
             try
@@ -137,7 +144,7 @@
 
                 var issueImage = new IssueImage
                     {
-                        IssueId = newIssue.IssueId,
+                        IssueId = newIssue.IssueId, // Už je nastavené po uložený zázname
                         ImagePath = $"/uploads/{file.Name}"
                     };
 
@@ -149,11 +156,12 @@
             }
         }
 
-        await DbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync(); // Uložíme obrázky
 
         Navigation.NavigateTo("/propertyScreen");
     }
 
+    // Funkcia na výber súborov
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
         var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -185,11 +193,13 @@
         }
     }
 
+    // Navigácia späť
     private void NavigateBack()
     {
         Navigation.NavigateTo("/propertyScreen");
     }
 
+    // Odstránenie súboru
     private void RemoveFile(IBrowserFile file)
     {
         uploadedFiles.Remove(file);
