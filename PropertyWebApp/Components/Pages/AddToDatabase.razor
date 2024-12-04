@@ -4,13 +4,13 @@
 @using Microsoft.EntityFrameworkCore
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
-@inject AppDbContext DbContext
+@inject IDbContextFactory<AppDbContext> DbContextFactory
 @inject NavigationManager Navigation
 
 @rendermode InteractiveServer
 
 <div class="upload-container">
-    <EditForm Model="newIssue" OnValidSubmit="HandleValidSubmit">
+    <EditForm Model="newIssue" OnValidSubmit="HandleValidSubmit" FormName="issue-form">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
@@ -81,8 +81,10 @@
     // Načítanie poruchy pri úprave
     protected override async Task OnParametersSetAsync()
     {
+        using var DbContext = await DbContextFactory.CreateDbContextAsync();
         if (IssueId.HasValue) // Úprava existujúcej poruchy
         {
+            newIssue.Description = string.Empty; // Resetne popis, kvôli null error
             var existingIssue = await DbContext.Issues
                 .Include(i => i.Images)
                 .FirstOrDefaultAsync(i => i.IssueId == IssueId.Value);
@@ -99,14 +101,17 @@
                     RentalId = 1, // Default RentalId
                     PropertyId = 1, // Default PropertyId //TODO
                     ReportDate = DateTime.Now,
-                    StatusId = (await DbContext.IssueStatus.FirstOrDefaultAsync(s => s.StatusName == "Rieši sa"))?.StatusId ?? 1
+                    StatusId = (await DbContext.IssueStatus.FirstOrDefaultAsync(s => s.StatusName == "Rieši sa"))?.StatusId ?? 1,
+                    Description = string.Empty
                 };
         }
+        StateHasChanged();
     }
 
     // Ošetrenie validného formulára
     private async Task HandleValidSubmit()
     {
+        using var DbContext = await DbContextFactory.CreateDbContextAsync();
         // Overenie, že RentalId existuje
         var rentalExists = await DbContext.Rentals.AnyAsync(r => r.RentalId == newIssue.RentalId);
         if (!rentalExists)
@@ -196,6 +201,16 @@
     // Navigácia späť
     private void NavigateBack()
     {
+        // Resetuje stav newIssue, kvôli Description null error
+        newIssue = new Issue
+            {
+                RentalId = 1, // Predvolený nájom
+                PropertyId = 1, // Predvolená nehnuteľnosť
+                ReportDate = DateTime.Now,
+                StatusId = 1, // Predvolený stav
+                Description = string.Empty // Vymaže popis
+            };
+
         Navigation.NavigateTo("/propertyScreen");
     }
 

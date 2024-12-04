@@ -25,6 +25,8 @@
                         .ThenInclude(t => t.Tag)
                     .AsNoTracking()
                     .ToListAsync();
+
+
             }
 
             public async Task<bool> DeleteIssueAsync(int issueId)
@@ -59,6 +61,49 @@
                     await transaction.RollbackAsync();
                     throw;
                 }
+            }
+            public async Task AddOrUpdateIssueAsync(Issue issue)
+            {
+                using var dbContext = _dbContextFactory.CreateDbContext();
+
+                // Validácia
+                await ValidateIssueAsync(issue);
+
+                if (issue.IssueId == 0) // Nový záznam
+                {
+                    await dbContext.Issues.AddAsync(issue);
+                }
+                else // Aktualizácia existujúceho záznamu
+                {
+                    dbContext.Issues.Update(issue);
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
+            public async Task ValidateIssueAsync(Issue issue)
+            {
+                using var dbContext = _dbContextFactory.CreateDbContext();
+
+                if (string.IsNullOrWhiteSpace(issue.Title))
+                    throw new ArgumentException("Názov poruchy je povinný.");
+
+                if (issue.Title.Length > 100)
+                    throw new ArgumentException("Názov poruchy môže obsahovať maximálne 100 znakov.");
+
+                if (string.IsNullOrWhiteSpace(issue.Description))
+                    throw new ArgumentException("Popis poruchy je povinný.");
+
+                if (issue.Description.Length > 1000)
+                    throw new ArgumentException("Popis poruchy môže obsahovať maximálne 1000 znakov.");
+
+                if (!await dbContext.Rentals.AnyAsync(r => r.RentalId == issue.RentalId))
+                    throw new ArgumentException("Zadané ID nájmu neexistuje.");
+
+                if (!await dbContext.Properties.AnyAsync(p => p.PropertyId == issue.PropertyId))
+                    throw new ArgumentException("Zadané ID nehnuteľnosti neexistuje.");
+
+                if (issue.SolvedDate.HasValue && issue.SolvedDate <= issue.ReportDate)
+                    throw new ArgumentException("Dátum vyriešenia musí byť po dátume nahlásenia.");
             }
         }
     }

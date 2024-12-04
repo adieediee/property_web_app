@@ -34,13 +34,15 @@
                 <InputText id="city" class="styled-input" placeholder="Zadaj mesto" @bind-Value="newProperty.City" />
                 <ValidationMessage For="() => newProperty.City" />
             </div>
+
             <div class="form-group">
-                <label for="city">Ulica</label>
-                <InputText id="street" class="styled-input" placeholder="Zadaj Ulicu" @bind-Value="newProperty.StreetName" />
+                <label for="street">Ulica</label>
+                <InputText id="street" class="styled-input" placeholder="Zadaj ulicu" @bind-Value="newProperty.StreetName" />
                 <ValidationMessage For="() => newProperty.StreetName" />
             </div>
+
             <div class="form-group">
-                <label for="city">PSČ</label>
+                <label for="psc">PSČ</label>
                 <InputText id="psc" class="styled-input" placeholder="Zadaj PSČ" @bind-Value="newProperty.PostalCode" />
                 <ValidationMessage For="() => newProperty.PostalCode" />
             </div>
@@ -74,6 +76,9 @@
                 <InputNumber id="bathrooms" class="styled-input" placeholder="Zadaj počet kúpeľní" @bind-Value="newProperty.NumberOfBathrooms" />
                 <ValidationMessage For="() => newProperty.NumberOfBathrooms" />
             </div>
+
+           
+          
             <!-- TODO factory db context
             <div class="form-group">
                 <label for="type">Typ nehnuteľnosti</label>
@@ -156,6 +161,8 @@
         {
             newProperty = new Property
                 {
+                    NumberOfBathrooms = 1,
+                    NumberOfBedrooms = 1,
                     IsAvailable = true,
                     ListingDate = DateTime.Now,
                     IsFurnished = false,
