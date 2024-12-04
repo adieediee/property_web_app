@@ -7,7 +7,7 @@
 @rendermode InteractiveServer
 
 <div class="properties-main-container">
-    <!-- Ľavá strana: Zoznam kartičiek -->
+    <!-- Ľavá strana - Zoznam kartičiek -->
     <div class="properties-list @(selectedProperty != null ? "collapsed" : "")">
         @if (properties == null)
         {
@@ -45,7 +45,7 @@
         
     </div>
 
-    <!-- Pravá strana: Detaily nehnuteľnosti -->
+    <!-- Pravá strana -  Detaily nehnuteľnosti -->
     @if (selectedProperty != null)
     {
         <div class="property-details">
@@ -67,7 +67,7 @@
         </div>
     }
 
-    <!-- Modal Confirmation for Delete -->
+    <!-- Confirm delete správa-->
     @if (showDeleteConfirmation)
     {
         <div class="modal-overlay">
@@ -101,7 +101,7 @@
     {
         if (selectedProperty != null)
         {
-            // Redirect to the edit page for the selected property
+            // Navigácia
             Navigation.NavigateTo($"/edit-property/{selectedProperty.PropertyId}");
         }
     }
@@ -119,17 +119,15 @@
             if (isDeleted)
             {
                 properties.RemoveAll(p => p.PropertyId == selectedProperty.PropertyId);
-                selectedProperty = null; // Close the details view
+                selectedProperty = null; // Zatvorí proeprty-details
             }
         }
 
-        // Close the confirmation modal
         showDeleteConfirmation = false;
     }
 
     private void CancelDelete()
     {
-        // Close the confirmation modal without deleting
         showDeleteConfirmation = false;
     }
 
@@ -140,7 +138,6 @@
 
     private void NavigateToAddProperty()
     {
-        // Redirect to the add property page
         Navigation.NavigateTo("/add-property/1");
     }
 }

@@ -9,7 +9,7 @@ namespace PropertyWebApp.Models
         public string ImagePath { get; set; }
         public int IssueId { get; set; } // FK na Issue
 
-        // Navigačná vlastnosť
+        
         public Issue Issue { get; set; }
     }
 }

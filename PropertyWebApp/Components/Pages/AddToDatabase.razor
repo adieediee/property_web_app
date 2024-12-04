@@ -33,6 +33,7 @@
                 <label for="rentalId">ID Nájmu (RentalId)</label>
                 <InputNumber id="rentalId" class="styled-input" placeholder="Zadaj ID nájmu" @bind-Value="newIssue.RentalId" />
                 <ValidationMessage For="() => newIssue.RentalId" />
+                <!-- TODO implementacia dropdown zoznamu s dostupnymi properties -->
             </div>
 
             <div class="actions">
@@ -98,8 +99,8 @@
         {
             newIssue = new Issue
                 {
-                    RentalId = 1, // Default RentalId
-                    PropertyId = 1, // Default PropertyId //TODO
+                    RentalId = 1, // Defaultný RentalId
+                    PropertyId = 1, // Defaultný PropertyId //TODO
                     ReportDate = DateTime.Now,
                     StatusId = (await DbContext.IssueStatus.FirstOrDefaultAsync(s => s.StatusName == "Rieši sa"))?.StatusId ?? 1,
                     Description = string.Empty
@@ -112,7 +113,7 @@
     private async Task HandleValidSubmit()
     {
         using var DbContext = await DbContextFactory.CreateDbContextAsync();
-        // Overenie, že RentalId existuje
+        // Overenie že RentalId existuje
         var rentalExists = await DbContext.Rentals.AnyAsync(r => r.RentalId == newIssue.RentalId);
         if (!rentalExists)
         {
@@ -149,7 +150,7 @@
 
                 var issueImage = new IssueImage
                     {
-                        IssueId = newIssue.IssueId, // Už je nastavené po uložený zázname
+                        IssueId = newIssue.IssueId, 
                         ImagePath = $"/uploads/{file.Name}"
                     };
 
@@ -161,12 +162,12 @@
             }
         }
 
-        await DbContext.SaveChangesAsync(); // Uložíme obrázky
+        await DbContext.SaveChangesAsync(); 
 
         Navigation.NavigateTo("/propertyScreen");
     }
 
-    // Funkcia na výber súborov
+    // Výber súborov
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
         var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -198,23 +199,23 @@
         }
     }
 
-    // Navigácia späť
+    // Navigácia
     private void NavigateBack()
     {
-        // Resetuje stav newIssue, kvôli Description null error
+        // Resetuje stav newIssue, kvôli Description null error - neviem, či je potrebné
         newIssue = new Issue
             {
-                RentalId = 1, // Predvolený nájom
-                PropertyId = 1, // Predvolená nehnuteľnosť
+                RentalId = 1, // Default nájom
+                PropertyId = 1, // Default nehnuteľnosť
                 ReportDate = DateTime.Now,
-                StatusId = 1, // Predvolený stav
-                Description = string.Empty // Vymaže popis
+                StatusId = 1, // Default stav
+                Description = string.Empty // Default popis
             };
 
         Navigation.NavigateTo("/propertyScreen");
     }
 
-    // Odstránenie súboru
+    // Odstránenie súboru fotky
     private void RemoveFile(IBrowserFile file)
     {
         uploadedFiles.Remove(file);

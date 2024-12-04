@@ -48,7 +48,7 @@ else
                         </div>
                     </div>
 
-                    <!-- Stredná časť: dátum, tagy, cena -->
+                    <!-- Stredná časť - dátum, tagy, cena -->
                     <div class="card-center">
                         <p class="issue-date">@issue.ReportDate.ToString("dd/MM/yyyy")</p>
                         <div class="tags">
@@ -63,7 +63,7 @@ else
                         <p class="issue-cost">@GetIssueCost(issue.IssueId)?.ToString("F2") €</p>
                     </div>
 
-                    <!-- Pravá časť: stav a menu -->
+                    <!-- Pravá časť - stav, menu -->
                     <div class="card-right">
                         <span class="status" style="background-color:@issue.Status.Color">@issue.Status.StatusName </span>
                         <button class="menu-btn">⋮</button>
@@ -80,7 +80,7 @@ else
                             }
                         </div>
 
-                        <!-- Spodná časť: tlačidlá -->
+                        <!-- Spodná časť - tlačidlá -->
                         <div class="card-actions">
                             <button class="delete-btn" @onclick="() => ShowConfirmDialog(issue.IssueId)">Delete</button>
 
@@ -118,7 +118,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        // Načítanie porúch vrátane obrázkov, stavu a tagov
+        // Načítanie porúch 
         issues = await DbContext.Issues
     .Include(i => i.Images)
     .Include(i => i.Status)
@@ -137,13 +137,13 @@ else
     private string GetPropertyImage(int propertyId)
     {
         var propertyImage = DbContext.PropertyImages
-        //znizuje problemy ked iba citam data
+        // Znižuje problémy keď iba čítam dáta a nemením ich
             .AsNoTracking()
             .FirstOrDefault(pi => pi.PropertyId == propertyId);
         return propertyImage?.ImagePath ?? "/img/placeholder.png";
     }
 
-    //pre asynchronne opoeracie
+    // Pre asynchrónne operácie
     private async Task<string> GetPropertyImageAsync(int propertyId)
     {
         var propertyImage = await DbContext.PropertyImages
@@ -154,7 +154,6 @@ else
 
     private decimal? GetIssueCost(int issueId)
     {
-        // Predpokladáme, že Issue má napojené náklady (napr. RepairCosts)
         var repairCost = DbContext.RepairCosts.FirstOrDefault(rc => rc.RepairId == issueId);
         return repairCost?.PaymentId ?? null;
     }
@@ -164,7 +163,7 @@ else
         expandedIssueId = expandedIssueId == issueId ? null : issueId;
     }
 
-    //vymazavanie
+    // VYMAZANIE PORUCHY //
 
     private void ShowConfirmDialog(int issueId)
     {
@@ -180,7 +179,7 @@ else
 
             if (success)
             {
-                // Aktualizácia zoznamu issue po úspešnom vymazaní
+                // Aktualizácia zoznamu issue
                 issues = await IssueService.GetIssuesAsync();
             }
             else

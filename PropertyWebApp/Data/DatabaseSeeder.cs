@@ -14,9 +14,8 @@ namespace PropertyWebApp
         {
             using (var scope = serviceProvider.CreateScope())
             {
+                // IssueStatus
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-                // Vlož IssueStatus
                 if (!context.IssueStatus.Any())
                 {
                     var statuses = new List<IssueStatus>
@@ -29,7 +28,7 @@ namespace PropertyWebApp
                     await context.SaveChangesAsync();
                 }
 
-                // Vlož PropertyTypes
+                // PropertyTypes
                 if (!context.PropertyTypes.Any())
                 {
                     var propertyTypes = new List<PropertyType>
@@ -42,11 +41,11 @@ namespace PropertyWebApp
                     await context.SaveChangesAsync();
                 }
 
-                // Získaj TypeId pre PropertyTypes
+                //  TypeId pre PropertyTypes
                 var apartmentTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Apartment")?.TypeId;
                 var houseTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "House")?.TypeId;
                 
-                // Vlož Properties
+                //  Properties
                 if (!context.Properties.Any())
                 {
                     var properties = new List<Property>
@@ -95,7 +94,7 @@ namespace PropertyWebApp
                     await context.SaveChangesAsync();
                 }
 
-                // Pridanie obrázkov pre nehnuteľnosti
+                // PropertyImages
                 if (!context.PropertyImages.Any())
                 {
                     var propertyImages = new List<PropertyImage>
@@ -108,7 +107,7 @@ namespace PropertyWebApp
                     await context.SaveChangesAsync();
                 }
 
-                // Vlož Rentals
+                //  Rentals
                 if (!context.Rentals.Any())
                 {
                     var rentals = new List<Rental>
@@ -137,7 +136,7 @@ namespace PropertyWebApp
                     await context.SaveChangesAsync();
                 }
 
-                // Vlož Issues
+                //  Issues
                 if (!context.Issues.Any())
                 {
                     var issues = new List<Issue>
@@ -167,7 +166,7 @@ namespace PropertyWebApp
                     await context.SaveChangesAsync();
                 }
 
-                // Vlož IssueImages
+                //  IssueImages
                 if (!context.IssueImages.Any())
                 {
                     var images = new List<IssueImage>

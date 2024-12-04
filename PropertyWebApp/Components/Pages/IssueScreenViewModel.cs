@@ -2,7 +2,8 @@
 
 namespace PropertyWebApp.Components.Pages
 {
-    // IssueViewModel sa používa na transformáciu entity na jednoducho použiteľný model na zobrazenie
+    // VM pre Issue Screen
+    //TODO refaktorovat kod na pouzitie ViewModel
 
     public class IssueViewModel
     {

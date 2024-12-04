@@ -17,7 +17,7 @@
             _dbContext = dbContext;
         }
 
-        // Načítanie všetkých nehnuteľností ako ViewModel
+        // Načítanie všetkých nehnuteľností cez VM
         public async Task<List<PropertyScreenViewModel>> GetAllPropertiesAsync()
         {
             return await _dbContext.Properties
@@ -41,6 +41,7 @@
         // Načítanie konkrétnej nehnuteľnosti podľa ID
         public async Task<PropertyScreenViewModel> GetPropertyByIdAsync(int propertyId)
         {
+            //TODO poriesit tento skaredy warning
             return await _dbContext.Properties
                 .Include(p => p.PropertyImages)
                 .Where(p => p.PropertyId == propertyId)
@@ -64,26 +65,27 @@
         public async Task<bool> DeletePropertyAsync(int propertyId)
         {
             // Odstránenie Property a závislostí bez DbContextFactory
+            // TODO DbContextFactory pridať
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             try
             {
-                // Načítajte Property vrátane závislostí
+                // Načítajte Property a závislostí
                 var property = await _dbContext.Properties
                     .Include(p => p.PropertyImages)
                     .Include(p => p.Rentals)
                     .Include(p => p.Issues)
-                        .ThenInclude(i => i.Images) // Zahrňte IssueImages
+                        .ThenInclude(i => i.Images) 
                     .Include(p => p.Issues)
-                        .ThenInclude(i => i.TaggedIssues) // Zahrňte TaggedIssues
+                        .ThenInclude(i => i.TaggedIssues) 
                     .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
 
                 if (property == null)
                 {
-                    return false; // Property neexistuje
+                    return false; 
                 }
 
-                // Odstránenie IssueImages a TaggedIssues
+                
                 foreach (var issue in property.Issues)
                 {
                     if (issue.Images != null)
@@ -97,6 +99,8 @@
                     }
                 }
 
+                // Kaskádové odstránenie závislostí 
+
                 // Odstránenie Issues
                 _dbContext.Issues.RemoveRange(property.Issues);
 
@@ -106,14 +110,13 @@
                 // Odstránenie PropertyImages
                 _dbContext.PropertyImages.RemoveRange(property.PropertyImages);
 
-                // Nakoniec odstránenie samotného Property
+                // Nakoniec odstránenie Property
                 _dbContext.Properties.Remove(property);
 
-                // Uloženie zmien
                 await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                return true; // Úspešné vymazanie
+                return true; 
             }
             catch (Exception ex)
             {

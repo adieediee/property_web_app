@@ -4,19 +4,19 @@ using PropertyWebApp.Data;
 using PropertyWebApp;
 
 using PropertyWebApp.Models.Services;
-using PropertyWebApp.Models.Services.PropertyWebApp.Services; // Namespace PropertyService
+using PropertyWebApp.Models.Services.PropertyWebApp.Services; 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Services:
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 
-//servisy pre databazu
+// Services pre databazu:
 builder.Services.AddScoped<PropertyService>();
 builder.Services.AddScoped<IssueService>();
-//context factory aby som nemala koflikty
+// Context factory, solution pre konflikty
 builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // DbContext a pripojenie
@@ -55,11 +55,11 @@ app.MapRazorComponents<App>()
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    // Ak databáza ešte neexistuje, vytvor ju
-    dbContext.Database.EnsureDeleted(); // Toto zmaže existujúcu databázu (iba pre vývoj!)
+    // Ak databáza ešte neexistuje
+    dbContext.Database.EnsureDeleted(); // ZMANAZNIE DATABÁZY!!! (pre vývoj)
     dbContext.Database.EnsureCreated();
 
-    // Zavolanie seedovacej metódy
+    // Naseedovanie databázy
     await DatabaseSeeder.Seed(app.Services);
 }
 

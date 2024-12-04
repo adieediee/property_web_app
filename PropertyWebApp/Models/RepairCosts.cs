@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 public class RepairCosts
 {
     [Key]
-    public int PaymentId { get; set; } // Foreign Key
-    public int RepairId { get; set; } // Foreign Key
-    public int RentalId { get; set; } // Foreign Key
+    public int PaymentId { get; set; } 
+    public int RepairId { get; set; } // FK na Repair
+    public int RentalId { get; set; } // FK na Rental
 
     // Navigation properties
     public Repair Repair { get; set; } 

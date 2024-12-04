@@ -32,7 +32,8 @@ namespace PropertyWebApp.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            // DEFINOVANÉ VZŤAHY MEDZI ENTITAMI
+            // TODO dorobit potrebné vztahy, ktore zatial nepouzivam
             // IssueStatus -> Issue (One-to-Many)
             modelBuilder.Entity<IssueStatus>()
                 .HasMany(s => s.Issues)

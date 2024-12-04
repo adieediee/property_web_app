@@ -25,8 +25,6 @@
                         .ThenInclude(t => t.Tag)
                     .AsNoTracking()
                     .ToListAsync();
-
-
             }
 
             public async Task<bool> DeleteIssueAsync(int issueId)
@@ -80,6 +78,7 @@
 
                 await dbContext.SaveChangesAsync();
             }
+            // Validácia poruchy
             public async Task ValidateIssueAsync(Issue issue)
             {
                 using var dbContext = _dbContextFactory.CreateDbContext();
