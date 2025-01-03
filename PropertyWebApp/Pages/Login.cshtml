@@ -1,0 +1,34 @@
+﻿@page "/login"
+@using PropertyWebApp.Components.Pages
+@model LoginModel
+@{
+    ViewData["Title"] = "Prihlásenie";
+}
+<div class="login-container">
+    <div class="login-card">
+        <h2>Vitajte späť</h2>
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <p style="color: red;">@Model.ErrorMessage</p>
+        }
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Zadaj svoj email" required />
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Zadaj svoje heslo" required />
+            </div>
+            <div class="login-options">
+                <div>
+                    <input type="checkbox" id="remember" name="remember" />
+                    <label for="remember">Zapamätať</label>
+                </div>
+                <a href="#" class="forgot-password">Zabudnuté heslo</a>
+            </div>
+            <button type="submit" class="login-button">Prihlásiť sa</button>
+        </form>
+    </div>
+</div>

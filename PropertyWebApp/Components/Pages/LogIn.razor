@@ -1,5 +1,10 @@
-﻿@page "/login"
-@layout Layout.EmptyLayout
+﻿@page "/login2"
+@using Microsoft.AspNetCore.Identity
+@using PropertyWebApp.Data.ViewModels
+@inject NavigationManager Navigation
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@rendermode InteractiveServer
 
 <PageTitle>LogIn</PageTitle>
 <div class="login-container">
@@ -12,24 +17,30 @@
         <div class="login-card">
             <h2>Vitajte späť</h2>
             <p>Zadajte svoje prihlasovacie údaje</p>
-            <form class="login-form">
+            @if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <p style="color: red;">@ErrorMessage</p>
+            }
+            <EditForm Model="loginModel" OnValidSubmit="HandleLogin" FormName="kkt">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
                 <div class="input-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Zadaj svoj email" required>
+                    <InputText id="email" placeholder="Zadaj svoj email" @bind-Value="loginModel.Email" />
                 </div>
                 <div class="input-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Zadaj svoje heslo" required>
+                    <InputText id="password" placeholder="Zadaj svoje heslo" @bind-Value="loginModel.Password" InputType="password" />
                 </div>
                 <div class="login-options">
                     <div>
-                        <input type="checkbox" id="remember" />
+                        <InputCheckbox id="remember" @bind-Value="loginModel.RememberMe" />
                         <label for="remember">Zapamätať</label>
                     </div>
                     <a href="#" class="forgot-password">Zabudnuté heslo</a>
                 </div>
                 <button type="submit" class="login-button">Prihlásiť sa</button>
-            </form>
+            </EditForm>
             <p class="signup-link">Nemáš účet? <a href="#">Registrácia</a></p>
         </div>
     </div>
@@ -37,3 +48,57 @@
         <img src="/img/7b09bc1c-7fcb-498f-b055-41229c3f14a8.jpg" />
     </div>
 </div>
+
+@code {
+    private LoginViewModel loginModel = new LoginViewModel();
+    private string? ErrorMessage;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var user = await UserManager.FindByEmailAsync(loginModel.Email);
+            if (user == null)
+            {
+                ErrorMessage = "Používateľ s týmto emailom neexistuje.";
+                return;
+            }
+
+            if (!await UserManager.CheckPasswordAsync(user, loginModel.Password))
+            {
+                ErrorMessage = "Nesprávne prihlasovacie údaje.";
+                return;
+            }
+
+            var result = await SignInManager.PasswordSignInAsync(
+                user.UserName,
+                loginModel.Password,
+                loginModel.RememberMe,
+                lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                ErrorMessage = null; // Resetovanie chyby
+                await Task.Yield(); // Zabezpečenie správneho presmerovania
+                Navigation.NavigateTo("/"); // Presmerovanie na hlavnú stránku
+            }
+            else if (result.IsLockedOut)
+            {
+                ErrorMessage = "Účet je zamknutý.";
+            }
+            else if (result.IsNotAllowed)
+            {
+                ErrorMessage = "Prihlásenie nie je povolené.";
+            }
+            else
+            {
+                ErrorMessage = "Prihlásenie zlyhalo. Skontrolujte údaje.";
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Chyba: {ex.Message}");
+            ErrorMessage = "Nastala neočakávaná chyba. Skúste znova.";
+        }
+    }
+}

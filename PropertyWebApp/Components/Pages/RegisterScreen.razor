@@ -1,0 +1,96 @@
+﻿<h3>RegisterScreen</h3>
+@page "/register"
+@using Microsoft.AspNetCore.Identity
+@using PropertyWebApp.Data.ViewModels
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager Navigation
+@inject UserManager<IdentityUser> UserManager
+@rendermode InteractiveServer
+
+<PageTitle>Registrácia</PageTitle>
+<div class="register-container">
+    <div class="register-card">
+        <h2>Vytvorenie účtu</h2>
+        <EditForm Model="registerModel" OnValidSubmit="HandleRegister" FormName="RegisterForm">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="input-group">
+                <label for="email">Email</label>
+                <InputText id="email" placeholder="Zadaj svoj email" @bind-Value="registerModel.Email" />
+                <ValidationMessage For="() => registerModel.Email" />
+            </div>
+            <div class="input-group">
+                <label for="password">Heslo</label>
+                <InputText id="password" placeholder="Zadaj svoje heslo" @bind-Value="registerModel.Password" InputType="password" />
+                <ValidationMessage For="() => registerModel.Password" />
+            </div>
+            <div class="input-group">
+                <label for="confirm-password">Potvrdenie hesla</label>
+                <InputText id="confirm-password" placeholder="Zadaj heslo znova" @bind-Value="registerModel.ConfirmPassword" InputType="password" />
+                <ValidationMessage For="() => registerModel.ConfirmPassword" />
+            </div>
+
+            <button type="submit" class="register-button">Registrovať</button>
+        </EditForm>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p class="error-message">@errorMessage</p>
+        }
+        <p class="login-link">Už máš účet? <a href="/login">Prihlásenie</a></p>
+    </div>
+</div>
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+    private string? errorMessage;
+
+    private async Task HandleRegister()
+    {
+        // Overenie hesiel
+        if (registerModel.Password != registerModel.ConfirmPassword)
+        {
+            errorMessage = "Heslá sa nezhodujú.";
+            return;
+        }
+
+        // Vytvorenie nového používateľa
+        var user = new IdentityUser
+            {
+                UserName = registerModel.Email,
+                Email = registerModel.Email
+            };
+
+        var result = await UserManager.CreateAsync(user, registerModel.Password);
+
+        if (result.Succeeded)
+        {
+            // Presmerovanie na prihlásenie po úspešnej registrácii
+            //okno ze vitajte a vybrat si najomca alebo prenajimatel.
+
+            Navigation.NavigateTo("/login");
+        }
+        else
+        {
+            // Nastav chybovú správu z Identity
+            errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+        }
+    }
+
+    public class RegisterModel
+    {
+        [Required(ErrorMessage = "Email je povinný.")]
+        [EmailAddress(ErrorMessage = "Zadajte platný email.")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Heslo je povinné.")]
+        [MinLength(6, ErrorMessage = "Heslo musí mať aspoň 6 znakov.")]
+        public string Password { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Potvrdenie hesla je povinné.")]
+        [Compare(nameof(Password), ErrorMessage = "Heslá sa musia zhodovať.")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
+}
+
+

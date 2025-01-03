@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<IdentityUser> UserManager
+@rendermode InteractiveServer
+@inject SignInManager<IdentityUser> SignInManager
+@inject NavigationManager NavigationManager
+<a href="/Logout" class="dropdown-item">
+    
+
+<div class="relative" @onclick="ToggleAccountPanel">
+    <button type="button" class="flex items-center focus:outline-none" aria-label="toggle profile dropdown">
+        <div class="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" class="object-cover w-full h-full" alt="avatar">
+        </div>
+        <h3 class="mx-2 text-gray-700 dark:text-gray-200">@name</h3>
+    </button>
+    @if (accountPanel == true)
+    {
+        <div class=" float-right bg-white" style=" width: 200px">
+            <a href="/account" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Môj profil</a>
+            <a href="/settings" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Nastavenia</a>
+            <button class="block w-full px-4 py-2 text-left text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" @onclick="Logout">Odhlásiť sa</button>
+        </div>
+    }
+
+</div>
+</a>
+@code {
+    private bool accountPanel = true;
+    private string name = "";
+    private void ToggleAccountPanel()
+    {
+        Console.WriteLine("TOGGLE");
+        accountPanel = !accountPanel;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            var currentUser = await UserManager.FindByNameAsync(user.Identity.Name);
+            name = currentUser?.UserName ?? "";
+        }
+        StateHasChanged();
+    }
+
+    private async Task Logout()
+    {
+        try
+        {
+            // Perform sign-out
+            await SignInManager.SignOutAsync();
+
+            // Redirect to the home page or login page after logout
+            NavigationManager.NavigateTo("/login", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during logout: {ex.Message}");
+        }
+    }
+}

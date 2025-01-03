@@ -2,87 +2,73 @@
 @layout Layout.PrenajimatelLayout
 <PageTitle>Prenajimatel </PageTitle>
 
-<div class="dashboard-container">
-    <div class="search-bar">
-        <input type="text" placeholder="Vyhľadaj..." />
+<section class="container px-4 mx-auto">
+    <div class="flex items-center gap-x-3">
+        <h2 class="text-lg font-medium text-gray-800 dark:text-white">Prenajímateľský Dashboard</h2>
     </div>
 
-    <div class="dashboard-cards">
-        <div class="card">
-            <div class="card-title">Príjem</div>
-            <div class="card-value">119,234.01</div>
-            <div class="card-change">3.1% oproti minulému mesiacu</div>
-            <button class="view-report">Zobraz report</button>
-        </div>
-        <div class="card">
-            <div class="card-title">Výsledok</div>
-            <div class="card-value">$524,039</div>
-            <div class="card-change">11% oproti minulému mesiacu</div>
-            <button class="view-report">Zobraz report</button>
-        </div>
-        <div class="card">
-            <div class="card-title">Výdavky na energie</div>
-            <div class="card-value">234,200</div>
-            <div class="card-change">2.3% oproti minulému mesiacu</div>
-            <button class="view-report">Zobraz report</button>
-        </div>
-        <div class="card">
-            <div class="card-title">Všetky nehnuteľnosti</div>
-            <div class="card-value">1,200</div>
-            <div class="card-change">0.5% oproti minulému mesiacu</div>
-            <button class="view-report">Zobraz report</button>
-        </div>
+    <!-- Search Bar -->
+    <div class="mt-6">
+        <input type="text" placeholder="Vyhľadaj..." class="w-full px-4 py-2 text-sm text-gray-700 bg-white border rounded-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:placeholder-gray-500">
     </div>
 
-    <div class="calendar">
-        <div class="calendar-header">
-            <div class="calendar-title">Kalendár</div>
-
+    <!-- Dashboard Cards -->
+    <div class="grid grid-cols-1 mt-6 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Príjem</h3>
+            <p class="text-xl font-semibold text-gray-800 dark:text-white">119,234.01 €</p>
+            <span class="text-sm text-green-500">3.1% oproti minulému mesiacu</span>
+            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
         </div>
-        <div class="calendar-content">
-            <!-- TODO implementacia kalendara -->
+        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Výsledok</h3>
+            <p class="text-xl font-semibold text-gray-800 dark:text-white">$524,039</p>
+            <span class="text-sm text-green-500">11% oproti minulému mesiacu</span>
+            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
+        </div>
+        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Výdavky na energie</h3>
+            <p class="text-xl font-semibold text-gray-800 dark:text-white">234,200 €</p>
+            <span class="text-sm text-red-500">2.3% oproti minulému mesiacu</span>
+            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
+        </div>
+        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Všetky nehnuteľnosti</h3>
+            <p class="text-xl font-semibold text-gray-800 dark:text-white">1,200</p>
+            <span class="text-sm text-green-500">0.5% oproti minulému mesiacu</span>
+            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
         </div>
     </div>
 
-    <div class="property-list">
-        <div class="property">
-            <img src="img/property1.jpg" alt="Elite Heights Rezidencia">
-            <div class="property-info">
-                <div class="property-title">Elite Heights Rezidencia</div>
-                <div class="property-location">Janka Kráľa, Námestovo</div>
-                <div class="property-price">$3,700</div>
-                <button class="edit-property">Uprav Nehnuteľnosť</button>
+    <!-- Property List -->
+    <div class="mt-8">
+        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Nehnuteľnosti</h3>
+        <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                <img src="img/property1.jpg" alt="Elite Heights Rezidencia" class="w-full h-40 rounded-md">
+                <h4 class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-400">Elite Heights Rezidencia</h4>
+                <p class="text-sm text-gray-500 dark:text-gray-300">Janka Kráľa, Námestovo</p>
+                <p class="mt-2 text-sm text-gray-800 dark:text-white">$3,700</p>
+                <button class="mt-4 text-sm text-blue-500 hover:underline">Uprav Nehnuteľnosť</button>
             </div>
-        </div>
-        <div class="property">
-            <img src="img/property2.jpg" alt="Grand Oaks Villa">
-            <div class="property-info">
-                <div class="property-title">Grand Oaks Villa</div>
-                <div class="property-location">Vysokoškolákov, Žilina</div>
-                <div class="property-price">$3,700</div>
-                <button class="edit-property">Uprav Nehnuteľnosť</button>
-            </div>
-        </div>
-        <div class="property">
-            <img src="img/property3.jpg" alt="Serene Crest Apartmány">
-            <div class="property-info">
-                <div class="property-title">Serene Crest Apartmány</div>
-                <div class="property-location">Nová, Bratislava</div>
-                <div class="property-price">$3,700</div>
-                <button class="edit-property">Uprav Nehnuteľnosť</button>
-            </div>
+            <!-- Repeat for other properties -->
         </div>
     </div>
 
-    <div class="property-channel">
-        <div class="property-channel-title">Grafy nehnuteľností</div>
-        <!-- TODO vymysliet grafy a dorobit -->
-        <div class="property-chart">
-            <div class="chart-label">Zatiaľ tu nič nie je </div>
+    <!-- Calendar -->
+    <div class="mt-8">
+        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Kalendár</h3>
+        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <!-- TODO: Implementácia kalendára -->
+            <p class="text-sm text-gray-500 dark:text-gray-300">Kalendár ešte nie je dostupný.</p>
         </div>
     </div>
-</div>
 
-
-
-
+    <!-- Graph Section -->
+    <div class="mt-8">
+        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Grafy nehnuteľností</h3>
+        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <p class="text-sm text-gray-500 dark:text-gray-300">Zatiaľ tu nič nie je.</p>
+        </div>
+    </div>
+</section>

@@ -1,107 +1,23 @@
-﻿﻿@using Microsoft.EntityFrameworkCore
-@using PropertyWebApp.Data
-@using PropertyWebApp.Models
-@page "/propertyScreen2"
-@rendermode InteractiveServer
-@layout Layout.PrenajimatelLayout
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@page "/test"
 
-
-
-
-<div class="toolbar">
-    <button class="circle-btn">
-        <i class="icon-filter"></i>
-    </button>
-
-    <div class="search-container">
-        <input type="text" placeholder="Search Anything..." class="search-input" />
-        <button class="search-btn">
-            <i class="icon-search"></i>
-        </button>
-    </div>
-
-    <a href="/add-issue" class="circle-btn add">
-        <i class="icon-add"></i>
-    </a>
-</div>
-
-
-
-@if (issues == null)
-{
-    <p>Načítavam údaje...</p>
-}
-else if (!issues.Any())
-{
-    <p>Žiadne poruchy na zobrazenie.</p>
-}
-else
-{
-    <div class="list-container">
-        @foreach (var issue in issues)
-        {
-            <div class="card">
-
-                <div class="card-header" @onclick="() => ToggleDetails(issue.IssueId)">
-                    <div class="issue-header">
-                        <span class="status-circle" style="background-color: @issue.Status.Color;"></span>
-                        <div>
-                            <h4 class="issue-title">@issue.Title</h4>
-                            <p class="issue-date">@issue.ReportDate.ToString("dd/MM/yyyy")</p>
-                        </div>
-                    </div>
-                    <div class="issue-actions">
-                        <span class="issue-cost">@($"{1.25/*issue.RepairCost ?? 0:C*/}")</span> 
-                        <button class="resolve-btn">@(@issue.Status?.StatusName)</button>
-                    </div>
-                </div>
-                @if (expandedIssueId == issue.IssueId)
-                {
-                    <div class="card-details">
-                        <p class="issue-description">@issue.Description</p>
-                        <div class="image-gallery">
-                            @foreach (var image in issue.Images ?? Enumerable.Empty<IssueImage>())
-                            {
-                                <img src="@image.ImagePath" alt="Obrázok poruchy" class="image-box" />
-                            }
-                        </div>
-                    </div>
-                }
-            </div>
-        }
-    </div>
-}
+<h3>Authentication Test</h3>
 
 @code {
-    private List<Issue> issues;
-    private int? expandedIssueId;
-
-    @inject AppDbContext DbContext
-
+    private string userStatus;
 
     protected override async Task OnInitializedAsync()
     {
-        // Načítanie porúch vrátane obrázkov a stavu
-        issues = await DbContext.Issues
-            .Include(i => i.Images)
-            .Include(i => i.Status)
-            .ToListAsync();
-    }
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
 
-    public void ToggleDetails(int issueId)
-    {
-        if (expandedIssueId == issueId)
+        if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            expandedIssueId = null;
+            userStatus = $"Prihlásený ako: {user.Identity.Name}";
         }
         else
         {
-            expandedIssueId = issueId;
+            userStatus = "Používateľ nie je prihlásený.";
         }
-    }
-
-    public void AddToDatabase()
-    {
-
     }
 }

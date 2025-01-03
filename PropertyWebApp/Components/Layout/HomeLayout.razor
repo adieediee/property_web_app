@@ -1,38 +1,101 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Identity
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
 
-<header class="site-header">
-    <div class="container">
-        <div class="header-content">
-            <div class="logo">
-                <a href="/">
-                    <img src="/img/logo.png" alt="Logo" />
-                </a>
+@inject NavigationManager NavigationManager
 
-            </div>
-            <nav class="nav-menu">
-                <ul>
-                    <li>
-                        <a href="/Prenajimatel">
 
-                            <img src="/img/Real Estate Website.png" alt="Prenajímateľ" class="nav-icon" />
-                            Prenajímateľ
+<AuthorizeView>
+    <!-- Obsah pre autorizovaných používateľov -->
+    <Authorized>
+        <nav class="relative bg-white shadow dark:bg-gray-800">
+            <div class="container px-6 py-4 mx-auto">
+                <div class="lg:flex lg:items-center lg:justify-between">
+                    <div class="flex items-center justify-between">
+                        <a href="#">
+                            <img class="w-auto h-6 sm:h-7" src="https://merakiui.com/images/full-logo.svg" alt="">
                         </a>
-                    </li>
-                    <li>
-                        <a href="/najomca">
-                            <img src="img/Group 8.png" alt="Nájomca" class="nav-icon" />
-                            Nájomca
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="login">
-                <a href="/login" class="login-btn">
-                    Prihlásiť sa
-                </a>
+                    </div>
+
+                    <!-- Obsah menu -->
+                    <div class="lg:flex lg:items-center">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:mx-8">
+                            <a href="/Prenajimatel" class="px-3 py-2 mx-3 mt-2 text-gray-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                Dashboard
+                            </a>
+                            <a href="#" class="px-3 py-2 mx-3 mt-2 text-gray-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                Browse Topics
+                            </a>
+                        </div>
+
+                        <!-- Dropdown menu pre profil -->
+                        <AccountAvatar></AccountAvatar>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</header>
+        </nav>
+       
+       
+    </Authorized>
+
+    <!-- Obsah pre neautorizovaných používateľov -->
+    <NotAuthorized>
+        <nav class="bg-white shadow dark:bg-gray-800">
+            <div class="container px-6 py-4 mx-auto">
+                <div class="lg:flex lg:items-center lg:justify-between">
+                    <div class="flex items-center justify-between">
+                        <a href="#">
+                            <img class="w-auto h-6 sm:h-7" src="https://merakiui.com/images/full-logo.svg" alt="">
+                        </a>
+                    </div>
+
+                    <div class="flex items-center mt-4 lg:mt-0">
+                        <a href="/login" class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-500">
+                            Prihlásiť sa
+                        </a>
+                        <a href="/register" class="ml-4 px-4 py-2 text-blue-600 border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white">
+                            Registrovať sa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </NotAuthorized>
+</AuthorizeView>
 
 @Body
+
+@code {
+    private bool accountPanel = false;
+    private string name = "";
+
+    private void ToggleAccountPanel()
+    {
+        Console.WriteLine("TOGGLE");
+        accountPanel = !accountPanel;
+    }
+
+    private async Task Logout()
+    {
+        // Odhlási používateľa
+        await SignInManager.SignOutAsync();
+
+        // Presmeruje používateľa na prihlasovaciu stránku alebo hlavnú stránku
+        NavigationManager.NavigateTo("/login");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            var currentUser = await UserManager.FindByNameAsync(user.Identity.Name);
+            name = currentUser?.UserName ?? "";
+        }
+        StateHasChanged();
+    }
+}

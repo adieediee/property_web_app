@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using PropertyWebApp.Data;
 using PropertyWebApp.Models;
@@ -12,8 +13,56 @@ namespace PropertyWebApp
     {
         public static async Task Seed(IServiceProvider serviceProvider)
         {
+           
+
             using (var scope = serviceProvider.CreateScope())
             {
+                // Seedovanie používateľov a rolí
+                var scopedServiceProvider = scope.ServiceProvider;
+
+                // Získanie RoleManager a UserManager zo scoped provideru
+                var roleManager = scopedServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scopedServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+                // Vytvorenie rolí
+                if (!await roleManager.RoleExistsAsync("Tenant"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("Tenant"));
+                }
+                if (!await roleManager.RoleExistsAsync("Landlord"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("Landlord"));
+                }
+
+                // Vytvorenie predvoleného nájomcu
+                if (await userManager.FindByEmailAsync("tenant@example.com") == null)
+                {
+                    var tenantUser = new IdentityUser
+                    {
+                        UserName = "tenant@example.com",
+                        Email = "tenant@example.com",
+                        EmailConfirmed = true
+                    };
+                    await userManager.CreateAsync(tenantUser, "Tenant@12345");
+                    await userManager.AddToRoleAsync(tenantUser, "Tenant");
+                }
+
+                // Vytvorenie predvoleného prenajímateľa
+                if (await userManager.FindByEmailAsync("landlord@example.com") == null)
+                {
+                    var landlordUser = new IdentityUser
+                    {
+                        UserName = "landlord@example.com",
+                        Email = "landlord@example.com",
+                        EmailConfirmed = true
+                    };
+                    await userManager.CreateAsync(landlordUser, "Landlord@12345");
+                    await userManager.AddToRoleAsync(landlordUser, "Landlord");
+                }
+
+
+
+
                 // IssueStatus
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 if (!context.IssueStatus.Any())

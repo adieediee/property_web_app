@@ -1,0 +1,19 @@
+﻿@page "/Logout"
+@using PropertyWebApp.Components.Pages
+@model LogoutModel
+
+@{
+    ViewData["Title"] = "Odhlásenie";
+}
+
+<div class="logout-container">
+    <div class="logout-card">
+        <h2>Odhlásiť sa</h2>
+        <p>Ste si istý, že sa chcete odhlásiť?</p>
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="logout-button">Áno, odhlásiť sa</button>
+        </form>
+        <a href="/" class="cancel-button">Zrušiť</a>
+    </div>
+</div>
