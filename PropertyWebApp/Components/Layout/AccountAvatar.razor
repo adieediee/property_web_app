@@ -1,9 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using PropertyWebApp.Models.Services
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<IdentityUser> UserManager
 @rendermode InteractiveServer
 @inject SignInManager<IdentityUser> SignInManager
 @inject NavigationManager NavigationManager
+@inject UserStateService UserStateService
 <a href="/Logout" class="dropdown-item">
     
 
@@ -12,7 +14,7 @@
         <div class="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full">
             <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" class="object-cover w-full h-full" alt="avatar">
         </div>
-        <h3 class="mx-2 text-gray-700 dark:text-gray-200">@name</h3>
+            <h3 class="mx-2 text-gray-700 dark:text-gray-200">@UserStateService.UserName</h3>
     </button>
     @if (accountPanel == true)
     {
@@ -27,7 +29,7 @@
 </a>
 @code {
     private bool accountPanel = true;
-    private string name = "";
+
     private void ToggleAccountPanel()
     {
         Console.WriteLine("TOGGLE");
@@ -35,15 +37,19 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user.Identity != null && user.Identity.IsAuthenticated)
+        
+        //if (!UserStateService.Initizalized)
         {
-            var currentUser = await UserManager.FindByNameAsync(user.Identity.Name);
-            name = currentUser?.UserName ?? "";
+            //var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+           //var user = authState.User;
+
+           // if (user.Identity != null && user.Identity.IsAuthenticated)
+            {
+                //var currentUser = await UserManager.FindByNameAsync(user.Identity.Name);
+                //UserStateService.SetUserName(currentUser?.UserName ?? "");
+               // UserStateService.SetInitialized();
+            }
         }
-        StateHasChanged();
     }
 
     private async Task Logout()
@@ -60,5 +66,15 @@
         {
             Console.WriteLine($"Error during logout: {ex.Message}");
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        UserStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UserStateService.OnChange -= StateHasChanged;
     }
 }

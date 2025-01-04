@@ -125,5 +125,13 @@
                 throw;
             }
         }
+        public async Task<string> GetPropertyImageAsync(int propertyId)
+        {
+            var propertyImage = await _dbContext.PropertyImages
+                .AsNoTracking()
+                .FirstOrDefaultAsync(pi => pi.PropertyId == propertyId);
+            return propertyImage?.ImagePath ?? "/img/placeholder.png";
+        }
+
     }
 }

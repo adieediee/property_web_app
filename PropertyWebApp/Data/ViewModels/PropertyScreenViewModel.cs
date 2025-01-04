@@ -33,11 +33,7 @@ namespace PropertyWebApp.Data.ViewModels
 
         [StringLength(1000, ErrorMessage = "Popis môže mať maximálne 1000 znakov.")]
         public string Description { get; set; }
-
-        
         public string TenantName { get; set; }
-
-        
         public string TenantAvatar { get; set; } = "/img/default-avatar.jpg";
     }
 }

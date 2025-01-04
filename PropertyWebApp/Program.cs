@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using PropertyWebApp.Components.Pages.ViewModels;
 
 
 
@@ -19,7 +20,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddRazorPages();
-
+builder.Services.AddSingleton<UserStateService>();
 
 // Services pre databazu:
 builder.Services.AddScoped<PropertyService>();
@@ -35,6 +36,7 @@ builder.Services.AddScoped(provider =>
     var dbContextFactory = provider.GetRequiredService<IDbContextFactory<AppDbContext>>();
     return dbContextFactory.CreateDbContext();
 });
+
 
 // Registrácia Identity služieb
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -65,6 +67,10 @@ Console.WriteLine($"MaxRequestBodySize: {builder.Configuration["Kestrel:Limits:M
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+
+//MVVM
+builder.Services.AddScoped<IssueScreenViewModel>();
+
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -113,7 +119,14 @@ using (var scope = app.Services.CreateScope())
     // Naseedovanie databázy
     await DatabaseSeeder.Seed(app.Services);
 }
+using (var scope = app.Services.CreateScope())
+{
+    var userStateService = scope.ServiceProvider.GetRequiredService<UserStateService>();
+    var authenticationStateProvider = scope.ServiceProvider.GetRequiredService<AuthenticationStateProvider>();
 
+    // Inicializuj meno používate¾a
+   // await userStateService.InitializeAsync(authenticationStateProvider);
+}
 
 
 

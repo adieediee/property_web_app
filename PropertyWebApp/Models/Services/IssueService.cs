@@ -21,10 +21,24 @@
                 return await dbContext.Issues
                     .Include(i => i.Images)
                     .Include(i => i.Status)
+                    .Include(i => i.Property)
                     .Include(i => i.TaggedIssues)
+                    
                         .ThenInclude(t => t.Tag)
                     .AsNoTracking()
                     .ToListAsync();
+            }
+
+            public async Task<Issue> GetIssueByIdAsync(int issueId)
+            {
+                using var dbContext = _dbContextFactory.CreateDbContext();
+                return await dbContext.Issues
+                    .Include(i => i.Images)
+                    .Include(i => i.Status)
+                    .Include(i => i.TaggedIssues)
+                        .ThenInclude(t => t.Tag)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(i => i.IssueId == issueId);
             }
 
             public async Task<bool> DeleteIssueAsync(int issueId)

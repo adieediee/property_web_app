@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using PropertyWebApp.Models.Services;
 
 
 namespace PropertyWebApp.Components.Pages
@@ -11,11 +12,13 @@ namespace PropertyWebApp.Components.Pages
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserStateService _userStateService;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, UserStateService userStateService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _userStateService = userStateService;
         }
 
         [BindProperty]
@@ -44,6 +47,9 @@ namespace PropertyWebApp.Components.Pages
             var result = await _signInManager.PasswordSignInAsync(user, Password, false, false);
             if (result.Succeeded)
             {
+                Console.WriteLine($"Prihlásený používateľ: {user?.UserName ?? "Neznámy"}");
+                _userStateService.SetUserName(user?.UserName ?? "Neznámy");
+
                 return Redirect("/test"); // Presmerovanie po úspešnom prihlásení
             }
 

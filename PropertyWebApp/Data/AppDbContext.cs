@@ -85,6 +85,7 @@ namespace PropertyWebApp.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Issue>()
+
                 .HasOne(i => i.Rental)
                 .WithMany(r => r.Issues)
                 .HasForeignKey(i => i.RentalId)

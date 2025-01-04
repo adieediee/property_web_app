@@ -1,12 +1,16 @@
 ﻿@page "/"
+@using PropertyWebApp.Models.Services
 @layout Layout.HomeLayout
+@inject UserStateService userStateService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@rendermode InteractiveServer
 
 <PageTitle>Index</PageTitle>
 <body class="home-body">
     <div>
         <AuthorizeView>
             <Authorized>
-                <p> Hello authorized</p>
+                <p> Hello authorized @userStateService.UserName</p>
             </Authorized>
             <NotAuthorized> Hello not authorized</NotAuthorized>
         </AuthorizeView>
@@ -38,3 +42,18 @@
         </div>
     </div>
 </body>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            userStateService.SetUserName(user.Identity.Name ?? "Unknown");
+        }
+    }
+
+
+}
