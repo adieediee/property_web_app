@@ -25,6 +25,7 @@ builder.Services.AddSingleton<UserStateService>();
 // Services pre databazu:
 builder.Services.AddScoped<PropertyService>();
 builder.Services.AddScoped<IssueService>();
+builder.Services.AddScoped<RentalService>();
 // Context factory, solution pre konflikty
 builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -70,6 +71,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStat
 
 //MVVM
 builder.Services.AddScoped<IssueScreenViewModel>();
+builder.Services.AddScoped<TenantDashboardViewModel>();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -112,12 +114,18 @@ app.UseAuthorization();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    // Ak databáza ešte neexistuje
-    dbContext.Database.EnsureDeleted(); // ZMANAZNIE DATABÁZY!!! (pre vývoj)
+
+    //delete pre vyvoj
+    //dbContext.Database.EnsureDeleted();
+    // Zabezpeè, že databáza existuje
     dbContext.Database.Migrate();
 
-    // Naseedovanie databázy
-    await DatabaseSeeder.Seed(app.Services);
+    // AK je databaya prazdna
+    if (!dbContext.Users.Any() && !dbContext.Roles.Any()) // Kontroluj pod¾a tabuliek, ktoré seeduješ
+    {
+        // Naseeduj databázu, ak je prázdna
+        await DatabaseSeeder.Seed(app.Services);
+    }
 }
 using (var scope = app.Services.CreateScope())
 {

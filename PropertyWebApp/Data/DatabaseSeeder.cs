@@ -13,7 +13,7 @@ namespace PropertyWebApp
     {
         public static async Task Seed(IServiceProvider serviceProvider)
         {
-           
+
 
             using (var scope = serviceProvider.CreateScope())
             {
@@ -65,6 +65,7 @@ namespace PropertyWebApp
 
                 // IssueStatus
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
                 if (!context.IssueStatus.Any())
                 {
                     var statuses = new List<IssueStatus>
@@ -93,7 +94,7 @@ namespace PropertyWebApp
                 //  TypeId pre PropertyTypes
                 var apartmentTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Apartment")?.TypeId;
                 var houseTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "House")?.TypeId;
-                
+
                 //  Properties
                 if (!context.Properties.Any())
                 {
@@ -147,43 +148,71 @@ namespace PropertyWebApp
                 if (!context.PropertyImages.Any())
                 {
                     var propertyImages = new List<PropertyImage>
-        {
-            new PropertyImage { PropertyId = 1, ImagePath = "/img/property1.jpg" },
-            new PropertyImage { PropertyId = 2, ImagePath = "/img/property2.jpg" }
-        };
+                    {
+                        new PropertyImage { PropertyId = 1, ImagePath = "/img/property1.jpg" },
+                        new PropertyImage { PropertyId = 2, ImagePath = "/img/property2.jpg" }
+                    };
 
                     context.PropertyImages.AddRange(propertyImages);
                     await context.SaveChangesAsync();
                 }
+                
 
                 //  Rentals
                 if (!context.Rentals.Any())
                 {
-                    var rentals = new List<Rental>
+                    var landlord = await userManager.FindByEmailAsync("landlord@example.com");
+                    var tenant = await userManager.FindByEmailAsync("tenant@example.com");
+                    //var id = tenant.Id;
+                    //var id2 = landlord.Id;
+                    var rentals = new List<Rental>()
                     {
                         new Rental
                         {
-                            
                             PropertyId = context.Properties.FirstOrDefault(p => p.PropertyName == "Moderný byt v centre")?.PropertyId ?? 1,
                             StartDate = DateTime.Now.AddMonths(-6),
                             EndDate = DateTime.Now.AddMonths(-3),
                             //PaymentDay = 15,
-                            TenantId = 1
+                            TenantId = tenant.Id,
+                            PropertyOwnerId = landlord.Id
                         },
                         new Rental
                         {
-                            
+
                             PropertyId = context.Properties.FirstOrDefault(p => p.PropertyName == "Rodinný dom v tichom prostredí")?.PropertyId ?? 2,
                             StartDate = DateTime.Now.AddMonths(-8),
                             EndDate = DateTime.Now.AddMonths(-4),
                             //PaymentDay = 1,
-                            TenantId = 2
+                            TenantId = tenant.Id,
+                            PropertyOwnerId = landlord.Id
                         }
                     };
 
                     context.Rentals.AddRange(rentals);
                     await context.SaveChangesAsync();
+                    // MonthlyPayments
+                    foreach (var rental in rentals)
+                    {
+                        for (int i = 1; i <= 6; i++) // Generuj platby na posledných 6 mesiacov
+                        {
+                            var paymentDate = DateTime.Now.AddMonths(-i);
+
+                            var payment = new MonthlyPayment
+                            {
+                                RentalId = rental.RentalId,
+                                PaymentDate = paymentDate,
+                                RentAmount = 500,
+                                UtilitiesAmount = 150,
+                                isPaid = i % 2 == 0 // Napríklad: každý druhý mesiac je zaplatený
+                            };
+
+                            context.MonthlyPayments.Add(payment);
+
+                        }
+                    }
+                    await context.SaveChangesAsync();
                 }
+                
 
                 //  Issues
                 if (!context.Issues.Any())
@@ -223,7 +252,7 @@ namespace PropertyWebApp
                         new IssueImage { ImagePath = "/img/heatingIssue.jpg", IssueId = 1 },
                         new IssueImage { ImagePath = "/img/drainIssue.jpeg", IssueId = 2 }
                     };
-
+                    
                     context.IssueImages.AddRange(images);
                     await context.SaveChangesAsync();
                 }

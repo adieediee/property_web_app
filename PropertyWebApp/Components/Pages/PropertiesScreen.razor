@@ -4,6 +4,7 @@
 @using PropertyWebApp.Data.ViewModels
 @inject PropertyService PropertyService
 @inject NavigationManager Navigation
+@inject UserStateService UserStateService
 @rendermode InteractiveServer
 
 <div class="properties-main-container">
@@ -16,6 +17,12 @@
         else if (!properties.Any())
         {
             <p>Žiadne nehnuteľnosti na zobrazenie.</p>
+            <div class="cards-grid">
+                <a href="/edit-property">
+                    <div class="property-card" style="background-image: url('/img/add-image.jpg')">
+                    </div>
+                </a>
+            </div>
         }
         else
         {
@@ -36,8 +43,7 @@
                 }
                 <a href="/edit-property">
                     <div class="property-card" style="background-image: url('/img/add-image.jpg')">
-                    
-                </div>
+                    </div>
                 </a>
             </div>
         }
@@ -89,7 +95,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        properties = await PropertyService.GetAllPropertiesAsync();
+        properties = await PropertyService.LoadUserPropertiesAsync(UserStateService.Id);
+        //properties = await PropertyService.GetAllPropertiesAsync();
     }
 
     private async Task ShowPropertyDetails(int propertyId)

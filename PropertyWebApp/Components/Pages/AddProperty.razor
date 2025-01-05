@@ -4,13 +4,16 @@
 @using Microsoft.EntityFrameworkCore
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
+@using PropertyWebApp.Models.Services
 @inject AppDbContext DbContext
 @inject NavigationManager Navigation
+@inject UserStateService UserStateService
 
 @rendermode InteractiveServer
 
 <div class="upload-container">
     <EditForm Model="newProperty" OnValidSubmit="HandleValidSubmit">
+        <AntiforgeryToken />
         <DataAnnotationsValidator />
         <ValidationSummary />
 
@@ -77,29 +80,29 @@
                 <ValidationMessage For="() => newProperty.NumberOfBathrooms" />
             </div>
 
-           
-          
+
+
             <!-- TODO factory db context
             <div class="form-group">
                 <label for="type">Typ nehnuteľnosti</label>
                 <InputSelect id="type" class="styled-input" @bind-Value="newProperty.TypeId">
-                    @foreach (var propertyType in DbContext.PropertyTypes)
-                    {
+            @foreach (var propertyType in DbContext.PropertyTypes)
+            {
                         <option value="@propertyType.TypeId">@propertyType.TypeId</option>
-                    }
+            }
                 </InputSelect>
                 <ValidationMessage For="() => newProperty.TypeId" />
             </div>
              -->
 
 
-        
 
-            
 
-            
 
-            
+
+
+
+
 
             <div class="actions">
                 <button class="btn-back" @onclick="NavigateBack">Zrušiť</button>
@@ -140,6 +143,7 @@
     public int? PropertyId { get; set; }
 
     private Property newProperty = new Property();
+    private Rental newRental = new Rental();
     private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
     private string? fileUploadError;
     private const long MaxFileSize = 512 * 1024; // 512 KB
@@ -163,16 +167,17 @@
                 {
                     NumberOfBathrooms = 1,
                     NumberOfBedrooms = 1,
-                    IsAvailable = true,
+                    IsAvailable = false,
                     ListingDate = DateTime.Now,
                     IsFurnished = false,
                     ParkingAvailable = false,
                     TypeId = 1, // Default TypeId
-                    Country = "Slovensko" // Default Country
-
-        };
+                    Country = "Slovensko", // Default Country
+                };
+            
         }
     }
+
 
     // Ošetrenie validného formulára
     private async Task HandleValidSubmit()
@@ -184,7 +189,19 @@
         }
         else
         {
+             // Ak pridávame nový nájom
             await DbContext.Properties.AddAsync(newProperty); // Ak pridávame novú nehnuteľnosť
+            
+            newRental = new Rental
+                {
+                    Property = newProperty,
+                    PropertyId = newProperty.PropertyId,
+                    TenantId = UserStateService.Id,
+                    PropertyOwnerId = UserStateService.Id,// Default TenantId
+                    StartDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddMonths(1),
+                };
+            await DbContext.Rentals.AddAsync(newRental);
         }
 
         await DbContext.SaveChangesAsync(); // Uložíme nehnuteľnosť

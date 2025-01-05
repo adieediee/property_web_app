@@ -1,8 +1,10 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Identity
 @using PropertyWebApp.Models.Services
 @layout Layout.HomeLayout
 @inject UserStateService userStateService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<IdentityUser> UserManager
 @rendermode InteractiveServer
 
 <PageTitle>Index</PageTitle>
@@ -44,16 +46,27 @@
 </body>
 
 @code {
+    /*
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-
+     
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            userStateService.SetUserName(user.Identity.Name ?? "Unknown");
+            var userIdFromClaims = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            var userAuth = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+            var UserId = userAuth.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+            
+            
+            userStateService.SetUserName(user.Identity.Name ?? "Unknown", UserId);
+           // var id = userToId?.Id;
+           //userStateService.SetUserName(user.Identity.Name ?? "Unknown", id);
         }
     }
+    */
+    
 
 
 }

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using PropertyWebApp.Models.Services
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head >
@@ -20,3 +22,33 @@
 </body>
 
 </html>
+
+@inject UserStateService UserStateService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@code {
+    private Task? _initializationTask;
+
+    protected override Task OnInitializedAsync()
+    {
+        if (_initializationTask == null)
+        {
+            _initializationTask = InitializeAsync();
+        }
+        return _initializationTask;
+    }
+
+    private async Task InitializeAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userName = user.Identity.Name ?? "Unknown";
+
+            await UserStateService.SetUserName(userName, userId);
+        }
+    }
+}

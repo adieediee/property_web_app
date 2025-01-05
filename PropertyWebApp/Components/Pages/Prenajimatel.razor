@@ -1,74 +1,81 @@
-﻿@page "/Prenajimatel"
+﻿@page "/Dashboard"
+@using PropertyWebApp.Models.Services
 @layout Layout.PrenajimatelLayout
-<PageTitle>Prenajimatel </PageTitle>
+@inject TenantDashboardViewModel ViewModel
+@inject UserStateService UserStateService
+@attribute [Authorize(Roles = "Landlord")]
+<PageTitle>Dashboard</PageTitle>
+<h1>Tenant Dashboard</h1>
+
 
 <section class="container px-4 mx-auto">
     <div class="flex items-center gap-x-3">
-        <h2 class="text-lg font-medium text-gray-800 dark:text-white">Prenajímateľský Dashboard</h2>
+        <h2 class="text-lg font-medium text-gray-800 dark:text-white">Platby</h2>
+
+        <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">@ViewModel.Payments.Count platby</span>
     </div>
 
-    <!-- Search Bar -->
-    <div class="mt-6">
-        <input type="text" placeholder="Vyhľadaj..." class="w-full px-4 py-2 text-sm text-gray-700 bg-white border rounded-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:placeholder-gray-500">
-    </div>
+    <div class="flex flex-col mt-6">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-800">
+                            <tr>
+                                <th scope="col" class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <span>Nehnuteľnosť</span>
+                                </th>
+                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <span>Dátum platby</span>
+                                </th>
+                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <span>Suma nájmu</span>
+                                </th>
+                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <span>Suma za energie</span>
+                                </th>
+                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <span>Stav</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                            @foreach (var payment in ViewModel.Payments)
+                            {
+                                var property = ViewModel.Properties.FirstOrDefault(p => p.PropertyId == payment.Rental.PropertyId);
 
-    <!-- Dashboard Cards -->
-    <div class="grid grid-cols-1 mt-6 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Príjem</h3>
-            <p class="text-xl font-semibold text-gray-800 dark:text-white">119,234.01 €</p>
-            <span class="text-sm text-green-500">3.1% oproti minulému mesiacu</span>
-            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
-        </div>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Výsledok</h3>
-            <p class="text-xl font-semibold text-gray-800 dark:text-white">$524,039</p>
-            <span class="text-sm text-green-500">11% oproti minulému mesiacu</span>
-            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
-        </div>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Výdavky na energie</h3>
-            <p class="text-xl font-semibold text-gray-800 dark:text-white">234,200 €</p>
-            <span class="text-sm text-red-500">2.3% oproti minulému mesiacu</span>
-            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
-        </div>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Všetky nehnuteľnosti</h3>
-            <p class="text-xl font-semibold text-gray-800 dark:text-white">1,200</p>
-            <span class="text-sm text-green-500">0.5% oproti minulému mesiacu</span>
-            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
-        </div>
-    </div>
-
-    <!-- Property List -->
-    <div class="mt-8">
-        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Nehnuteľnosti</h3>
-        <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                <img src="img/property1.jpg" alt="Elite Heights Rezidencia" class="w-full h-40 rounded-md">
-                <h4 class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-400">Elite Heights Rezidencia</h4>
-                <p class="text-sm text-gray-500 dark:text-gray-300">Janka Kráľa, Námestovo</p>
-                <p class="mt-2 text-sm text-gray-800 dark:text-white">$3,700</p>
-                <button class="mt-4 text-sm text-blue-500 hover:underline">Uprav Nehnuteľnosť</button>
+                                <tr>
+                                    <td class="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                        <div class="flex items-center gap-x-3">
+                                            <img class="object-cover w-10 h-10 rounded-full" src="@ViewModel.GetPropertyImage(property.PropertyId)" /img/placeholder.png"" alt="@property?.PropertyName">
+                                            <div>
+                                                <h2 class="font-medium text-gray-800 dark:text-white ">@property?.PropertyName</h2>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">@payment.PaymentDate?.ToString("MM/yyyy")</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">@payment.RentAmount €</td>
+                                    <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">@payment.UtilitiesAmount €</td>
+                                    <td class="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                        <div class="inline-flex items-center px-3 py-1 rounded-full gap-x-2 @(payment.isPaid ? "bg-emerald-100/60 dark:bg-gray-800" : "bg-red-100/60 dark:bg-gray-800")">
+                                            <span class="h-1.5 w-1.5 rounded-full @(payment.isPaid ? "bg-emerald-500" : "bg-red-500")"></span>
+                                            <h2 class="text-sm font-normal @(payment.isPaid ? "text-emerald-500" : "text-red-500")">@((payment.isPaid) ? "Zaplatený" : "Nezaplatený")</h2>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <!-- Repeat for other properties -->
-        </div>
-    </div>
-
-    <!-- Calendar -->
-    <div class="mt-8">
-        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Kalendár</h3>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <!-- TODO: Implementácia kalendára -->
-            <p class="text-sm text-gray-500 dark:text-gray-300">Kalendár ešte nie je dostupný.</p>
-        </div>
-    </div>
-
-    <!-- Graph Section -->
-    <div class="mt-8">
-        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Grafy nehnuteľností</h3>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <p class="text-sm text-gray-500 dark:text-gray-300">Zatiaľ tu nič nie je.</p>
         </div>
     </div>
 </section>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        
+        await ViewModel.LoadDataAsync(UserStateService.Id);
+    }
+}

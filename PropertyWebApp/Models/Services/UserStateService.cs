@@ -1,24 +1,15 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-
-namespace PropertyWebApp.Models.Services
+﻿namespace PropertyWebApp.Models.Services
 {
     public class UserStateService
     {
         public string UserName { get; private set; } = "NEZNAMY";
+        public string Id { get; private set; }
 
-        // Event na notifikáciu Blazor komponentov o zmene
-        public event Action? OnChange;
-
-        public void SetUserName(string userName)
+        public Task SetUserName(string userName, string id)
         {
             UserName = userName;
-            //NotifyStateChanged();
-        }
-        
-        private void NotifyStateChanged()
-        {
-            OnChange?.Invoke();
+            Id = id;
+            return Task.CompletedTask;
         }
     }
-
 }

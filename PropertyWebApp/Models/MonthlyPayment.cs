@@ -1,15 +1,26 @@
 
 using PropertyWebApp.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class MonthlyPayment
+namespace PropertyWebApp.Models
 {
-    [Key]
-    public int PaymentId { get; set; }
-    public string RentalId { get; set; } = string.Empty; // Foreign Key
-    public DateTime? PaymentDate { get; set; }
-    public int? UtilitiesCostId { get; set; } // Foreign Key
-    public int? RentCostId { get; set; } // Foreign Key
+    public class MonthlyPayment
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int PaymentId { get; set; }
 
-    
+        [ForeignKey("Rental")]
+        public int RentalId { get; set; } // Foreign Key to Rental
+        public Rental Rental { get; set; } // Navigation property to Rental
+        public DateTime? PaymentDate { get; set; }
+        public bool isPaid { get; set; }
+        public decimal RentAmount { get; set; } // Added for clarity
+        public decimal UtilitiesAmount { get; set; } // Added for clarity
+        public decimal TotalAmount => RentAmount + UtilitiesAmount; // Convenience property
+    }
+
 }
+
+

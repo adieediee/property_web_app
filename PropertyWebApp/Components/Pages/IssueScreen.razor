@@ -2,11 +2,15 @@
 @using PropertyWebApp.Components.Pages.ViewModels
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
+@using PropertyWebApp.Models.Services
 @using PropertyWebApp.Models.Services.PropertyWebApp.Services
 @page "/propertyScreen"
 @rendermode InteractiveServer
 @layout Layout.PrenajimatelLayout
 @inject IssueScreenViewModel ViewModel
+@inject UserStateService UserStateService
+
+
 
 
 <div class="toolbar">
@@ -15,7 +19,7 @@
     </button>
 
     <div class="search-container">
-        <input type="text" placeholder="Search Anything..." class="search-input" />
+        <input type="text" placeholder="Hľadať poruchu..." class="search-input" @bind="searchQuery" @oninput="PerformSearch" />
         <button class="search-btn">
             <i class="icon-search"></i>
         </button>
@@ -26,18 +30,18 @@
     </a>
 </div>
 
-@if (ViewModel.Issues == null)
+@if (ViewModel.FilteredIssues == null)
 {
     <p>Načítavam údaje...</p>
 }
-else if (!ViewModel.Issues.Any())
+else if (!ViewModel.FilteredIssues.Any())
 {
     <p>Žiadne poruchy na zobrazenie.</p>
 }
 else
 {
     <div class="list-container">
-        @foreach (var issue in ViewModel.Issues)
+        @foreach (var issue in ViewModel.FilteredIssues)
         {
             <div class="card">
                 <div class="issue-header" @onclick="() => ViewModel.ToggleDetails(issue.IssueId)">
@@ -45,7 +49,7 @@ else
                         <img class="property-image" src="@ViewModel.GetPropertyImage(issue.IssueId)" alt="Property Image" />
                         <div class="card-text">
                             <h4 class="issue-title">@issue.Title</h4>
-                            <p class="issue-subtitle">@issue.Property.PropertyName</p>
+                            <p class="issue-subtitle">@issue.Property.PropertyName @issue.Rental.TenantId</p>
                         </div>
                     </div>
                     <div class="card-center">
@@ -82,7 +86,7 @@ else
                         </div>
                     </div>
                 }
-                @if (ViewModel.ShowConfirmDialog)
+                @if (ViewModel.ShowConfirmDialog && issue.IssueId == ViewModel.IssueIdToDelete)
                 {
                     <div class="confirm-dialog">
                         <div class="dialog-content">
@@ -99,15 +103,37 @@ else
     </div>
 }
 
+
 @code {
+
+    private string searchQuery = "";
+    
+
     protected override async Task OnInitializedAsync()
     {
-        await ViewModel.LoadIssuesAsync();
+
+        await ViewModel.LoadIssuesAsync(UserStateService.Id);
+
+
         foreach (var issue in ViewModel.Issues)
         {
             await ViewModel.LoadPropertyIssueImageAsync();
+
         }
+        ViewModel.FilteredIssues = ViewModel.Issues;
     }
-    
+
+    private void PerformSearch(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? "";
+
+        // Filtrovanie issues na základe názvu alebo popisu
+        ViewModel.FilteredIssues = ViewModel.Issues
+            .Where(i => (i.Title != null && i.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)) ||
+                        (i.Description != null && i.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
+     
+
 
 }

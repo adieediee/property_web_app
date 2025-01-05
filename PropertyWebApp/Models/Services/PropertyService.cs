@@ -10,16 +10,39 @@
 
     public class PropertyService
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
 
-        public PropertyService(AppDbContext dbContext)
+        public PropertyService(IDbContextFactory<AppDbContext> dbContextFactory)
         {
-            _dbContext = dbContext;
+            _dbContextFactory = dbContextFactory;  
         }
+        public async Task<List<PropertyScreenViewModel>> LoadUserPropertiesAsync(string tenantId)
+        {
+            using var dbContext = _dbContextFactory.CreateDbContext();
 
+            return await dbContext.Properties
+                .Where(p => p.Rentals.Any(r => r.TenantId == tenantId)) // Filtrovanie podľa TenantId
+                .Include(p => p.PropertyImages)
+                .Select(p => new PropertyScreenViewModel
+                {
+                    PropertyId = p.PropertyId,
+                    PropertyName = p.PropertyName,
+                    City = p.City,
+                    State = p.State,
+                    MainImage = p.PropertyImages.FirstOrDefault() != null ? p.PropertyImages.FirstOrDefault().ImagePath : "/img/default-placeholder-property.jpg",
+                    Price = p.Price,
+                    NumberOfBedrooms = p.NumberOfBedrooms,
+                    NumberOfBathrooms = p.NumberOfBathrooms,
+                    Area = p.Area,
+                    Description = p.Description
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
         // Načítanie všetkých nehnuteľností cez VM
         public async Task<List<PropertyScreenViewModel>> GetAllPropertiesAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.Properties
                 .Include(p => p.PropertyImages)
                 .Select(p => new PropertyScreenViewModel
@@ -42,6 +65,7 @@
         public async Task<PropertyScreenViewModel> GetPropertyByIdAsync(int propertyId)
         {
             //TODO poriesit tento skaredy warning
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.Properties
                 .Include(p => p.PropertyImages)
                 .Where(p => p.PropertyId == propertyId)
@@ -66,6 +90,7 @@
         {
             // Odstránenie Property a závislostí bez DbContextFactory
             // TODO DbContextFactory pridať
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             try
@@ -127,11 +152,16 @@
         }
         public async Task<string> GetPropertyImageAsync(int propertyId)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var propertyImage = await _dbContext.PropertyImages
                 .AsNoTracking()
                 .FirstOrDefaultAsync(pi => pi.PropertyId == propertyId);
             return propertyImage?.ImagePath ?? "/img/placeholder.png";
         }
 
+        internal Task<List<Property>> GetPropertiesByTenantIdAsync(string tenantId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
