@@ -20,24 +20,39 @@
         {
             using var dbContext = _dbContextFactory.CreateDbContext();
 
-            return await dbContext.Properties
+            // Načítajte všetky nehnuteľnosti pre daného nájomcu
+            var properties = await dbContext.Properties
                 .Where(p => p.Rentals.Any(r => r.TenantId == tenantId)) // Filtrovanie podľa TenantId
-                .Include(p => p.PropertyImages)
-                .Select(p => new PropertyScreenViewModel
-                {
-                    PropertyId = p.PropertyId,
-                    PropertyName = p.PropertyName,
-                    City = p.City,
-                    State = p.State,
-                    MainImage = p.PropertyImages.FirstOrDefault() != null ? p.PropertyImages.FirstOrDefault().ImagePath : "/img/default-placeholder-property.jpg",
-                    Price = p.Price,
-                    NumberOfBedrooms = p.NumberOfBedrooms,
-                    NumberOfBathrooms = p.NumberOfBathrooms,
-                    Area = p.Area,
-                    Description = p.Description
-                })
-                .AsNoTracking()
+                .Include(p => p.PropertyImages) // Načítajte obrázky nehnuteľností
+                .AsNoTracking() // Zníženie režijných nákladov pri čítaní údajov
                 .ToListAsync();
+
+            // Spracovanie dát mimo LINQ dotazu
+            var propertyViewModels = new List<PropertyScreenViewModel>();
+
+            foreach (var property in properties)
+            {
+                // Načítajte meno nájomcu pre danú nehnuteľnosť
+                var tenantName = await GetTenantNameByProperty(property.PropertyId);
+
+                // Zostavte PropertyScreenViewModel
+                propertyViewModels.Add(new PropertyScreenViewModel
+                {
+                    PropertyId = property.PropertyId,
+                    PropertyName = property.PropertyName,
+                    City = property.City,
+                    State = property.State,
+                    MainImage = property.PropertyImages.FirstOrDefault()?.ImagePath ?? "/img/default-placeholder-property.jpg",
+                    Price = property.Price,
+                    NumberOfBedrooms = property.NumberOfBedrooms,
+                    NumberOfBathrooms = property.NumberOfBathrooms,
+                    Area = property.Area,
+                    Description = property.Description,
+                    TenantName = tenantName
+                });
+            }
+
+            return propertyViewModels;
         }
         // Načítanie všetkých nehnuteľností cez VM
         public async Task<List<PropertyScreenViewModel>> GetAllPropertiesAsync()
@@ -66,23 +81,29 @@
         {
             //TODO poriesit tento skaredy warning
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            return await _dbContext.Properties
+            var property = await _dbContext.Properties
                 .Include(p => p.PropertyImages)
                 .Where(p => p.PropertyId == propertyId)
-                .Select(p => new PropertyScreenViewModel
-                {
-                    PropertyId = p.PropertyId,
-                    PropertyName = p.PropertyName,
-                    City = p.City,
-                    State = p.State,
-                    MainImage = p.PropertyImages.FirstOrDefault().ImagePath ?? "/img/default-placeholder-property.png",
-                    Price = p.Price,
-                    NumberOfBedrooms = p.NumberOfBedrooms,
-                    NumberOfBathrooms = p.NumberOfBathrooms,
-                    Area = p.Area,
-                    Description = p.Description
-                })
                 .FirstOrDefaultAsync();
+            //DOROBIT
+            var tenant = "";
+            var p = property;
+            var propertyVM = new PropertyScreenViewModel
+            {
+                PropertyId = p.PropertyId,
+                PropertyName = p.PropertyName,
+                City = p.City,
+                State = p.State,
+                MainImage = p.PropertyImages.FirstOrDefault()?.ImagePath ?? "/img/default-placeholder-property.jpg",
+
+                Price = p.Price,
+                NumberOfBedrooms = p.NumberOfBedrooms,
+                NumberOfBathrooms = p.NumberOfBathrooms,
+                Area = p.Area,
+                Description = p.Description,
+                TenantName = tenant
+            };
+            return propertyVM;
         }
 
         // Metóda na vymazanie nehnuteľnosti
@@ -159,9 +180,48 @@
             return propertyImage?.ImagePath ?? "/img/placeholder.png";
         }
 
-        internal Task<List<Property>> GetPropertiesByTenantIdAsync(string tenantId)
+        internal async Task<List<Property>> GetPropertiesByTenantIdAsync(string tenantId)
         {
-            throw new NotImplementedException();
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.Properties
+                .Where(p => p.Rentals.Any(r => r.TenantId == tenantId))
+                .Include(p => p.PropertyImages)
+                .ToListAsync();
+        }
+        //TU JE NIECO ZLE
+        internal async Task<string> GetTenantNameByProperty(int propertyID)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            // Získaj TenantId pre konkrétnu Property
+            var tenantID = _dbContext.Rentals
+                .Where(r => r.PropertyId == propertyID)
+                .Select(r => r.TenantId) // Vyber TenantId
+                .FirstOrDefault();       // Vráť prvý záznam (alebo null)
+
+            if (tenantID != null) // Over, či TenantId existuje
+            {
+                // Nájdeme používateľa podľa TenantId
+                var tenant =  await _dbContext.Users
+                    .Where(u => u.Id == tenantID)   // Filtrovanie podľa TenantId
+                    .Select(u => u.UserName)        // Vyber UserName
+                    .FirstOrDefaultAsync();
+                if (tenant != null)
+                {
+                    return tenant;
+                } else
+                {
+                    return "error";
+                }
+                    // Vráť výsledok
+
+                // Teraz môžeš použiť `tenant` (obsahuje UserName)
+            }
+            else
+            {
+                return ""; // Ak TenantId neexistuje, vráť prázdny reťazec
+            }
+            
         }
     }
 }

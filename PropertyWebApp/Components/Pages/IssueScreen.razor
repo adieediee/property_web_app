@@ -1,5 +1,6 @@
 ﻿@using Microsoft.EntityFrameworkCore
 @using PropertyWebApp.Components.Pages.ViewModels
+@using PropertyWebApp.Components.Reusable
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
 @using PropertyWebApp.Models.Services
@@ -10,25 +11,14 @@
 @inject IssueScreenViewModel ViewModel
 @inject UserStateService UserStateService
 
+<Toolbar SearchPlaceholder="Hľadaj poruchy..."
+         AddButtonText="Pridať poruchu"
+         AddButtonLink="/add-issue"
+         OnSearch="PerformIssueSearch"
+         OnSettingsClick="OpenSettings" />
 
 
 
-<div class="toolbar">
-    <button class="circle-btn">
-        <i class="icon-filter"></i>
-    </button>
-
-    <div class="search-container">
-        <input type="text" placeholder="Hľadať poruchu..." class="search-input" @bind="searchQuery" @oninput="PerformSearch" />
-        <button class="search-btn">
-            <i class="icon-search"></i>
-        </button>
-    </div>
-
-    <a href="/edit-issue" class="circle-btn add">
-        <i class="icon-add"></i>
-    </a>
-</div>
 
 @if (ViewModel.FilteredIssues == null)
 {
@@ -106,6 +96,7 @@ else
 
 @code {
 
+
     private string searchQuery = "";
     
 
@@ -133,7 +124,23 @@ else
                         (i.Description != null && i.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)))
             .ToList();
     }
-     
+    
 
+    
+     
+    private void PerformIssueSearch(string query)
+    {
+        // Filtrovanie porúch podľa vyhľadávacieho reťazca
+        ViewModel.FilteredIssues = ViewModel.Issues
+            .Where(i => (i.Title != null && i.Title.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+                        (i.Description != null && i.Description.Contains(query, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
+
+    private void OpenSettings()
+    {
+        // Logika pre otvorenie nastavení
+        Console.WriteLine("Otvorené nastavenia pre IssuesScreen.");
+    }
 
 }

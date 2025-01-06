@@ -86,20 +86,6 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Rozdelenie obrazovky - detial Property */
-
-
-
-
-
-
-/* Zoznam nehnuteľností (ľavá strana) */
-
-
-
-
-
-
     .properties-container
 {
     padding: 50px;
@@ -219,9 +205,6 @@
     background-color: #ffffff;
     height:85vh;
 }
-
-
-
 
 
 /* Detail obrázka */
