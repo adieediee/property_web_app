@@ -2,7 +2,7 @@
 
 namespace PropertyWebApp.Data.ViewModels
 {
-    public class PropertyScreenViewModel
+    public class PropertyViewModel
     {
         public int PropertyId { get; set; }
 

@@ -1,13 +1,14 @@
 ﻿using PropertyWebApp.Models.Services.PropertyWebApp.Services;
 using PropertyWebApp.Models.Services;
 using PropertyWebApp.Models;
+using PropertyWebApp.Data.ViewModels;
 
 public class TenantDashboardViewModel
 {
     public string TenantName { get; private set; } = "Unknown Tenant";
     private Dictionary<int, string> _propertyImages = new();
 
-    public List<Property> Properties { get; private set; } = new();
+    public List<PropertyViewModel> Properties { get; private set; } = new();
     public List<Issue> UnresolvedIssues { get; private set; } = new();
     public List<MonthlyPayment> Payments { get; private set; } = new();
     public MonthlyPayment UpcomingPayment { get; private set; }
@@ -33,7 +34,7 @@ public class TenantDashboardViewModel
         TenantName = await LoadTenantNameAsync(tenantId);
 
         // Load properties rented by the tenant
-        Properties = await _propertyService.GetPropertiesByTenantIdAsync(tenantId);
+        Properties = await _propertyService.LoadUserPropertyViewsAsync(tenantId);
         foreach (var property in Properties)
         {
             if (!_propertyImages.ContainsKey(property.PropertyId))

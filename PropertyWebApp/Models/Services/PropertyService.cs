@@ -16,7 +16,7 @@
         {
             _dbContextFactory = dbContextFactory;  
         }
-        public async Task<List<PropertyScreenViewModel>> LoadUserPropertiesAsync(string tenantId)
+        public async Task<List<PropertyViewModel>> LoadUserPropertyViewsAsync(string tenantId)
         {
             using var dbContext = _dbContextFactory.CreateDbContext();
 
@@ -28,7 +28,7 @@
                 .ToListAsync();
 
             // Spracovanie dát mimo LINQ dotazu
-            var propertyViewModels = new List<PropertyScreenViewModel>();
+            var propertyViewModels = new List<PropertyViewModel>();
 
             foreach (var property in properties)
             {
@@ -36,7 +36,7 @@
                 var tenantName = await GetTenantNameByProperty(property.PropertyId);
 
                 // Zostavte PropertyScreenViewModel
-                propertyViewModels.Add(new PropertyScreenViewModel
+                propertyViewModels.Add(new PropertyViewModel
                 {
                     PropertyId = property.PropertyId,
                     PropertyName = property.PropertyName,
@@ -55,12 +55,12 @@
             return propertyViewModels;
         }
         // Načítanie všetkých nehnuteľností cez VM
-        public async Task<List<PropertyScreenViewModel>> GetAllPropertiesAsync()
+        public async Task<List<PropertyViewModel>> GetAllPropertiesAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.Properties
                 .Include(p => p.PropertyImages)
-                .Select(p => new PropertyScreenViewModel
+                .Select(p => new PropertyViewModel
                 {
                     PropertyId = p.PropertyId,
                     PropertyName = p.PropertyName,
@@ -77,7 +77,7 @@
         }
 
         // Načítanie konkrétnej nehnuteľnosti podľa ID
-        public async Task<PropertyScreenViewModel> GetPropertyByIdAsync(int propertyId)
+        public async Task<PropertyViewModel> GetPropertyViewByIdAsync(int propertyId)
         {
             //TODO poriesit tento skaredy warning
             using var _dbContext = _dbContextFactory.CreateDbContext();
@@ -88,7 +88,7 @@
             //DOROBIT
             var tenant = "";
             var p = property;
-            var propertyVM = new PropertyScreenViewModel
+            var propertyVM = new PropertyViewModel
             {
                 PropertyId = p.PropertyId,
                 PropertyName = p.PropertyName,

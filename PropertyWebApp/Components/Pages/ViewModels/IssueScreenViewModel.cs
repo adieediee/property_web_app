@@ -63,7 +63,7 @@ namespace PropertyWebApp.Components.Pages.ViewModels
 
         public async Task<string> GetPropertyNameAsync(int propertyId)
         {
-            var property = await _propertyService.GetPropertyByIdAsync(propertyId);
+            var property = await _propertyService.GetPropertyViewByIdAsync(propertyId);
             return property?.PropertyName ?? "Unknown";
         }
 

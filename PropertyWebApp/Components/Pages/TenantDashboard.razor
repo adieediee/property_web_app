@@ -1,83 +1,130 @@
 ﻿@page "/tenant-dashboard"
+@using PropertyWebApp.Components.Reusable
 @using PropertyWebApp.Models.Services
 @inject TenantDashboardViewModel ViewModel
 @inject UserStateService UserStateService
 @layout Layout.PrenajimatelLayout
 
-<section class="container px-4 mx-auto">
-    <div class="flex items-center gap-x-3">
-        <h2 class="text-lg font-medium text-gray-800 dark:text-white">Prenajímateľský Dashboard</h2>
+<div class="min-h-screen p-4">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-2">
+        <h1 class="text-3xl font-bold">Ahoj, @UserStateService.UserName!</h1>
+        
+        <input type="text"
+               placeholder="Search Anything..."
+               class="w-1/3 p-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
-
-    <!-- Search Bar -->
-    <div class="mt-6">
-        <input type="text" placeholder="Vyhľadaj..." class="w-full px-4 py-2 text-sm text-gray-700 bg-white border rounded-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:placeholder-gray-500">
-    </div>
-
-    <!-- Dashboard Cards -->
-    <div class="grid grid-cols-1 mt-6 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Príjem</h3>
-            <p class="text-xl font-semibold text-gray-800 dark:text-white">119,234.01 €</p>
-            <span class="text-sm text-green-500">3.1% oproti minulému mesiacu</span>
-            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
-        </div>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Výsledok</h3>
-            <p class="text-xl font-semibold text-gray-800 dark:text-white">$524,039</p>
-            <span class="text-sm text-green-500">11% oproti minulému mesiacu</span>
-            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
-        </div>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Výdavky na energie</h3>
-            <p class="text-xl font-semibold text-gray-800 dark:text-white">234,200 €</p>
-            <span class="text-sm text-red-500">2.3% oproti minulému mesiacu</span>
-            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
-        </div>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-400">Všetky nehnuteľnosti</h3>
-            <p class="text-xl font-semibold text-gray-800 dark:text-white">1,200</p>
-            <span class="text-sm text-green-500">0.5% oproti minulému mesiacu</span>
-            <button class="mt-4 text-sm text-blue-500 hover:underline">Zobraz report</button>
-        </div>
-    </div>
-
-    <!-- Property List -->
-    <div class="mt-8">
-        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Nehnuteľnosti</h3>
-        <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                <img src="img/property1.jpg" alt="Elite Heights Rezidencia" class="w-full h-40 rounded-md">
-                <h4 class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-400">Elite Heights Rezidencia</h4>
-                <p class="text-sm text-gray-500 dark:text-gray-300">Janka Kráľa, Námestovo</p>
-                <p class="mt-2 text-sm text-gray-800 dark:text-white">$3,700</p>
-                <button class="mt-4 text-sm text-blue-500 hover:underline">Uprav Nehnuteľnosť</button>
+    <p class= "mb-6">Tu nájdeš informácie o prenajatých nehnuteľnostiach.</p>
+    <!-- Top Cards -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Nezaplatená platba -->
+        <div class="bg-white p-6 rounded-3xl ">
+            <div class="flex h-10 gap-4 items-center mb-4">
+                <img class=" h-12 w-max" src="/img/icons/color/payment-due.png"/>
+                <h2 class="text-lg font-semibold  items-center">Najbližšia nezaplatená platba</h2>
             </div>
-            <!-- Repeat for other properties -->
+            <div class="flex items-end">
+                <p class="text-gray-600 text-6xl">500</p>
+                <p class="text-gray-600 ml-auto text-xl">15.01.2025</p>
+             </div>
+           
+           
         </div>
+
+        <!-- Placeholder pre ďalšie karty -->
+        <div class="bg-white p-4 rounded-3xl ">
+            <h2 class="text-lg font-semibold mb-2">Placeholder karta 1</h2>
+            <p class="text-gray-600">Obsah podľa potreby</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl ">
+            <h2 class="text-lg font-semibold mb-2">Placeholder karta 2</h2>
+            <p class="text-gray-600">Obsah podľa potreby</p>
+        </div>
+    </div>
+    
+    <!-- Properties Card -->
+    
+    <div class="bg-white p-6 rounded-3xl mb-6 gap-4">
+        <div class="flex h-10 gap-4 items-center mb-4">
+            <img class=" h-12 w-max" src="/img/icons/color/property.png" />
+            <h2 class="text-lg font-semibold items-center ">Moje nehnuteľnosti</h2>
+            <button class="bg-gray-100 p-2 pr-4 pl-4 rounded-3xl ml-auto">Zobraz všetko</button>
+        </div>
+        <div class="flex gap-4">
+            @foreach (var property in ViewModel.Properties)
+            {
+                <PropertyCard MainImage="@property.MainImage"
+                              PropertyName="@property.PropertyName"
+                              TenantAvatar="@property.TenantAvatar"
+                              TenantName="@property.TenantName"
+                              OnCardClick="() => ShowPropertyDetails(property.PropertyId)" />
+            }
+        </div>
+        
     </div>
 
-    <!-- Calendar -->
-    <div class="mt-8">
-        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Kalendár</h3>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <!-- TODO: Implementácia kalendára -->
-            <p class="text-sm text-gray-500 dark:text-gray-300">Kalendár ešte nie je dostupný.</p>
-        </div>
-    </div>
 
-    <!-- Graph Section -->
-    <div class="mt-8">
-        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Grafy nehnuteľností</h3>
-        <div class="p-4 bg-white border rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <p class="text-sm text-gray-500 dark:text-gray-300">Zatiaľ tu nič nie je.</p>
+    <!-- Last Transactions a Issues -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Last Transactions -->
+        <div class="bg-white p-6 rounded-3xl ">
+            <div class="flex h-10 gap-4 items-center mb-4">
+                <img class=" h-12 w-max" src="/img/icons/color/payment-done.png" />
+                <h2 class="text-lg font-semibold items-center ">História platieb</h2>
+            </div>
+            <ul>
+                <li class="flex justify-between items-center mb-3">
+                    <span>Platba za 123 Maple Street</span>
+                    <span class="text-gray-600">500 €</span>
+                </li>
+                <li class="flex justify-between items-center mb-3">
+                    <span>Platba za 456 Oak Avenue</span>
+                    <span class="text-gray-600">450 €</span>
+                </li>
+                <!-- Pridajte ďalšie transakcie -->
+            </ul>
+            <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                Zobraziť všetko
+            </button>
+        </div>
+
+        <!-- Issues -->
+        <div class="bg-white p-6 rounded-3xl ">
+            <div class="flex h-10 gap-4 items-center mb-4">
+                <img class=" h-12 w-max" src="/img/icons/color/issue.png" />
+                <h2 class="text-lg font-semibold items-center ">Poruchy</h2>
+            </div>
+            <ul>
+                <li class="flex justify-between items-center mb-3">
+                    <span>Porucha: Klimatizácia nefunguje</span>
+                    <span class="text-gray-600">123 Maple Street</span>
+                </li>
+                <li class="flex justify-between items-center mb-3">
+                    <span>Porucha: Pokazený bojler</span>
+                    <span class="text-gray-600">456 Oak Avenue</span>
+                </li>
+                <!-- Pridajte ďalšie poruchy -->
+            </ul>
+            <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                Zobraziť všetko
+            </button>
         </div>
     </div>
-</section>
+</div>
+
 
 @code {
     protected override async Task OnInitializedAsync()
     {
         await ViewModel.LoadDataAsync(UserStateService.Id);
+    }
+
+    @code {
+        private async Task ShowPropertyDetails(int propertyId)
+        {
+            // Tu pridajte logiku pre zobrazenie detailov nehnuteľnosti
+            Console.WriteLine($"Zobraziť detaily pre nehnuteľnosť ID: {propertyId}");
+        }
     }
 }

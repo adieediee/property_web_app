@@ -1,5 +1,6 @@
 ﻿@page "/properties"
 @layout Layout.PrenajimatelLayout
+@using PropertyWebApp.Components.Reusable
 @using PropertyWebApp.Models.Services
 @using PropertyWebApp.Data.ViewModels
 @inject PropertyService PropertyService
@@ -7,15 +8,21 @@
 @inject UserStateService UserStateService
 @rendermode InteractiveServer
 
+<Toolbar SearchPlaceholder="Hľadaj poruchy..."
+         AddButtonText="Pridať poruchu"
+         AddButtonLink="/add-issue"
+         OnSearch="PerformPropertySearch"
+         OnSettingsClick="OpenSettings" />
+
 @if (properties != null)
 {
     <div class="flex h-screen">
         <!-- Ľavá strana - Zoznam kartičiek -->
-        <div class="w-full lg:w-2/3 p-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach (var property in properties)
+        <div class="w-full  p-4">
+            <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(20rem, max-content)); justify-content: start;">
+                @foreach (var property in filteredProperties)
                 {
-                    <div class="relative bg-white shadow-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 h-64 " @onclick="() => ShowPropertyDetails(property.PropertyId)">
+                    <div class="relative bg-white shadow-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 h-96 w-80 " @onclick="() => ShowPropertyDetails(property.PropertyId)">
                         <!-- Obrázok nehnuteľnosti -->
                         <img class="w-full h-full object-cover" src="@property.MainImage" alt="Property Image">
 
@@ -35,7 +42,7 @@
                     </div>
                 }
                 <!-- Tlačidlo pridať nehnuteľnosť -->
-                <div class="flex justify-center items-center bg-gray-200 rounded-lg cursor-pointer h-40" @onclick="NavigateToAddProperty">
+                <div class="flex justify-center items-center bg-gray-100 rounded-lg cursor-pointer h-40" @onclick="NavigateToAddProperty">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -46,7 +53,7 @@
         <!-- Pravá strana - Detaily nehnuteľnosti -->
         @if (selectedProperty != null)
         {
-            <div class="hidden lg:block w-1/3 bg-white p-6 shadow-lg">
+            <div class="hidden lg:block w-full bg-white p-6 shadow-lg">
                 <img class="w-full h-64 object-cover rounded-lg mb-4" src="@selectedProperty.MainImage" alt="Property Image">
                 <h2 class="text-xl font-bold text-gray-800">@selectedProperty.PropertyName</h2>
                 <p class="mt-2 text-gray-600">@selectedProperty.Description</p>
@@ -62,23 +69,52 @@
                 </div>
             </div>
         }
+        @if (showDeleteConfirmation)
+        {
+            <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-80">
+                    <h2 class="text-lg font-semibold text-gray-800">Potvrdenie</h2>
+                    <p class="text-sm text-gray-600 mt-2">Naozaj chcete túto položku vymazať?</p>
+                    <div class="flex items-center justify-end mt-4">
+                        <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+                                @onclick="CancelDelete">
+                            Zrušiť
+                        </button>
+                        <button class="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                                @onclick="ConfirmDelete">
+                            Vymazať
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 }
 
 @code {
-    private List<PropertyScreenViewModel> properties;
-    private PropertyScreenViewModel? selectedProperty;
+    private List<PropertyViewModel> properties;
+    private PropertyViewModel? selectedProperty;
     private bool showDeleteConfirmation = false;
+    private List<PropertyViewModel> filteredProperties;
 
+
+    private void PerformPropertySearch(string query)
+    {
+        // Filtrovanie porúch podľa vyhľadávacieho reťazca
+        filteredProperties = properties
+            .Where(i => (i.PropertyName != null && i.PropertyName.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+                        (i.Description != null && i.Description.Contains(query, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
     protected override async Task OnInitializedAsync()
     {
-        properties = await PropertyService.LoadUserPropertiesAsync(UserStateService.Id);
-        //properties = await PropertyService.GetAllPropertiesAsync();
+        properties = await PropertyService.LoadUserPropertyViewsAsync(UserStateService.Id);
+        filteredProperties = properties;
     }
 
     private async Task ShowPropertyDetails(int propertyId)
     {
-        selectedProperty = await PropertyService.GetPropertyByIdAsync(propertyId);
+        selectedProperty = await PropertyService.GetPropertyViewByIdAsync(propertyId);
         StateHasChanged();
     }
 
@@ -125,5 +161,10 @@
     {
         
         Navigation.NavigateTo($"/edit-property/");
+    }
+
+    private void OpenSettings()
+    {
+        // TODO
     }
 }

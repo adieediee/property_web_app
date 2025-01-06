@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<IdentityUser> UserManager
 @inject NavigationManager Navigation
+@inject RoleManager<IdentityRole> RoleManager
 @using System.ComponentModel.DataAnnotations
 @rendermode InteractiveServer
 
@@ -28,6 +29,33 @@
                         @errorMessage
                     </div>
                 }
+                <!-- Výber role -->
+                <div class="mt-6">
+                    <h1 class="text-gray-500 dark:text-gray-300">Vyberte typ účtu</h1>
+
+                    <div class="mt-3 md:flex md:items-center md:-mx-2">
+                        <button type="button"
+                                class="flex justify-center w-full px-6 py-3 text-white bg-blue-500 rounded-lg md:w-auto md:mx-2 focus:outline-none"
+                                style="background-color: @((selectedRole == "Tenant") ? "rgb(59, 130, 246)" : "white"); color: @((selectedRole == "Tenant") ? "white" : "rgb(59, 130, 246)"); border: 1px solid rgb(59, 130, 246);"
+                                @onclick="SelectRoleTenant">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span class="mx-2">Chcem si prenajať nehnuteľnosť</span>
+                        </button>
+
+                        <button type="button"
+                                class="flex justify-center w-full px-6 py-3 mt-4 text-blue-500 border border-blue-500 rounded-lg md:mt-0 md:w-auto md:mx-2 dark:border-blue-400 dark:text-blue-400 focus:outline-none"
+                                style="background-color: @((selectedRole == "Landlord") ? "rgb(59, 130, 246)" : "white"); color: @((selectedRole == "Landlord") ? "white" : "rgb(59, 130, 246)"); border: 1px solid rgb(59, 130, 246);"
+                                @onclick="SelectRoleLandlord">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span class="mx-2">Chcem prenajímať nehnuteľnosť</span>
+                        </button>
+                    </div>
+                </div>
+
 
                 <EditForm Model="registerModel" OnValidSubmit="HandleRegister" FormName="RegisterForm">
                     <DataAnnotationsValidator />
@@ -86,6 +114,17 @@
 @code {
     private RegisterModel registerModel = new RegisterModel();
     private string? errorMessage;
+    private string selectedRole = "Tenant";
+
+    private void SelectRoleTenant()
+    {
+        selectedRole = "Tenant";
+    }
+    private void SelectRoleLandlord()
+    {
+        selectedRole = "Landlord";
+    }
+
 
     private async Task HandleRegister()
     {
@@ -106,6 +145,13 @@
 
         if (result.Succeeded)
         {
+            if (!await RoleManager.RoleExistsAsync(selectedRole))
+            {
+                await RoleManager.CreateAsync(new IdentityRole(selectedRole));
+            }
+
+            await UserManager.AddToRoleAsync(user, selectedRole);
+
             // Add custom claims for first and last name
             await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("FirstName", registerModel.FirstName));
             await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("LastName", registerModel.LastName));

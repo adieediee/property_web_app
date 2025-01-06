@@ -16,13 +16,13 @@
 
 html, body {
     font-family: 'Albert Sans', sans-serif;
-    
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    height: calc(100vh - 20px);
     width: 100vw;
     margin: 0;
+    height: 100%;
+    overflow: hidden;
 }
 
  .btn-link {
@@ -43,6 +43,14 @@ html, body {
     padding-top: 1.1rem;
 }
 
+h2 {
+font-family: 'Albert Sans', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #232323;
+    margin: 0;
+
+}
 h1:focus {
     outline: none;
 }
