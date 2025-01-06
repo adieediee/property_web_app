@@ -220,32 +220,6 @@ namespace PropertyWebApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MonthlyPayment", b =>
-                {
-                    b.Property<int>("PaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
-
-                    b.Property<DateTime?>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("RentCostId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RentalId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UtilitiesCostId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PaymentId");
-
-                    b.ToTable("MonthlyPayments");
-                });
-
             modelBuilder.Entity("PropertyWebApp.Models.Issue", b =>
                 {
                     b.Property<int>("IssueId")
@@ -331,6 +305,36 @@ namespace PropertyWebApp.Migrations
                     b.HasKey("StatusId");
 
                     b.ToTable("IssueStatus");
+                });
+
+            modelBuilder.Entity("PropertyWebApp.Models.MonthlyPayment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<DateTime?>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("RentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UtilitiesAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("isPaid")
+                        .HasColumnType("bit");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("RentalId");
+
+                    b.ToTable("MonthlyPayments");
                 });
 
             modelBuilder.Entity("PropertyWebApp.Models.Property", b =>
@@ -462,14 +466,16 @@ namespace PropertyWebApp.Migrations
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PropertyOwnerId")
-                        .HasColumnType("int");
+                    b.Property<string>("PropertyOwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int");
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RentalId");
 
@@ -715,6 +721,17 @@ namespace PropertyWebApp.Migrations
                     b.Navigation("Issue");
                 });
 
+            modelBuilder.Entity("PropertyWebApp.Models.MonthlyPayment", b =>
+                {
+                    b.HasOne("PropertyWebApp.Models.Rental", "Rental")
+                        .WithMany("Payments")
+                        .HasForeignKey("RentalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Rental");
+                });
+
             modelBuilder.Entity("PropertyWebApp.Models.Property", b =>
                 {
                     b.HasOne("PropertyWebApp.Models.PropertyType", "PropertyType")
@@ -828,6 +845,8 @@ namespace PropertyWebApp.Migrations
             modelBuilder.Entity("PropertyWebApp.Models.Rental", b =>
                 {
                     b.Navigation("Issues");
+
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("PropertyWebApp.Models.Tag", b =>

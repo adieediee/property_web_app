@@ -1,0 +1,71 @@
+﻿
+
+
+<div class="flex items-center justify-between bg-gray-100 p-4 rounded-full shadow-lg">
+    <!-- Search Input -->
+    <div class="flex items-center w-1/2 bg-white rounded-full shadow-inner px-4 h-14">
+        <input type="text"
+               placeholder="@SearchPlaceholder"
+               class="w-full bg-transparent focus:outline-none text-lg py-2 px-3"
+               @bind="@SearchQuery"
+               @oninput="@HandleSearchInput" />
+        <button class="flex items-center justify-center w-12 h-12 bg-black text-white rounded-full ml-3" @onclick="@TriggerSearch">
+            <img src="/img/icons/Magnifying-glass.png" alt="Search" class="w-6 h-6" />
+        </button>
+    </div>
+    <div class="flex items-center gap-8">
+        <!-- Add Button -->
+        @if (!string.IsNullOrWhiteSpace(AddButtonText) && !string.IsNullOrWhiteSpace(AddButtonLink))
+        {
+            <a href="@AddButtonLink"
+               class="flex items-center bg-white rounded-full px-6 py-3 shadow hover:bg-gray-100 transition h-14">
+                <img src="/img/icons/add.png" alt="Add" class="w-6 h-6 mr-3" />
+                <span class="text-lg text-gray-700 font-medium">@AddButtonText</span>
+            </a>
+        }
+        <!-- Settings Button -->
+        <button class="flex items-center justify-center w-14 h-14 bg-white rounded-full shadow hover:bg-gray-100 transition" @onclick="@OpenSettings">
+            <img src="/img/icons/settings.png" alt="Settings" class="w-6 h-6" />
+        </button>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; } // Callback pre vyhľadávanie
+
+    [Parameter]
+    public string SearchPlaceholder { get; set; } = "Vyhľadaj...";
+
+    [Parameter]
+    public string AddButtonText { get; set; } = "Pridať";
+
+    [Parameter]
+    public string AddButtonLink { get; set; } = "/";
+
+    [Parameter]
+    public EventCallback OnSettingsClick { get; set; } // Callback pre nastavenia
+
+    private string SearchQuery { get; set; } = string.Empty;
+
+    private void HandleSearchInput(ChangeEventArgs e)
+    {
+        SearchQuery = e.Value?.ToString() ?? string.Empty;
+        TriggerSearch();
+    }
+
+    private async Task TriggerSearch()
+    {
+        await OnSearch.InvokeAsync(SearchQuery);
+    }
+
+    private async Task OpenSettings()
+    {
+        if (OnSettingsClick.HasDelegate)
+        {
+            await OnSettingsClick.InvokeAsync();
+        }
+    }
+}

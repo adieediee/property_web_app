@@ -9,11 +9,6 @@
 }
 
 
-
-
-
-
-
 .card {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease-in-out;
@@ -40,12 +35,6 @@
     align-items: center; /* Vertikálne zarovnanie všetkých prvkov */
     gap: 15px; /* Priestor medzi hlavnými sekciami */
    
-    
-    
-   
-    
-    
-}
 
     .card:hover {
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -56,6 +45,7 @@
     display: flex;
     align-items: center;
     gap: 10px; /* Priestor medzi obrázkom a textami */
+    width: 50%;
 }
 
 .property-image {
@@ -70,6 +60,7 @@
     display: flex;
     flex-direction: column; /* Texty pod sebou */
     justify-content: center;
+    width: 100%
 }
 
 .issue-title {
@@ -88,11 +79,14 @@
 /* Stredná časť: dátum, tagy, cena */
 .card-center {
     display: flex;
-    align-items: center; /* Zarovná všetky prvky na stred vertikálne */
+    align-items: flex-start; /* Zarovná všetky prvky na stred vertikálne */
     gap: 40px; /* Priestor medzi dátumom, tagmi a cenou */
     flex: 1; /* Zaberie dostupný priestor */
-    justify-content: center; /* Zarovná na stred horizontálne */
+    justify-content: start; /* Zarovná na stred horizontálne */
+ 
 }
+
+
 
 .issue-date {
     font-size: 14px;

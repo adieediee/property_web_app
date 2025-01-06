@@ -15,18 +15,20 @@
             {
                 _dbContextFactory = dbContextFactory;
             }
-            public async Task<List<Issue>> GetIssuesAsync()
+            public async Task<List<Issue>> GetIssuesAsync(string id)
             {
                 using var dbContext = _dbContextFactory.CreateDbContext();
-                return await dbContext.Issues
+                var issues = await dbContext.Issues
                     .Include(i => i.Images)
                     .Include(i => i.Status)
                     .Include(i => i.Property)
+                    .Include(i => i.Rental)
                     .Include(i => i.TaggedIssues)
                     
                         .ThenInclude(t => t.Tag)
                     .AsNoTracking()
                     .ToListAsync();
+                return issues.Where(i => i.Rental.TenantId == id).ToList();
             }
 
             public async Task<Issue> GetIssueByIdAsync(int issueId)
@@ -117,6 +119,31 @@
 
                 if (issue.SolvedDate.HasValue && issue.SolvedDate <= issue.ReportDate)
                     throw new ArgumentException("Dátum vyriešenia musí byť po dátume nahlásenia.");
+            }
+
+            public async Task<List<Issue>> GetUnresolvedIssuesByTenantIdAsync(string tenantId)
+            {
+                using var dbContext = _dbContextFactory.CreateDbContext();
+                return await dbContext.Issues
+                    .Include(i => i.Property) // Include Property details for display
+                    .Where(i =>
+                        i.Rental.TenantId == tenantId && // Issues belong to the tenant's rentals
+                        i.Status.StatusName != "Vyriešené") // Issue status is not "Vyriešené" (or resolved)
+                    .OrderByDescending(i => i.ReportDate) // Order by latest reported issues
+                    .ToListAsync();
+            }
+
+            internal async Task<int> GetResolvedIssuesCountByTenantIdAsync(string tenantId)
+            {
+                using var dbContext = _dbContextFactory.CreateDbContext();
+                var issues = await dbContext.Issues
+                    .Include(i => i.Property) // Include Property details for display
+                    .Where(i =>
+                        i.Rental.TenantId == tenantId && // Issues belong to the tenant's rentals
+                        i.Status.StatusName == "Vyriešené") // Issue status is not "Vyriešené" (or resolved)
+                    .OrderByDescending(i => i.ReportDate) // Order by latest reported issues
+                    .ToListAsync();
+                return issues.Count;
             }
         }
     }

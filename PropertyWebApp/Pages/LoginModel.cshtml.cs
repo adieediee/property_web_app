@@ -48,7 +48,9 @@ namespace PropertyWebApp.Components.Pages
             if (result.Succeeded)
             {
                 Console.WriteLine($"Prihlásený používateľ: {user?.UserName ?? "Neznámy"}");
-                _userStateService.SetUserName(user?.UserName ?? "Neznámy");
+                var role = await _userManager.GetRolesAsync(user);
+                 await _userStateService.SetUserInfo(user?.UserName ?? "Neznámy",user.Id);
+                await _userStateService.SetRole(role[0]);
 
                 return Redirect("/test"); // Presmerovanie po úspešnom prihlásení
             }

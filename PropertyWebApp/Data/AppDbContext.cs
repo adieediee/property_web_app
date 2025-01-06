@@ -91,7 +91,11 @@ namespace PropertyWebApp.Data
                 .HasForeignKey(i => i.RentalId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            
+            modelBuilder.Entity<MonthlyPayment>()
+                .HasOne(mp => mp.Rental) // Navigačná vlastnosť v MonthlyPayment
+                .WithMany(r => r.Payments) // Navigačná vlastnosť v Rental
+                .HasForeignKey(mp => mp.RentalId) // Cudzí kľúč v MonthlyPayment
+                .OnDelete(DeleteBehavior.Restrict); // Správanie pri vymazaní nájmu
         }
     }
 }
