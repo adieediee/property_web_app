@@ -3,10 +3,15 @@ using PropertyWebApp.Models.Services;
 using PropertyWebApp.Models;
 using PropertyWebApp.Data.ViewModels;
 
+
 public class TenantDashboardViewModel
 {
     public string TenantName { get; private set; } = "Unknown Tenant";
+
+    
     private Dictionary<int, string> _propertyImages = new();
+    
+
 
     public List<PropertyViewModel> Properties { get; private set; } = new();
     public List<Issue> UnresolvedIssues { get; private set; } = new();
@@ -20,12 +25,14 @@ public class TenantDashboardViewModel
     private readonly PropertyService _propertyService;
     private readonly IssueService _issueService;
     private readonly RentalService _rentalService;
+    private readonly UserStateService _userStateService;
 
-    public TenantDashboardViewModel(PropertyService propertyService, IssueService issueService, RentalService rentalService)
+    public TenantDashboardViewModel(PropertyService propertyService, IssueService issueService, RentalService rentalService, UserStateService userStateService)
     {
         _propertyService = propertyService;
         _issueService = issueService;
         _rentalService = rentalService;
+        _userStateService = userStateService;   
     }
 
     public async Task LoadDataAsync(string tenantId)
@@ -41,13 +48,24 @@ public class TenantDashboardViewModel
             {
                 _propertyImages[property.PropertyId] = await _propertyService.GetPropertyImageAsync(property.PropertyId);
             }
+
+           
         }
 
         // Load unresolved issues
-        UnresolvedIssues = await _issueService.GetUnresolvedIssuesByTenantIdAsync(tenantId);
+        var issues = await _issueService.GetUnresolvedIssuesByTenantIdAsync(tenantId);
+        UnresolvedIssues = issues
+            
+            .OrderByDescending(i => i.ReportDate)
+            .Take(2)
+            .ToList();
 
         // Load monthly payments for all rentals associated with the tenant
-        Payments = await _rentalService.GetMonthlyPaymentsAsync(tenantId);
+        Payments = (await _rentalService.GetMonthlyPaymentsAsync(tenantId))
+    .Where(p => p.isPaid) // Filtrovanie iba zaplatených platieb
+    .OrderByDescending(p => p.PaymentDate) // Usporiadanie podľa najnovšieho dátumu
+    .Take(2) // Výber iba dvoch najnovších
+    .ToList();
         TotalMonthlyRent = Payments.Sum(p => p.TotalAmount);
 
         // Find upcoming payment
@@ -75,6 +93,32 @@ public class TenantDashboardViewModel
         }
         return "/img/default-placeholder-property.jpg";
     }
+
+    public string GetPropertyName(int propertyId)
+    {
+        return Properties.FirstOrDefault(p => p.PropertyId == propertyId).PropertyName;
+    }
+
+    public async Task<string> GetIssueUserName(int propertyId)
+    {
+        if(_userStateService.Role == "Landlord")
+        {
+            return await _propertyService.GetTenantNameByProperty(propertyId);
+        }
+        else
+        {
+            return await _propertyService.GetTenantNameByProperty(propertyId);
+        }
+        
+    }
+    public async Task<string> GetIssueUserAvatar(int propertyId)
+    {
+        //TODO
+        return "";
+
+    }
+
+
 
     private List<string> GenerateNotifications()
     {

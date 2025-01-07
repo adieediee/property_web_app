@@ -125,7 +125,9 @@
             {
                 using var dbContext = _dbContextFactory.CreateDbContext();
                 return await dbContext.Issues
-                    .Include(i => i.Property) // Include Property details for display
+                    .Include(i => i.Property)
+                    .Include(i => i.Rental) // Include Property details for display
+                    .Include(i => i.Status) // Include Issue status for display
                     .Where(i =>
                         i.Rental.TenantId == tenantId && // Issues belong to the tenant's rentals
                         i.Status.StatusName != "Vyriešené") // Issue status is not "Vyriešené" (or resolved)

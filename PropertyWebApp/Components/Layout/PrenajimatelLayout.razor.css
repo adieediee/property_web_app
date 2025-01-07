@@ -53,15 +53,15 @@
     text-decoration: none;
     display: flex;
     align-items: center;
-    padding: 10px 0;
+    padding: 10px;
     cursor: pointer;
-    color: black;     
+    color: black;    
+    width:fit-content;
 }
 
     .menu-item:hover {
-        background-color: #e9ecef; /* Zvýraznenie pri hover */
-        border-radius: 8px;
-        padding-left: 10px;
+        /*TODO CUSTOM FARBA*/
+        background-color: gray; /* Zvýraznenie pri hover */
     }
 
     .menu-item a {
@@ -93,12 +93,9 @@
 .content-container {
     
     flex-grow: 1;
-    padding: 20px;
-    margin-left: 10px;
-    margin-right: 10px;
     border-radius: 16px;
     height: 90vh;
-    margin:20px;
+    padding:20px;
 }
 
 .site-header {

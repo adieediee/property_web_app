@@ -5,7 +5,7 @@
 @using PropertyWebApp.Models
 @using PropertyWebApp.Models.Services
 @using PropertyWebApp.Models.Services.PropertyWebApp.Services
-@page "/propertyScreen"
+@page "/issues-screen"
 @rendermode InteractiveServer
 @layout Layout.PrenajimatelLayout
 @inject IssueScreenViewModel ViewModel
@@ -13,7 +13,7 @@
 
 <Toolbar SearchPlaceholder="Hľadaj poruchy..."
          AddButtonText="Pridať poruchu"
-         AddButtonLink="/add-issue"
+         AddButtonLink="/edit-issue/"
          OnSearch="PerformIssueSearch"
          OnSettingsClick="OpenSettings" />
 

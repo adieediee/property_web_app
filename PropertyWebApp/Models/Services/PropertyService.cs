@@ -7,25 +7,40 @@
     using global::PropertyWebApp.Data;
     using global::PropertyWebApp.Data.ViewModels;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Identity.Client;
 
     public class PropertyService
     {
         private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
+        private readonly UserStateService _userStateService;
 
-        public PropertyService(IDbContextFactory<AppDbContext> dbContextFactory)
+        public PropertyService(IDbContextFactory<AppDbContext> dbContextFactory, UserStateService userStateService)
         {
-            _dbContextFactory = dbContextFactory;  
+            _dbContextFactory = dbContextFactory;
+            _userStateService = userStateService;
+        }
+
+        public async Task<List<Property>> LoadMyProperties()
+        {
+            return await GetUserPropertiesAsync(_userStateService.Id);
+        }
+
+        public async Task<List<Property>> GetUserPropertiesAsync(string tenantId)
+        {
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            return  await dbContext.Properties
+               .Where(p => p.Rentals.Any(r => r.TenantId == tenantId)) // Filtrovanie podľa TenantId
+               .Include(p => p.Rentals)
+               .Include(p => p.PropertyImages) // Načítajte obrázky nehnuteľností
+               .AsNoTracking() // Zníženie režijných nákladov pri čítaní údajov
+               .ToListAsync();
         }
         public async Task<List<PropertyViewModel>> LoadUserPropertyViewsAsync(string tenantId)
         {
-            using var dbContext = _dbContextFactory.CreateDbContext();
+           
 
             // Načítajte všetky nehnuteľnosti pre daného nájomcu
-            var properties = await dbContext.Properties
-                .Where(p => p.Rentals.Any(r => r.TenantId == tenantId)) // Filtrovanie podľa TenantId
-                .Include(p => p.PropertyImages) // Načítajte obrázky nehnuteľností
-                .AsNoTracking() // Zníženie režijných nákladov pri čítaní údajov
-                .ToListAsync();
+            var properties = await GetUserPropertiesAsync(tenantId);
 
             // Spracovanie dát mimo LINQ dotazu
             var propertyViewModels = new List<PropertyViewModel>();
@@ -193,6 +208,7 @@
         {
             await using var _dbContext = _dbContextFactory.CreateDbContext();
 
+
             // Získaj TenantId pre konkrétnu Property
             var tenantID = _dbContext.Rentals
                 .Where(r => r.PropertyId == propertyID)
@@ -222,6 +238,41 @@
                 return ""; // Ak TenantId neexistuje, vráť prázdny reťazec
             }
             
+        }
+        internal async Task<string> GetLandlordNameByProperty(int propertyID)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            // Získaj TenantId pre konkrétnu Property
+            var tenantID = _dbContext.Rentals
+                .Where(r => r.PropertyId == propertyID)
+                .Select(r => r.PropertyOwnerId) // Vyber TenantId
+                .FirstOrDefault();       // Vráť prvý záznam (alebo null)
+
+            if (tenantID != null) // Over, či TenantId existuje
+            {
+                // Nájdeme používateľa podľa TenantId
+                var tenant = await _dbContext.Users
+                    .Where(u => u.Id == tenantID)   // Filtrovanie podľa TenantId
+                    .Select(u => u.UserName)        // Vyber UserName
+                    .FirstOrDefaultAsync();
+                if (tenant != null)
+                {
+                    return tenant;
+                }
+                else
+                {
+                    return "error";
+                }
+                // Vráť výsledok
+
+                // Teraz môžeš použiť `tenant` (obsahuje UserName)
+            }
+            else
+            {
+                return ""; // Ak TenantId neexistuje, vráť prázdny reťazec
+            }
+
         }
     }
 }

@@ -16,32 +16,33 @@
     </div>
     <p class= "mb-6">Tu nájdeš informácie o prenajatých nehnuteľnostiach.</p>
     <!-- Top Cards -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
         <!-- Nezaplatená platba -->
-        <div class="bg-white p-6 rounded-3xl ">
+        <div class="bg-white p-6 rounded-3xl">
             <div class="flex h-10 gap-4 items-center mb-4">
-                <img class=" h-12 w-max" src="/img/icons/color/payment-due.png"/>
-                <h2 class="text-lg font-semibold  items-center">Najbližšia nezaplatená platba</h2>
+                <img class="h-12 w-max" src="/img/icons/color/payment-due.png" />
+                <h2 class="text-lg font-semibold items-center">Najbližšia nezaplatená platba</h2>
             </div>
             <div class="flex items-end">
                 <p class="text-gray-600 text-6xl">500</p>
+                <p class="text-gray-600 text-3xl">.00 €</p>
                 <p class="text-gray-600 ml-auto text-xl">15.01.2025</p>
-             </div>
-           
-           
+            </div>
         </div>
 
         <!-- Placeholder pre ďalšie karty -->
-        <div class="bg-white p-4 rounded-3xl ">
+        <div class="bg-white p-4 rounded-3xl">
             <h2 class="text-lg font-semibold mb-2">Placeholder karta 1</h2>
             <p class="text-gray-600">Obsah podľa potreby</p>
         </div>
 
-        <div class="bg-white p-4 rounded-3xl ">
+        <div class="bg-white p-4 rounded-3xl">
             <h2 class="text-lg font-semibold mb-2">Placeholder karta 2</h2>
             <p class="text-gray-600">Obsah podľa potreby</p>
         </div>
     </div>
+
+    
     
     <!-- Properties Card -->
     
@@ -68,47 +69,68 @@
     <!-- Last Transactions a Issues -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Last Transactions -->
-        <div class="bg-white p-6 rounded-3xl ">
+        <div class="bg-white p-6  rounded-3xl mb-0">
             <div class="flex h-10 gap-4 items-center mb-4">
                 <img class=" h-12 w-max" src="/img/icons/color/payment-done.png" />
                 <h2 class="text-lg font-semibold items-center ">História platieb</h2>
             </div>
-            <ul>
-                <li class="flex justify-between items-center mb-3">
-                    <span>Platba za 123 Maple Street</span>
-                    <span class="text-gray-600">500 €</span>
-                </li>
-                <li class="flex justify-between items-center mb-3">
-                    <span>Platba za 456 Oak Avenue</span>
-                    <span class="text-gray-600">450 €</span>
-                </li>
-                <!-- Pridajte ďalšie transakcie -->
-            </ul>
-            <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                Zobraziť všetko
-            </button>
+            <div class="space-y-2">
+                @foreach (var transaction in ViewModel.Payments)
+                {
+                    <div class="flex items-center space-x-3">
+                        <!-- Obrázok nehnuteľnosti -->
+                        <img src="@ViewModel.GetPropertyImage(transaction.Rental.PropertyId)" alt="Property Image" class="w-12 h-12 rounded-full object-cover">
+
+                        <!-- Informácie o transakcii -->
+                        <div class="flex-grow">
+                            <div class="font-bold text-base text-gray-800">@ViewModel.GetPropertyName(transaction.Rental.PropertyId)</div>
+                            <div class="text-sm text-gray-500">@transaction.PaymentDate</div>
+                        </div>
+
+                        <!-- Suma nájmu -->
+                        <div class="font-bold text-base text-green-600">@transaction.RentAmount</div>
+                    </div>
+                }
+            </div>
+
         </div>
 
-        <!-- Issues -->
-        <div class="bg-white p-6 rounded-3xl ">
+        <!-- Last Transactions -->
+        <div class="bg-white p-6  rounded-3xl  w-full">
             <div class="flex h-10 gap-4 items-center mb-4">
-                <img class=" h-12 w-max" src="/img/icons/color/issue.png" />
-                <h2 class="text-lg font-semibold items-center ">Poruchy</h2>
+                <img class=" h-12 w-max" src="/img/icons/color/payment-done.png" />
+                <h2 class="text-lg font-semibold items-center ">Nedávne poruchy</h2>
             </div>
-            <ul>
-                <li class="flex justify-between items-center mb-3">
-                    <span>Porucha: Klimatizácia nefunguje</span>
-                    <span class="text-gray-600">123 Maple Street</span>
-                </li>
-                <li class="flex justify-between items-center mb-3">
-                    <span>Porucha: Pokazený bojler</span>
-                    <span class="text-gray-600">456 Oak Avenue</span>
-                </li>
-                <!-- Pridajte ďalšie poruchy -->
-            </ul>
-            <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                Zobraziť všetko
-            </button>
+            <div class="w-full">
+                @foreach (var issue in ViewModel.UnresolvedIssues)
+                {
+                    <div class="flex gap-10">
+                        <div class="grid grid-cols-2 items-center py-2 w-full">
+                            <!-- Ľavá sekcia (Obrázok a základné informácie o probléme) -->
+                            <div class="flex items-center gap-3">
+                                <img src="@ViewModel.GetPropertyImage(issue.Rental.PropertyId)" alt="Property Image" class="w-12 h-12 rounded-full object-cover">
+                                <div>
+                                    <div class="font-bold text-base text-gray-800">@issue.Title</div>
+                                    <div class="text-sm text-gray-500">@issue.ReportDate</div>
+                                </div>
+                            </div>
+
+                            <!-- Stredná sekcia (Informácie o nehnuteľnosti) -->
+                            <div class="flex items-center justify-center gap-2 ">
+                                <img src="@ViewModel.GetPropertyImage(issue.Rental.PropertyId)" alt="Property Image" class="w-8 h-8 rounded-full object-cover">
+                                <p class="text-gray-800">@ViewModel.GetPropertyName(issue.PropertyId)</p>
+                            </div>
+
+                        </div>
+                        <!-- Pravá sekcia (Status) -->
+                        <div class="flex items-center w-20 left-0">
+                            <span class="font-bold text-base text-green-600">@issue.Status.StatusName</span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+
         </div>
     </div>
 </div>

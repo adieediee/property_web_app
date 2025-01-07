@@ -11,6 +11,14 @@ public class RentalService
         _dbContext = dbContext;
     }
 
+    public async Task<List<Rental>> GetAllRentals()
+    {
+        var rentals = await _dbContext.Rentals
+            .Include(r => r.Property)
+            .ToListAsync();
+        return rentals;
+    }
+
     // Retrieve all monthly payments for a tenant
     public async Task<List<MonthlyPayment>> GetMonthlyPaymentsAsync(string tenantId)
     {
