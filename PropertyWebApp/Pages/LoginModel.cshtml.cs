@@ -19,6 +19,7 @@ namespace PropertyWebApp.Components.Pages
             _signInManager = signInManager;
             _userManager = userManager;
             _userStateService = userStateService;
+            
         }
 
         [BindProperty]
@@ -29,6 +30,18 @@ namespace PropertyWebApp.Components.Pages
         public bool RememberMe { get; set; }
         public string? ErrorMessage { get; private set; }
 
+
+        public IActionResult OnGet()
+        {
+           
+            if (_userStateService.UserName != "" )
+            {
+                // Presmerujte prihláseného používateľa na /account
+                return RedirectToPage("/Logout");
+            }
+
+            return Page();
+        }
         public async Task<IActionResult> OnPostAsync()
         {
             if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))

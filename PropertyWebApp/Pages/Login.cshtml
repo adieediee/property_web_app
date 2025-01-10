@@ -4,31 +4,84 @@
 @{
     ViewData["Title"] = "Prihlásenie";
 }
-<div class="login-container">
-    <div class="login-card">
-        <h2>Vitajte späť</h2>
-        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-        {
-            <p style="color: red;">@Model.ErrorMessage</p>
-        }
-        <form method="post">
-            @Html.AntiForgeryToken()
-            <div class="input-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Zadaj svoj email" required />
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <section class="bg-white dark:bg-gray-900">
+        <div class="flex justify-center min-h-screen">
+            <!-- Left image -->
+            <div class="hidden bg-cover lg:block lg:w-2/5" style="background-image: url('https://images.unsplash.com/photo-1606660265514-358ebbadc80d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1575&q=80');">
             </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Zadaj svoje heslo" required />
-            </div>
-            <div class="login-options">
-                <div>
-                    <input type="checkbox" id="remember" name="remember" />
-                    <label for="remember">Zapamätať</label>
+
+            <!-- Login form -->
+            <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
+                <div class="w-full">
+                    <h1 class="text-2xl font-semibold tracking-wider text-gray-800 capitalize dark:text-white">
+                        Vitajte späť!
+                    </h1>
+
+                    <p class="mt-4 text-gray-500 dark:text-gray-400">
+                        Prihláste sa pomocou vášho účtu.
+                    </p>
+
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="p-4 mt-4 text-sm text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400 rounded-lg">
+                            @Model.ErrorMessage
+                        </div>
+                    }
+
+                    <form method="post" class="mt-6">
+                        @Html.AntiForgeryToken()
+                        <div class="grid grid-cols-1 gap-6">
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Email</label>
+                                <input id="email" name="email" type="email" placeholder="Zadaj svoj email" required
+                                       class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 focus:ring focus:ring-blue-300">
+                            </div>
+
+                            <!-- Password -->
+                            <div>
+                                <label for="password" class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Heslo</label>
+                                <input id="password" name="password" type="password" placeholder="Zadaj svoje heslo" required
+                                       class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 focus:ring focus:ring-blue-300">
+                            </div>
+                        </div>
+
+                        <!-- Remember me and forgot password -->
+                        <div class="flex justify-between items-center mt-4">
+                            <div>
+                                <input type="checkbox" id="remember" name="remember" class="text-blue-500 focus:ring focus:ring-blue-300">
+                                <label for="remember" class="ml-2 text-sm text-gray-600 dark:text-gray-300">Zapamätať</label>
+                            </div>
+                            <a href="#" class="text-sm text-blue-500 hover:underline dark:text-blue-400">Zabudnuté heslo?</a>
+                        </div>
+
+                        <!-- Submit button -->
+                        <div class="mt-6">
+                            <button type="submit" class="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+                                <span>Prihlásiť sa</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rtl:-scale-x-100" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a 1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+
+                    <p class="mt-6 text-gray-500 dark:text-gray-400">
+                        Nemáte účet? <a href="/register" class="text-blue-500 hover:underline dark:text-blue-400">Zaregistrovať sa</a>
+                    </p>
                 </div>
-                <a href="#" class="forgot-password">Zabudnuté heslo</a>
             </div>
-            <button type="submit" class="login-button">Prihlásiť sa</button>
-        </form>
-    </div>
-</div>
+        </div>
+    </section>
+</body>
+</html>

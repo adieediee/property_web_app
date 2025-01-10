@@ -2,7 +2,7 @@
 {
     public class UserStateService
     {
-        public string UserName { get; private set; } = "NEZNAMY";
+        public string UserName { get; private set; } = "";
         public string Id { get; private set; }
 
         public string Role { get; private set; }
@@ -17,6 +17,13 @@
         {
             Role = role;
             return Task.CompletedTask;
+        }
+
+        public void Clear()
+        {
+            UserName = "";
+            Id = "";
+            Role = "";
         }
     }
 }

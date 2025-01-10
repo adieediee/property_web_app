@@ -5,16 +5,19 @@
 @inject UserStateService UserStateService
 @layout Layout.PrenajimatelLayout
 
+@attribute [Authorize]
+
 <div class="min-h-screen p-4">
     <!-- Header -->
     <div class="flex justify-between items-center mb-2">
         <h1 class="text-3xl font-bold">Ahoj, @UserStateService.UserName!</h1>
-        
+
         <input type="text"
                placeholder="Search Anything..."
                class="w-1/3 p-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
-    <p class= "mb-6">Tu nájdeš informácie o prenajatých nehnuteľnostiach.</p>
+    <p class="mb-6">Tu nájdeš informácie o prenajatých nehnuteľnostiach.</p>
+
     <!-- Top Cards -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
         <!-- Nezaplatená platba -->
@@ -42,14 +45,11 @@
         </div>
     </div>
 
-    
-    
     <!-- Properties Card -->
-    
     <div class="bg-white p-6 rounded-3xl mb-6 gap-4">
         <div class="flex h-10 gap-4 items-center mb-4">
-            <img class=" h-12 w-max" src="/img/icons/color/property.png" />
-            <h2 class="text-lg font-semibold items-center ">Moje nehnuteľnosti</h2>
+            <img class="h-12 w-max" src="/img/icons/color/property.png" />
+            <h2 class="text-lg font-semibold items-center">Moje nehnuteľnosti</h2>
             <button class="bg-gray-100 p-2 pr-4 pl-4 rounded-3xl ml-auto">Zobraz všetko</button>
         </div>
         <div class="flex gap-4">
@@ -58,32 +58,34 @@
                 <PropertyCard MainImage="@property.MainImage"
                               PropertyName="@property.PropertyName"
                               TenantAvatar="@property.TenantAvatar"
-                              TenantName="@property.TenantName"
+                              TenantName="@property.UserName"
                               OnCardClick="() => ShowPropertyDetails(property.PropertyId)" />
             }
         </div>
-        
     </div>
-
 
     <!-- Last Transactions a Issues -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Last Transactions -->
-        <div class="bg-white p-6  rounded-3xl mb-0">
+        <div class="bg-white p-6 rounded-3xl mb-0">
             <div class="flex h-10 gap-4 items-center mb-4">
-                <img class=" h-12 w-max" src="/img/icons/color/payment-done.png" />
-                <h2 class="text-lg font-semibold items-center ">História platieb</h2>
+                <img class="h-12 w-max" src="/img/icons/color/payment-done.png" />
+                <h2 class="text-lg font-semibold items-center">História platieb</h2>
             </div>
             <div class="space-y-2">
                 @foreach (var transaction in ViewModel.Payments)
                 {
                     <div class="flex items-center space-x-3">
                         <!-- Obrázok nehnuteľnosti -->
-                        <img src="@ViewModel.GetPropertyImage(transaction.Rental.PropertyId)" alt="Property Image" class="w-12 h-12 rounded-full object-cover">
+                        <img src="@ViewModel.GetPropertyImage(transaction.Rental.PropertyId)"
+                             alt="Property Image"
+                             class="w-12 h-12 rounded-full object-cover" />
 
                         <!-- Informácie o transakcii -->
                         <div class="flex-grow">
-                            <div class="font-bold text-base text-gray-800">@ViewModel.GetPropertyName(transaction.Rental.PropertyId)</div>
+                            <div class="font-bold text-base text-gray-800">
+                                @ViewModel.GetPropertyName(transaction.Rental.PropertyId)
+                            </div>
                             <div class="text-sm text-gray-500">@transaction.PaymentDate</div>
                         </div>
 
@@ -92,49 +94,48 @@
                     </div>
                 }
             </div>
-
         </div>
 
-        <!-- Last Transactions -->
-        <div class="bg-white p-6  rounded-3xl  w-full">
+        <!-- Recent Issues -->
+        <div class="bg-white p-6 rounded-3xl w-full">
             <div class="flex h-10 gap-4 items-center mb-4">
-                <img class=" h-12 w-max" src="/img/icons/color/payment-done.png" />
-                <h2 class="text-lg font-semibold items-center ">Nedávne poruchy</h2>
+                <img class="h-12 w-max" src="/img/icons/color/payment-done.png" />
+                <h2 class="text-lg font-semibold items-center">Nedávne poruchy</h2>
             </div>
             <div class="w-full">
                 @foreach (var issue in ViewModel.UnresolvedIssues)
                 {
                     <div class="flex gap-10">
                         <div class="grid grid-cols-2 items-center py-2 w-full">
-                            <!-- Ľavá sekcia (Obrázok a základné informácie o probléme) -->
+                            <!-- Základné informácie -->
                             <div class="flex items-center gap-3">
-                                <img src="@ViewModel.GetPropertyImage(issue.Rental.PropertyId)" alt="Property Image" class="w-12 h-12 rounded-full object-cover">
+                                <img src="@ViewModel.GetPropertyImage(issue.Rental.PropertyId)"
+                                     alt="Property Image"
+                                     class="w-12 h-12 rounded-full object-cover" />
                                 <div>
                                     <div class="font-bold text-base text-gray-800">@issue.Title</div>
                                     <div class="text-sm text-gray-500">@issue.ReportDate</div>
                                 </div>
                             </div>
 
-                            <!-- Stredná sekcia (Informácie o nehnuteľnosti) -->
-                            <div class="flex items-center justify-center gap-2 ">
-                                <img src="@ViewModel.GetPropertyImage(issue.Rental.PropertyId)" alt="Property Image" class="w-8 h-8 rounded-full object-cover">
+                            <!-- Informácie o nehnuteľnosti -->
+                            <div class="flex items-center justify-center gap-2">
+                                <img src="@ViewModel.GetPropertyImage(issue.Rental.PropertyId)"
+                                     alt="Property Image"
+                                     class="w-8 h-8 rounded-full object-cover" />
                                 <p class="text-gray-800">@ViewModel.GetPropertyName(issue.PropertyId)</p>
                             </div>
-
                         </div>
-                        <!-- Pravá sekcia (Status) -->
+                        <!-- Status -->
                         <div class="flex items-center w-20 left-0">
                             <span class="font-bold text-base text-green-600">@issue.Status.StatusName</span>
                         </div>
                     </div>
                 }
             </div>
-
-
         </div>
     </div>
 </div>
-
 
 @code {
     protected override async Task OnInitializedAsync()
@@ -142,11 +143,8 @@
         await ViewModel.LoadDataAsync(UserStateService.Id);
     }
 
-    @code {
-        private async Task ShowPropertyDetails(int propertyId)
-        {
-            // Tu pridajte logiku pre zobrazenie detailov nehnuteľnosti
-            Console.WriteLine($"Zobraziť detaily pre nehnuteľnosť ID: {propertyId}");
-        }
+    private async Task ShowPropertyDetails(int propertyId)
+    {
+        Console.WriteLine($"Zobraziť detaily pre nehnuteľnosť ID: {propertyId}");
     }
 }

@@ -72,6 +72,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStat
 //MVVM
 builder.Services.AddScoped<IssueScreenViewModel>();
 builder.Services.AddScoped<TenantDashboardViewModel>();
+builder.Services.AddScoped<PropertyScreenViewModel>();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -81,6 +82,17 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/logout";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     });
+
+//roly pre authorized, nech sa neprihlaseny nedostane na dhasboard
+
+builder.Services.AddAuthorizationCore(options =>
+{
+    options.AddPolicy("RequireAuthenticatedUser", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+    });
+});
+//az tu to konci 
 
 
 var app = builder.Build();

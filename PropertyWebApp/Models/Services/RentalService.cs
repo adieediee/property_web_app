@@ -20,12 +20,23 @@ public class RentalService
     }
 
     // Retrieve all monthly payments for a tenant
-    public async Task<List<MonthlyPayment>> GetMonthlyPaymentsAsync(string tenantId)
+    public async Task<List<MonthlyPayment>> GetMonthlyPaymentsAsync(string userId, string role)
     {
-        return await _dbContext.MonthlyPayments
-            .Include(mp => mp.Rental)
-            .Where(mp => mp.Rental.TenantId == tenantId)
-            .ToListAsync();
+        IQueryable<MonthlyPayment> query = _dbContext.MonthlyPayments
+            .Include(mp => mp.Rental); // Zahrnutie prenájmu
+
+        // Dynamické filtrovanie podľa role
+        if (role == "Tenant")
+        {
+            query = query.Where(mp => mp.Rental.TenantId == userId);
+        }
+        else if (role == "Landlord")
+        {
+            query = query.Where(mp => mp.Rental.PropertyOwnerId == userId);
+        }
+
+        // Načítanie výsledkov
+        return await query.ToListAsync();
     }
 
     // Check if all rents are paid for the current month

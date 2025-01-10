@@ -2,6 +2,7 @@
 using PropertyWebApp.Models.Services;
 using PropertyWebApp.Models;
 using PropertyWebApp.Data.ViewModels;
+using System.Data;
 
 
 public class TenantDashboardViewModel
@@ -11,6 +12,7 @@ public class TenantDashboardViewModel
     
     private Dictionary<int, string> _propertyImages = new();
     
+    public string UserRole = "Tenant";
 
 
     public List<PropertyViewModel> Properties { get; private set; } = new();
@@ -37,43 +39,53 @@ public class TenantDashboardViewModel
 
     public async Task LoadDataAsync(string tenantId)
     {
-        // Load tenant details
-        TenantName = await LoadTenantNameAsync(tenantId);
+        UserRole = _userStateService.Role;
 
+        if (UserRole == "Tenant")
+        {
+            TenantName = await LoadTenantNameAsync(tenantId);
+        }
+       
         // Load properties rented by the tenant
-        Properties = await _propertyService.LoadUserPropertyViewsAsync(tenantId);
+        Properties = await _propertyService.LoadUserPropertyViewsAsync(tenantId, _userStateService.Role);
         foreach (var property in Properties)
         {
             if (!_propertyImages.ContainsKey(property.PropertyId))
             {
                 _propertyImages[property.PropertyId] = await _propertyService.GetPropertyImageAsync(property.PropertyId);
             }
-
-           
         }
 
         // Load unresolved issues
-        var issues = await _issueService.GetUnresolvedIssuesByTenantIdAsync(tenantId);
+        var issues = await _issueService.GetUnresolvedIssuesByTenantIdAsync(tenantId, _userStateService.Role);
         UnresolvedIssues = issues
-            
             .OrderByDescending(i => i.ReportDate)
             .Take(2)
             .ToList();
 
         // Load monthly payments for all rentals associated with the tenant
-        Payments = (await _rentalService.GetMonthlyPaymentsAsync(tenantId))
-    .Where(p => p.isPaid) // Filtrovanie iba zaplatených platieb
-    .OrderByDescending(p => p.PaymentDate) // Usporiadanie podľa najnovšieho dátumu
-    .Take(2) // Výber iba dvoch najnovších
-    .ToList();
+        Payments = (await _rentalService.GetMonthlyPaymentsAsync(tenantId, _userStateService.Role))
+        .Where(p => p.isPaid) // Filtrovanie iba zaplatených platieb
+        .OrderByDescending(p => p.PaymentDate) // Usporiadanie podľa najnovšieho dátumu
+        .Take(2) // Výber iba dvoch najnovších
+        .ToList();
         TotalMonthlyRent = Payments.Sum(p => p.TotalAmount);
 
         // Find upcoming payment
-        UpcomingPayment = Payments
+        if (UserRole == "Landlord")
+        {
+            UpcomingPayment = Payments
+                .Where(p => p.PaymentDate > DateTime.Now && !p.isPaid)
+                .OrderBy(p => p.PaymentDate)
+                .FirstOrDefault();
+        } else
+        {
+            UpcomingPayment = Payments
             .Where(p => p.PaymentDate > DateTime.Now && !p.isPaid)
             .OrderBy(p => p.PaymentDate)
             .FirstOrDefault();
-
+        }
+        
         // Check if all rents for the current month are paid
         var currentMonth = DateTime.Now;
         AreAllRentsPaid = await _rentalService.AreAllRentsPaidForTenantAsync(tenantId, currentMonth);

@@ -22,33 +22,54 @@
 
         public async Task<List<Property>> LoadMyProperties()
         {
-            return await GetUserPropertiesAsync(_userStateService.Id);
+            return await GetUserPropertiesAsync(_userStateService.Id, _userStateService.Role);
         }
 
-        public async Task<List<Property>> GetUserPropertiesAsync(string tenantId)
+        public async Task<List<Property>> GetUserPropertiesAsync(string userId, string role)
         {
             using var dbContext = _dbContextFactory.CreateDbContext();
-            return  await dbContext.Properties
-               .Where(p => p.Rentals.Any(r => r.TenantId == tenantId)) // Filtrovanie podľa TenantId
-               .Include(p => p.Rentals)
-               .Include(p => p.PropertyImages) // Načítajte obrázky nehnuteľností
-               .AsNoTracking() // Zníženie režijných nákladov pri čítaní údajov
-               .ToListAsync();
+
+            // Základný dotaz
+            var query = dbContext.Properties
+                .Include(p => p.Rentals)
+                .Include(p => p.PropertyImages)
+                .AsNoTracking();
+
+            // Dynamické filtrovanie podľa role
+            if (role == "Tenant")
+            {
+                query = query.Where(p => p.Rentals.Any(r => r.TenantId == userId));
+            }
+            else if (role == "Landlord")
+            {
+                query = query.Where(p => p.Rentals.Any(r => r.PropertyOwnerId == userId));
+            }
+
+            return await query.ToListAsync();
         }
-        public async Task<List<PropertyViewModel>> LoadUserPropertyViewsAsync(string tenantId)
+
+        public async Task<List<PropertyViewModel>> LoadUserPropertyViewsAsync(string tenantId, string role)
         {
            
-
             // Načítajte všetky nehnuteľnosti pre daného nájomcu
-            var properties = await GetUserPropertiesAsync(tenantId);
+            //TODO dat pred napevno tenant
+            var properties = await GetUserPropertiesAsync(tenantId, role);
 
             // Spracovanie dát mimo LINQ dotazu
             var propertyViewModels = new List<PropertyViewModel>();
-
+            
             foreach (var property in properties)
             {
+                string userName;
+                if(role == "Tenant")
+                {
+                    userName = await GetLandlordNameByProperty(property.PropertyId);
+                } else
+                {
+                    userName = await GetTenantNameByProperty(property.PropertyId);
+                }
                 // Načítajte meno nájomcu pre danú nehnuteľnosť
-                var tenantName = await GetTenantNameByProperty(property.PropertyId);
+               
 
                 // Zostavte PropertyScreenViewModel
                 propertyViewModels.Add(new PropertyViewModel
@@ -63,7 +84,7 @@
                     NumberOfBathrooms = property.NumberOfBathrooms,
                     Area = property.Area,
                     Description = property.Description,
-                    TenantName = tenantName
+                    UserName = userName
                 });
             }
 
@@ -116,7 +137,7 @@
                 NumberOfBathrooms = p.NumberOfBathrooms,
                 Area = p.Area,
                 Description = p.Description,
-                TenantName = tenant
+                UserName = tenant
             };
             return propertyVM;
         }

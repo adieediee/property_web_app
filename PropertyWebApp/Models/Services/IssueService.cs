@@ -3,7 +3,9 @@
     using global::PropertyWebApp.Data;
     using Microsoft.EntityFrameworkCore;
     using System;
+    using System.Data;
     using System.Threading.Tasks;
+    using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
     namespace PropertyWebApp.Services
     {
@@ -121,18 +123,28 @@
                     throw new ArgumentException("Dátum vyriešenia musí byť po dátume nahlásenia.");
             }
 
-            public async Task<List<Issue>> GetUnresolvedIssuesByTenantIdAsync(string tenantId)
+            public async Task<List<Issue>> GetUnresolvedIssuesByTenantIdAsync(string userId, string role)
             {
                 using var dbContext = _dbContextFactory.CreateDbContext();
-                return await dbContext.Issues
-                    .Include(i => i.Property)
-                    .Include(i => i.Rental) // Include Property details for display
-                    .Include(i => i.Status) // Include Issue status for display
-                    .Where(i =>
-                        i.Rental.TenantId == tenantId && // Issues belong to the tenant's rentals
-                        i.Status.StatusName != "Vyriešené") // Issue status is not "Vyriešené" (or resolved)
-                    .OrderByDescending(i => i.ReportDate) // Order by latest reported issues
-                    .ToListAsync();
+                var query = dbContext.Issues
+                .Include(i => i.Property)
+                .Include(i => i.Rental)
+                .Include(i => i.Status)
+                .Where(i => i.Status.StatusName != "Vyriešené"); // Nezahrňujeme vyriešené problémy
+                
+
+                if (role == "Tenant")
+    {
+                    query = query.Where(i => i.Rental.TenantId == userId);
+                }
+                 else if (role == "Landlord")
+                {
+                    query = query.Where(i => i.Rental.PropertyOwnerId == userId);
+                }
+
+                return await query
+                .ToListAsync();
+
             }
 
             internal async Task<int> GetResolvedIssuesCountByTenantIdAsync(string tenantId)
