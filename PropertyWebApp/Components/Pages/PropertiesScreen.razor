@@ -14,7 +14,7 @@
 
 <Toolbar SearchPlaceholder="Hľadaj poruchy..."
          AddButtonText="Pridať poruchu"
-         AddButtonLink="/add-issue"
+         AddButtonLink="GetAddButtonLink"
          OnSearch="ViewModel.PerformPropertySearch"
          OnSettingsClick="OpenSettings" />
 
@@ -46,11 +46,14 @@
                     </div>
                 }
                 <!-- Tlačidlo pridať nehnuteľnosť -->
+                @if(UserStateService.Role == "Landlord") {
                 <div class="flex justify-center items-center bg-gray-100 rounded-lg cursor-pointer h-40" @onclick="NavigateToAddProperty">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                 </div>
+                }
+                
             </div>
         </div>
 
@@ -101,16 +104,29 @@
     {
         await ViewModel.InitializeAsync();
     }
-    
+
     //async?
     private void NavigateToAddProperty()
     {
-        
+
         Navigation.NavigateTo($"/edit-property/");
     }
 
     private void OpenSettings()
     {
         // TODO
+    }
+
+    private string GetAddButtonLink()
+    {
+        if(UserStateService.Role == "Landlord")
+        {
+            return "/edit-property";
+        } else
+        {
+            //TODO redirect to add landlord
+            return "/";
+        }
+        
     }
 }

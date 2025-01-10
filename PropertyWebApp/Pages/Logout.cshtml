@@ -1,19 +1,24 @@
-﻿@page "/Logout"
+﻿
+@page "/Logout"
 @using PropertyWebApp.Components.Pages
 @model LogoutModel
 
 @{
     ViewData["Title"] = "Odhlásenie";
 }
-
-<div class="logout-container">
-    <div class="logout-card">
-        <h2>Odhlásiť sa</h2>
-        <p>Ste si istý, že sa chcete odhlásiť?</p>
-        <form method="post">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Odhlásiť sa</h2>
+        <p class="text-gray-600 text-center mb-6">Ste si istý, že sa chcete odhlásiť?</p>
+        <form method="post" class="flex flex-col space-y-4">
             @Html.AntiForgeryToken()
-            <button type="submit" class="logout-button">Áno, odhlásiť sa</button>
+            <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg">
+                Áno, odhlásiť sa
+            </button>
         </form>
-        <a href="/" class="cancel-button">Zrušiť</a>
+        <a href="/" class="block text-center mt-4 text-gray-600 hover:underline">
+            Zrušiť
+        </a>
     </div>
 </div>

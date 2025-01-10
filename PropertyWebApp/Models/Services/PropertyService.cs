@@ -25,6 +25,18 @@
             return await GetUserPropertiesAsync(_userStateService.Id, _userStateService.Role);
         }
 
+        public async Task<List<Property>> GetAvailablePropertiesAsync()
+        {
+            // Napríklad Entity Framework Core:
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            var properties =  await dbContext.Properties
+                .Include(properties => properties.PropertyImages)
+                .Where(p => p.IsAvailable) // Filtrovanie dostupných nehnuteľností
+                .ToListAsync();
+            return properties;
+        }
+
+
         public async Task<List<Property>> GetUserPropertiesAsync(string userId, string role)
         {
             using var dbContext = _dbContextFactory.CreateDbContext();
