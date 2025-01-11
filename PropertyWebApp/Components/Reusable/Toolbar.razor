@@ -1,31 +1,35 @@
 ﻿
 
 
-<div class="flex items-center justify-between bg-gray-100 p-4 rounded-full shadow-lg">
+<div class="flex items-center justify-between  p-4 rounded-full">
     <!-- Search Input -->
-    <div class="flex items-center w-1/2 bg-white rounded-full shadow-inner px-4 h-14">
-        <input type="text"
-               placeholder="@SearchPlaceholder"
-               class="w-full bg-transparent focus:outline-none text-lg py-2 px-3"
-               @bind="@SearchQuery"
-               @oninput="@HandleSearchInput" />
-        <button class="flex items-center justify-center w-12 h-12 bg-black text-white rounded-full ml-3" @onclick="@TriggerSearch">
-            <img src="/img/icons/Magnifying-glass.png" alt="Search" class="w-6 h-6" />
-        </button>
+    <div class="flex items-center w-1/2 rounded-full bg-white h-16 pr-2">
+        <div class="flex w-full ml-4">
+            <input type="text"
+                   placeholder="@SearchPlaceholder"
+                   class="w-full bg-transparent focus:outline-none text-lg py-2 px-3"
+                   @bind="@SearchQuery"
+                   @oninput="@HandleSearchInput" />
+            <button class="flex items-center justify-center p-4" @onclick="@TriggerSearch">
+                <img src="/img/icons/Magnifying-glass.png" alt="Search" class="" />
+            </button>
+        </div>
+        
+        
     </div>
     <div class="flex items-center gap-8">
         <!-- Add Button -->
         @if (!string.IsNullOrWhiteSpace(AddButtonText) && !string.IsNullOrWhiteSpace(AddButtonLink))
         {
             <a href="@AddButtonLink"
-               class="flex items-center bg-white rounded-full px-6 py-3 shadow hover:bg-gray-100 transition h-14">
+               class="flex items-center bg-white rounded-full px-6 py-3 hover:bg-gray-100 transition h-16">
                 <img src="/img/icons/add.png" alt="Add" class="w-6 h-6 mr-3" />
                 <span class="text-lg text-gray-700 font-medium">@AddButtonText</span>
             </a>
         }
         <!-- Settings Button -->
-        <button class="flex items-center justify-center w-14 h-14 bg-white rounded-full shadow hover:bg-gray-100 transition" @onclick="@OpenSettings">
-            <img src="/img/icons/settings.png" alt="Settings" class="w-6 h-6" />
+        <button class="flex items-center justify-center w-16 h-16 bg-white rounded-full shadow hover:bg-gray-100 transition" @onclick="@OpenSettings">
+            <img src="/img/icons/settings.png" alt="Settings" class="w-8 h-8" />
         </button>
     </div>
 </div>
@@ -34,7 +38,7 @@
 
 @code {
     [Parameter]
-    public EventCallback<string> OnSearch { get; set; } // Callback pre vyhľadávanie
+    public EventCallback<string> OnSearch { get; set; } 
 
     [Parameter]
     public string SearchPlaceholder { get; set; } = "Vyhľadaj...";
@@ -46,7 +50,7 @@
     public string AddButtonLink { get; set; } = "/";
 
     [Parameter]
-    public EventCallback OnSettingsClick { get; set; } // Callback pre nastavenia
+    public EventCallback OnSettingsClick { get; set; } 
 
     private string SearchQuery { get; set; } = string.Empty;
 

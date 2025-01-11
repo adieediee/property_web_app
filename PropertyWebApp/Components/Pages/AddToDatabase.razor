@@ -40,7 +40,7 @@
                         <div class="flex items-center">
                             @if (SelectedProperty != null)
                             {
-                                <img src="" alt="Property Image" class="w-8 h-8 rounded-full object-cover mr-3" />
+                                <img src="@SelectedProperty.PropertyImages.FirstOrDefault().ImagePath" alt="Property Image" class="w-8 h-8 rounded-full object-cover mr-3" />
                                 <span class="text-gray-700">@SelectedProperty.PropertyName</span>
                             }
                             else
@@ -58,7 +58,7 @@
                             {
                                 <div class="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
                                      @onclick="() => SelectProperty(property)">
-                                <img src="<img src="@property.PropertyImages?.FirstOrDefault()?.ImagePath ??  /img/default-placeholder-property.png" alt="Property Image" class="w-8 h-8 rounded-full object-cover mr-3" />
+                                <img src="@property.PropertyImages.FirstOrDefault().ImagePath" alt="Property Image" class="w-8 h-8 rounded-full object-cover mr-3" />
                                     <span class="text-gray-700">@property.PropertyName</span>
                                 </div>
                             }

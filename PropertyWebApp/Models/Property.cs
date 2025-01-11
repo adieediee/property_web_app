@@ -41,9 +41,8 @@ namespace PropertyWebApp.Models
         [StringLength(50, ErrorMessage = "Krajina môe ma maximálne 50 znakov.")]
         public string Country { get; set; }
 
-        [Required(ErrorMessage = "Štát je povinnı.")]
-        [StringLength(50, ErrorMessage = "Štát môe ma maximálne 50 znakov.")]
-        public string State { get; set; }
+        
+        
 
         [Range(0, 1_000_000, ErrorMessage = "Cena musí by v rozmedzí od 0 do 1 000 000.")]
         public decimal Price { get; set; }

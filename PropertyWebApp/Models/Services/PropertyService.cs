@@ -89,7 +89,7 @@
                     PropertyId = property.PropertyId,
                     PropertyName = property.PropertyName,
                     City = property.City,
-                    State = property.State,
+                    
                     MainImage = property.PropertyImages.FirstOrDefault()?.ImagePath ?? "/img/default-placeholder-property.jpg",
                     Price = property.Price,
                     NumberOfBedrooms = property.NumberOfBedrooms,
@@ -113,7 +113,7 @@
                     PropertyId = p.PropertyId,
                     PropertyName = p.PropertyName,
                     City = p.City,
-                    State = p.State,
+                    
                     MainImage = p.PropertyImages.FirstOrDefault() != null ? p.PropertyImages.FirstOrDefault().ImagePath : "/img/default-placeholder-property.jpg",
                     Price = p.Price,
                     NumberOfBedrooms = p.NumberOfBedrooms,
@@ -141,7 +141,7 @@
                 PropertyId = p.PropertyId,
                 PropertyName = p.PropertyName,
                 City = p.City,
-                State = p.State,
+                
                 MainImage = p.PropertyImages.FirstOrDefault()?.ImagePath ?? "/img/default-placeholder-property.jpg",
 
                 Price = p.Price,

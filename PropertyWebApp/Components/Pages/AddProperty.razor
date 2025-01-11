@@ -11,146 +11,135 @@
 
 @rendermode InteractiveServer
 
-<div class="upload-container">
-    <EditForm Model="newProperty" OnValidSubmit="HandleValidSubmit">
+<div class="w-full max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <!-- Header formulára -->
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800">@(PropertyId.HasValue ? "Upraviť nehnuteľnosť" : "Pridať novú nehnuteľnosť")</h2>
+        <p class="text-gray-600">Vyplňte všetky potrebné údaje o nehnuteľnosti</p>
+    </div>
+
+    <!-- Form -->
+    <EditForm Model="newProperty" OnValidSubmit="HandleValidSubmit" class="space-y-8">
         <AntiforgeryToken />
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <div class="form-section">
-            <h3>@(PropertyId.HasValue ? "Upraviť nehnuteľnosť" : "Pridať novú nehnuteľnosť")</h3>
-
-            <div class="form-group">
-                <label for="name">Názov nehnuteľnosti</label>
-                <InputText id="name" class="styled-input" placeholder="Zadaj názov nehnuteľnosti" @bind-Value="newProperty.PropertyName" />
-                <ValidationMessage For="() => newProperty.PropertyName" />
+        <!-- Sekcie vedľa seba -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Sekcia: Základné informácie -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Základné informácie</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Názov nehnuteľnosti *</label>
+                        <InputText id="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj názov nehnuteľnosti" @bind-Value="newProperty.PropertyName" />
+                        <ValidationMessage For="() => newProperty.PropertyName" class="text-red-500 text-sm mt-1" />
+                    </div>
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700">Popis *</label>
+                        <InputTextArea id="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Popis nehnuteľnosti" @bind-Value="newProperty.Description" />
+                        <ValidationMessage For="() => newProperty.Description" class="text-red-500 text-sm mt-1" />
+                    </div>
+                    <div>
+                        <label for="street" class="block text-sm font-medium text-gray-700">Ulica *</label>
+                        <InputText id="street" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj ulicu" @bind-Value="newProperty.StreetName" />
+                        <ValidationMessage For="() => newProperty.StreetName" class="text-red-500 text-sm mt-1" />
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="city" class="block text-sm font-medium text-gray-700">Mesto *</label>
+                            <InputText id="city" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj mesto" @bind-Value="newProperty.City" />
+                            <ValidationMessage For="() => newProperty.City" class="text-red-500 text-sm mt-1" />
+                        </div>
+                        <div>
+                            <label for="psc" class="block text-sm font-medium text-gray-700">PSČ *</label>
+                            <InputText id="psc" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj PSČ" @bind-Value="newProperty.PostalCode" />
+                            <ValidationMessage For="() => newProperty.PostalCode" class="text-red-500 text-sm mt-1" />
+                        </div>
+                    </div>
+                    <div>
+                        <label for="country" class="block text-sm font-medium text-gray-700">Krajina *</label>
+                        <InputText id="country" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj krajinu" @bind-Value="newProperty.Country" />
+                        <ValidationMessage For="() => newProperty.Country" class="text-red-500 text-sm mt-1" />
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="description">Popis nehnuteľnosti</label>
-                <InputTextArea id="description" class="styled-input desc" placeholder="Zadaj popis nehnuteľnosti" @bind-Value="newProperty.Description" />
-                <ValidationMessage For="() => newProperty.Description" />
-            </div>
-
-            <div class="form-group">
-                <label for="city">Mesto</label>
-                <InputText id="city" class="styled-input" placeholder="Zadaj mesto" @bind-Value="newProperty.City" />
-                <ValidationMessage For="() => newProperty.City" />
-            </div>
-
-            <div class="form-group">
-                <label for="street">Ulica</label>
-                <InputText id="street" class="styled-input" placeholder="Zadaj ulicu" @bind-Value="newProperty.StreetName" />
-                <ValidationMessage For="() => newProperty.StreetName" />
-            </div>
-
-            <div class="form-group">
-                <label for="psc">PSČ</label>
-                <InputText id="psc" class="styled-input" placeholder="Zadaj PSČ" @bind-Value="newProperty.PostalCode" />
-                <ValidationMessage For="() => newProperty.PostalCode" />
-            </div>
-
-            <div class="form-group">
-                <label for="state">Štát</label>
-                <InputText id="state" class="styled-input" placeholder="Zadaj štát" @bind-Value="newProperty.State" />
-                <ValidationMessage For="() => newProperty.State" />
-            </div>
-
-            <div class="form-group">
-                <label for="price">Cena (€)</label>
-                <InputNumber id="price" class="styled-input" placeholder="Zadaj cenu" @bind-Value="newProperty.Price" />
-                <ValidationMessage For="() => newProperty.Price" />
-            </div>
-
-            <div class="form-group">
-                <label for="area">Rozloha (m²)</label>
-                <InputNumber id="area" class="styled-input" placeholder="Zadaj rozlohu" @bind-Value="newProperty.Area" />
-                <ValidationMessage For="() => newProperty.Area" />
-            </div>
-
-            <div class="form-group">
-                <label for="bedrooms">Počet spální</label>
-                <InputNumber id="bedrooms" class="styled-input" placeholder="Zadaj počet spální" @bind-Value="newProperty.NumberOfBedrooms" />
-                <ValidationMessage For="() => newProperty.NumberOfBedrooms" />
-            </div>
-
-            <div class="form-group">
-                <label for="bathrooms">Počet kúpeľní</label>
-                <InputNumber id="bathrooms" class="styled-input" placeholder="Zadaj počet kúpeľní" @bind-Value="newProperty.NumberOfBathrooms" />
-                <ValidationMessage For="() => newProperty.NumberOfBathrooms" />
-            </div>
-
-
-
-            <!-- TODO factory db context
-            <div class="form-group">
-                <label for="type">Typ nehnuteľnosti</label>
-                <InputSelect id="type" class="styled-input" @bind-Value="newProperty.TypeId">
-            @foreach (var propertyType in DbContext.PropertyTypes)
-            {
-                        <option value="@propertyType.TypeId">@propertyType.TypeId</option>
-            }
-                </InputSelect>
-                <ValidationMessage For="() => newProperty.TypeId" />
-            </div>
-             -->
-
-
-
-
-
-
-
-
-
-
-            <div class="actions">
-                <button class="btn-back" @onclick="NavigateBack">Zrušiť</button>
-                <button type="submit" class="btn-next">@((PropertyId.HasValue) ? "Uložiť" : "Pridať")</button>
+            <!-- Sekcia: Dodatočné informácie -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Dodatočné informácie</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="price" class="block text-sm font-medium text-gray-700">Cena (€) *</label>
+                        <InputNumber id="price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj cenu" @bind-Value="newProperty.Price" />
+                        <ValidationMessage For="() => newProperty.Price" class="text-red-500 text-sm mt-1" />
+                    </div>
+                    <div>
+                        <label for="area" class="block text-sm font-medium text-gray-700">Rozloha (m²) *</label>
+                        <InputNumber id="area" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj rozlohu" @bind-Value="newProperty.Area" />
+                        <ValidationMessage For="() => newProperty.Area" class="text-red-500 text-sm mt-1" />
+                    </div>
+                    <div>
+                        <label for="bedrooms" class="block text-sm font-medium text-gray-700">Počet spální *</label>
+                        <InputNumber id="bedrooms" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj počet spální" @bind-Value="newProperty.NumberOfBedrooms" />
+                        <ValidationMessage For="() => newProperty.NumberOfBedrooms" class="text-red-500 text-sm mt-1" />
+                    </div>
+                    <div>
+                        <label for="bathrooms" class="block text-sm font-medium text-gray-700">Počet kúpeľní *</label>
+                        <InputNumber id="bathrooms" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj počet kúpeľní" @bind-Value="newProperty.NumberOfBathrooms" />
+                        <ValidationMessage For="() => newProperty.NumberOfBathrooms" class="text-red-500 text-sm mt-1" />
+                    </div>
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700">Typ nehnuteľnosti *</label>
+                        <InputNumber id="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj typ ID" @bind-Value="newProperty.TypeId" />
+                        <ValidationMessage For="() => newProperty.TypeId" class="text-red-500 text-sm mt-1" />
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="upload-section">
-            <h3>Nahrať obrázky pre nehnuteľnosť</h3>
-            <div class="upload-dropzone">
-                <label class="upload-label" for="file-upload">
-                    <i class="icon-upload"></i>
-                    Presuňte súbory alebo <span class="upload-link">preklikajte</span> sem
-                    <InputFile id="file-upload" OnChange="HandleFileSelected" multiple />
-                </label>
-            </div>
-
-            <div class="uploaded-files">
+        <!-- Sekcia: Obrázky -->
+        <div>
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">Obrázky nehnuteľnosti</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach (var file in uploadedFiles)
                 {
-                    <div class="uploaded-file">
-                        <p>@file.Name - @(file.Size / 1024) KB</p>
-                        <button class="btn-remove" @onclick="() => RemoveFile(file)">X</button>
+                    <div class="relative border border-gray-300 rounded-md overflow-hidden">
+                        <img src="@file" alt="Image Preview" class="w-full h-32 object-cover">
+                        <button class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm" @onclick="() => RemoveFile(file)">×</button>
                     </div>
                 }
+                <div class="border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center h-32">
+                    <label class="text-center cursor-pointer">
+                        <span class="text-gray-400">Nahrajte obrázky</span>
+                        <InputFile id="file-upload" OnChange="HandleFileSelected" multiple class="hidden" />
+                    </label>
+                </div>
             </div>
+        </div>
 
-            @if (fileUploadError != null)
-            {
-                <div class="alert alert-danger">@fileUploadError</div>
-            }
+        <!-- Akcie -->
+        <div class="flex justify-end gap-4 mt-6">
+            <button class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100" @onclick="NavigateBack">Zrušiť</button>
+            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">@((PropertyId.HasValue) ? "Uložiť" : "Pridať")</button>
         </div>
     </EditForm>
 </div>
 
+
+
 @code {
+    //TODO opravit, lebo neukazuje nehnutelsnost. pridat landlordovi filtrovanie aj podla vytvorenych nehnutelnosti aj ked neexistuje rental
     [Parameter]
     public int? PropertyId { get; set; }
 
     private Property newProperty = new Property();
-    private Rental newRental = new Rental();
-    private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
-    private string? fileUploadError;
+    private List<string> uploadedFiles = new List<string>();
     private const long MaxFileSize = 512 * 1024; // 512 KB
 
     protected override async Task OnParametersSetAsync()
     {
-        if (PropertyId.HasValue) // Úprava existujúcej nehnuteľnosti
+        if (PropertyId.HasValue)
         {
             var existingProperty = await DbContext.Properties
                 .Include(p => p.PropertyImages)
@@ -159,114 +148,71 @@
             if (existingProperty != null)
             {
                 newProperty = existingProperty;
+                uploadedFiles = existingProperty.PropertyImages.Select(p => p.ImagePath).ToList();
             }
-        }
-        else // Pridanie novej nehnuteľnosti
-        {
-            newProperty = new Property
-                {
-                    NumberOfBathrooms = 1,
-                    NumberOfBedrooms = 1,
-                    IsAvailable = false,
-                    ListingDate = DateTime.Now,
-                    IsFurnished = false,
-                    ParkingAvailable = false,
-                    TypeId = 1, // Default TypeId
-                    Country = "Slovensko", // Default Country
-                };
-            
         }
     }
 
-
-    // Ošetrenie validného formulára
     private async Task HandleValidSubmit()
     {
-        // Overenie, že PropertyId existuje
         if (PropertyId.HasValue)
         {
-            DbContext.Properties.Update(newProperty); // Ak upravujeme existujúcu nehnuteľnosť
+            DbContext.Properties.Update(newProperty);
         }
         else
         {
-             // Ak pridávame nový nájom
-            await DbContext.Properties.AddAsync(newProperty); // Ak pridávame novú nehnuteľnosť
-            
-            newRental = new Rental
-                {
-                    Property = newProperty,
-                    PropertyId = newProperty.PropertyId,
-                    TenantId = UserStateService.Id,
-                    PropertyOwnerId = UserStateService.Id,// Default TenantId
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddMonths(1),
-                };
-            await DbContext.Rentals.AddAsync(newRental);
+            await DbContext.Properties.AddAsync(newProperty);
         }
 
-        await DbContext.SaveChangesAsync(); // Uložíme nehnuteľnosť
+        await DbContext.SaveChangesAsync();
 
+        foreach (var filePath in uploadedFiles)
+        {
+            var propertyImage = new PropertyImage
+                {
+                    PropertyId = newProperty.PropertyId,
+                    ImagePath = filePath
+                };
+
+            await DbContext.PropertyImages.AddAsync(propertyImage);
+        }
+
+        await DbContext.SaveChangesAsync();
+        Navigation.NavigateTo("/properties");
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
         var uploadsFolder = Path.Combine("wwwroot", "uploads");
         if (!Directory.Exists(uploadsFolder))
         {
             Directory.CreateDirectory(uploadsFolder);
         }
 
-        // Uloženie obrázkov
-        foreach (var file in uploadedFiles)
+        foreach (var file in e.GetMultipleFiles())
         {
-            try
-            {
-                var filePath = Path.Combine(uploadsFolder, file.Name);
-                await using var fileStream = new FileStream(filePath, FileMode.Create);
-                await file.OpenReadStream(MaxFileSize).CopyToAsync(fileStream);
+            var filePath = Path.Combine(uploadsFolder, file.Name);
 
-                var propertyImage = new PropertyImage
-                    {
-                        PropertyId = newProperty.PropertyId, // Už je nastavené po uložený zázname
-                        ImagePath = $"/uploads/{file.Name}"
-                    };
+            await using var fileStream = new FileStream(filePath, FileMode.Create);
+            await file.OpenReadStream(MaxFileSize).CopyToAsync(fileStream);
 
-                await DbContext.PropertyImages.AddAsync(propertyImage);
-            }
-            catch (Exception ex)
-            {
-                fileUploadError = $"Nahrávanie súboru {file.Name} zlyhalo: {ex.Message}";
-            }
+            uploadedFiles.Add($"/uploads/{file.Name}");
         }
-
-        await DbContext.SaveChangesAsync(); // Uložíme obrázky
-
-        Navigation.NavigateTo("/properties");
     }
 
-    // Funkcia na výber súborov
-    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    private void RemoveFile(string filePath)
     {
-        fileUploadError = null;
-        var files = e.GetMultipleFiles();
+        uploadedFiles.Remove(filePath);
 
-        foreach (var file in files)
+        var fullPath = Path.Combine("wwwroot", filePath.TrimStart('/'));
+        if (File.Exists(fullPath))
         {
-            if (file.Size > MaxFileSize)
-            {
-                fileUploadError = $"Súbor {file.Name} prekračuje maximálnu veľkosť 512 KB.";
-                continue;
-            }
-
-            uploadedFiles.Add(file);
+            File.Delete(fullPath);
         }
     }
 
-    // Navigácia späť
     private void NavigateBack()
     {
         Navigation.NavigateTo("/properties");
-    }
-
-    // Odstránenie súboru
-    private void RemoveFile(IBrowserFile file)
-    {
-        uploadedFiles.Remove(file);
     }
 }

@@ -47,7 +47,7 @@ namespace PropertyWebApp
                     await userManager.AddToRoleAsync(tenantUser, "Tenant");
                 }
 
-                // Vytvorenie predvoleného prenajímateľa
+                // Predvoleny prenajimatel
                 if (await userManager.FindByEmailAsync("landlord@example.com") == null)
                 {
                     var landlordUser = new IdentityUser
@@ -60,12 +60,12 @@ namespace PropertyWebApp
                     await userManager.AddToRoleAsync(landlordUser, "Landlord");
                 }
 
+                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+               
 
 
                 // IssueStatus
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
                 if (!context.IssueStatus.Any())
                 {
                     var statuses = new List<IssueStatus>
@@ -83,8 +83,10 @@ namespace PropertyWebApp
                 {
                     var propertyTypes = new List<PropertyType>
                     {
-                        new PropertyType { TypeName = "Apartment" },
-                        new PropertyType { TypeName = "House" }
+                        new PropertyType { TypeName = "Dom" },
+                        new PropertyType { TypeName = "Byt" },
+                        new PropertyType { TypeName = "Chata" }
+                  
                     };
 
                     context.PropertyTypes.AddRange(propertyTypes);
@@ -92,8 +94,9 @@ namespace PropertyWebApp
                 }
 
                 //  TypeId pre PropertyTypes
-                var apartmentTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Apartment")?.TypeId;
-                var houseTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "House")?.TypeId;
+                var apartmentTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Byt")?.TypeId;
+                var houseTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Dom")?.TypeId;
+                var chaletTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Chata")?.TypeId;
 
                 //  Properties
                 if (!context.Properties.Any())
@@ -103,7 +106,7 @@ namespace PropertyWebApp
                         new Property
                         {
                             PropertyName = "Moderný byt v centre",
-                            IsAvailable = true,
+                            IsAvailable = false,
                             TypeId = apartmentTypeId.Value, // Dynamicky získané TypeId
                             ListingDate = DateTime.Now.AddDays(-30),
                             Description = "Priestranný 2-izbový byt s balkónom v centre mesta.",
@@ -111,7 +114,7 @@ namespace PropertyWebApp
                             City = "Bratislava",
                             PostalCode = "81101",
                             Country = "Slovensko",
-                            State = "Bratislava",
+                            
                             Price = 850.00m,
                             Area = 65,
                             NumberOfBedrooms = 2,
@@ -130,14 +133,72 @@ namespace PropertyWebApp
                             City = "Žilina",
                             PostalCode = "01001",
                             Country = "Slovensko",
-                            State = "Žilinský kraj",
+                            
                             Price = 1200.00m,
                             Area = 120,
                             NumberOfBedrooms = 4,
                             NumberOfBathrooms = 2,
                             IsFurnished = false,
                             ParkingAvailable = true
-                        }
+                        },
+                             new Property
+    {
+        PropertyName = "Luxusná chata v horách",
+        IsAvailable = true,
+        TypeId = chaletTypeId.Value, // Dynamicky získané TypeId
+        ListingDate = DateTime.Now.AddDays(-15),
+        Description = "Krásna chata v horách s výhľadom na panorámu Tatier.",
+        StreetName = "Horská 5",
+        City = "Vysoké Tatry",
+        PostalCode = "06201",
+        Country = "Slovensko",
+        
+        Price = 2000.00m,
+        Area = 150,
+        NumberOfBedrooms = 3,
+        NumberOfBathrooms = 2,
+        IsFurnished = true,
+        ParkingAvailable = true
+    },
+    
+    new Property
+    {
+        PropertyName = "Malý domček pri jazere",
+        IsAvailable = true,
+        TypeId = houseTypeId.Value, // Dynamicky získané TypeId
+        ListingDate = DateTime.Now.AddDays(-45),
+        Description = "Útulný domček ideálny na víkendové pobyty pri vode.",
+        StreetName = "Jazerná 9",
+        City = "Šamorín",
+        PostalCode = "93101",
+        Country = "Slovensko",
+        
+        Price = 600.00m,
+        Area = 50,
+        NumberOfBedrooms = 1,
+        NumberOfBathrooms = 1,
+        IsFurnished = true,
+        ParkingAvailable = true
+    },
+    new Property
+    {
+        PropertyName = "Podkrovný byt s výhľadom na mesto",
+        IsAvailable = true,
+        TypeId = apartmentTypeId.Value, // Dynamicky získané TypeId
+        ListingDate = DateTime.Now.AddDays(-10),
+        Description = "Štýlový podkrovný byt s moderným zariadením a krásnym výhľadom.",
+        StreetName = "Vyhliadková 3",
+        City = "Nitra",
+        PostalCode = "94901",
+        Country = "Slovensko",
+        
+        Price = 700.00m,
+        Area = 75,
+        NumberOfBedrooms = 2,
+        NumberOfBathrooms = 1,
+        IsFurnished = true,
+        ParkingAvailable = false
+    },
                     };
 
                     context.Properties.AddRange(properties);
@@ -150,7 +211,10 @@ namespace PropertyWebApp
                     var propertyImages = new List<PropertyImage>
                     {
                         new PropertyImage { PropertyId = 1, ImagePath = "/img/property1.jpg" },
-                        new PropertyImage { PropertyId = 2, ImagePath = "/img/property2.jpg" }
+                        new PropertyImage { PropertyId = 2, ImagePath = "/img/property2.jpg" },
+                        new PropertyImage { PropertyId = 3, ImagePath = "/img/property3.png" },
+                        new PropertyImage { PropertyId = 4, ImagePath = "/img/property4.jpg" },
+                        new PropertyImage { PropertyId = 5, ImagePath = "/img/property5.jpg" }
                     };
 
                     context.PropertyImages.AddRange(propertyImages);
