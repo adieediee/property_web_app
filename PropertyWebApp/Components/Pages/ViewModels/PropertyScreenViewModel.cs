@@ -41,13 +41,7 @@
             SelectedProperty = await _propertyService.GetPropertyViewByIdAsync(propertyId);
         }
 
-        public void EditProperty()
-        {
-            if (SelectedProperty != null)
-            {
-                // Navigácia môže byť priamo spracovaná vo View
-            }
-        }
+       
 
         public void ShowDeleteConfirmation()
         {

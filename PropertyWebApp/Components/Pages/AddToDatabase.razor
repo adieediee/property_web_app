@@ -2,46 +2,51 @@
 
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.EntityFrameworkCore
+@using PropertyWebApp.Components.Pages.ViewModels
 @using PropertyWebApp.Data
 @using PropertyWebApp.Data.ViewModels
 @using PropertyWebApp.Models
 @using PropertyWebApp.Models.Services
-@inject IDbContextFactory<AppDbContext> DbContextFactory
+@using System.ComponentModel.DataAnnotations
+
+@inject EditIssueViewModel ViewModel
 @inject NavigationManager Navigation
-@inject PropertyService PropertyService
 
 @rendermode InteractiveServer
 
 <div class="upload-container">
-    <EditForm Model="newIssue" OnValidSubmit="HandleValidSubmit" FormName="issue-form">
+    <EditForm Model="@ViewModel.NewIssue" OnValidSubmit="@ViewModel.HandleValidSubmitAsync">
         <DataAnnotationsValidator />
-       
-        <div class="form-section">
-            <h3>@(IssueId.HasValue ? "Upraviť poruchu" : "Pridať novú poruchu")</h3>
 
+        <div class="form-section">
+            <h3>@(ViewModel.NewIssue.IssueId > 0 ? "Upraviť poruchu" : "Pridať novú poruchu")</h3>
+
+            <!-- Názov poruchy -->
             <div class="form-group">
                 <label for="title">Názov poruchy</label>
-                <InputText id="title" class="styled-input" placeholder="Zadaj názov poruchy" @bind-Value="newIssue.Title" />
-                <ValidationMessage For="() => newIssue.Title" />
+                <InputText id="title" class="styled-input" placeholder="Zadaj názov poruchy" @bind-Value="@ViewModel.NewIssue.Title" />
+                <ValidationMessage For="@(() => ViewModel.NewIssue.Title)" />
             </div>
 
+            <!-- Popis poruchy -->
             <div class="form-group">
                 <label for="description">Popis poruchy</label>
-                <InputTextArea id="description" class="styled-input desc" placeholder="Zadaj popis poruchy" @bind-Value="newIssue.Description" />
-                <ValidationMessage For="() => newIssue.Description" />
+                <InputTextArea id="description" class="styled-input desc" placeholder="Zadaj popis poruchy" @bind-Value="@ViewModel.NewIssue.Description" />
+                <ValidationMessage For="@(() => ViewModel.NewIssue.Description)" />
             </div>
 
+            <!-- Výber nehnuteľnosti -->
             <div class="form-group">
                 <label for="rentalId" class="block text-sm font-medium text-gray-700 mb-2">Vyber nehnuteľnosť</label>
                 <div class="relative">
                     <!-- Dropdown Button -->
                     <button type="button" class="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                            @onclick="ToggleDropdown">
+                            @onclick="ViewModel.ToggleDropdown">
                         <div class="flex items-center">
-                            @if (SelectedProperty != null)
+                            @if (ViewModel.SelectedProperty != null)
                             {
-                                <img src="@SelectedProperty.PropertyImages.FirstOrDefault().ImagePath" alt="Property Image" class="w-8 h-8 rounded-full object-cover mr-3" />
-                                <span class="text-gray-700">@SelectedProperty.PropertyName</span>
+                                <img src="@ViewModel.SelectedProperty.PropertyImages.FirstOrDefault()?.ImagePath" alt="Property Image" class="w-8 h-8 rounded-full object-cover mr-3" />
+                                <span class="text-gray-700">@ViewModel.SelectedProperty.PropertyName</span>
                             }
                             else
                             {
@@ -51,232 +56,71 @@
                     </button>
 
                     <!-- Dropdown Menu -->
-                    @if (IsDropdownOpen)
+                    @if (ViewModel.IsDropdownOpen)
                     {
                         <div class="absolute mt-2 w-full bg-white rounded-md shadow-lg max-h-60 overflow-y-auto z-50 border border-gray-300">
-                            @foreach (var property in AvailableProperties)
+                            @foreach (var property in ViewModel.AvailableProperties)
                             {
                                 <div class="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
-                                     @onclick="() => SelectProperty(property)">
-                                <img src="@property.PropertyImages.FirstOrDefault().ImagePath" alt="Property Image" class="w-8 h-8 rounded-full object-cover mr-3" />
+                                     @onclick="() => ViewModel.SelectProperty(property)">
+                                    <img src="@property.PropertyImages.FirstOrDefault()?.ImagePath" alt="Property Image" class="w-8 h-8 rounded-full object-cover mr-3" />
                                     <span class="text-gray-700">@property.PropertyName</span>
                                 </div>
                             }
                         </div>
                     }
                 </div>
-                <ValidationMessage For="() => newIssue.RentalId" class="text-red-500 text-sm mt-1" />
+                <ValidationMessage For="@(() => ViewModel.NewIssue.RentalId)" class="text-red-500 text-sm mt-1" />
             </div>
 
-
+            <!-- Akcie -->
             <div class="actions">
                 <button class="btn-back" @onclick="NavigateBack">Zrušiť</button>
-                <button type="submit" class="btn-next">@((IssueId.HasValue) ? "Uložiť" : "Pridať")</button>
+                <button type="submit" class="btn-next" onclick="">@((IssueId.HasValue) ? "Uložiť" : "Pridať")</button>
             </div>
         </div>
 
+        <!-- Sekcia na nahrávanie súborov -->
         <div class="upload-section">
             <h3>Nahrať súbory pre poruchu</h3>
             <div class="upload-dropzone">
                 <label class="upload-label" for="file-upload">
                     <i class="icon-upload"></i>
                     Presuňte súbory alebo <span class="upload-link">preklikajte</span> sem
-                    <InputFile id="file-upload" OnChange="HandleFileSelected" multiple />
+                    <InputFile id="file-upload" OnChange="ViewModel.HandleFileSelected" multiple />
                 </label>
             </div>
 
             <div class="uploaded-files">
-                @foreach (var file in uploadedFiles)
+                @foreach (var file in ViewModel.UploadedFiles)
                 {
                     <div class="uploaded-file">
                         <p>@file.Name - @(file.Size / 1024) KB</p>
-                        <button class="btn-remove" @onclick="() => RemoveFile(file)">X</button>
+                        <button class="btn-remove" @onclick="() => ViewModel.UploadedFiles.Remove(file)">X</button>
                     </div>
                 }
             </div>
 
-            @if (fileUploadError != null)
+            @if (ViewModel.FileUploadError != null)
             {
-                <div class="alert alert-danger">@fileUploadError</div>
+                <div class="alert alert-danger">@ViewModel.FileUploadError</div>
             }
         </div>
     </EditForm>
 </div>
-
 @code {
 
-    [Parameter]
-    public int? IssueId { get; set; }
 
-    private Issue newIssue = new Issue();
-    private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
-    private string? fileUploadError;
-    private const long MaxFileSize = 512 * 1024; // 512 KB
-
-    private List<Property> AvailableProperties = new();
-    private Property? SelectedProperty = null;
-    private bool IsDropdownOpen = false;
+    [Parameter] public int? IssueId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        AvailableProperties = await PropertyService.LoadMyProperties();
+        await ViewModel.InitializeAsync(IssueId);
     }
 
-    private void ToggleDropdown()
-    {
-        IsDropdownOpen = !IsDropdownOpen;
-    }
-
-    private void SelectProperty(Property property)
-    {
-        SelectedProperty = property; 
-        newIssue.RentalId = property.Rentals.FirstOrDefault().PropertyId;
-        IsDropdownOpen = false;
-    }
-    // Načítanie poruchy pri úprave
-    protected override async Task OnParametersSetAsync()
-    {
-        using var DbContext = await DbContextFactory.CreateDbContextAsync();
-        if (IssueId.HasValue) // Úprava existujúcej poruchy
-        {
-            newIssue.Description = string.Empty; // Resetne popis, kvôli null error
-            var existingIssue = await DbContext.Issues
-                .Include(i => i.Images)
-                .FirstOrDefaultAsync(i => i.IssueId == IssueId.Value);
-
-            if (existingIssue != null)
-            {
-                newIssue = existingIssue;
-            }
-        }
-        else // Pridanie novej poruchy
-        {
-            newIssue = new Issue
-                {
-                    RentalId = 1, // Defaultný RentalId
-                    PropertyId = 1, // Defaultný PropertyId //TODO
-                    ReportDate = DateTime.Now,
-                    StatusId = (await DbContext.IssueStatus.FirstOrDefaultAsync(s => s.StatusName == "Rieši sa"))?.StatusId ?? 1,
-                    Description = string.Empty
-                };
-        }
-        StateHasChanged();
-    }
-
-    // Ošetrenie validného formulára
-    private async Task HandleValidSubmit()
-    {
-        using var DbContext = await DbContextFactory.CreateDbContextAsync();
-        // Overenie že RentalId existuje
-        var rentalExists = await DbContext.Rentals.AnyAsync(r => r.RentalId == newIssue.RentalId);
-        if (!rentalExists)
-        {
-            fileUploadError = "Zadané ID nájmu neexistuje.";
-            return;
-        }
-
-        if (IssueId.HasValue) // Ak upravujeme existujúcu poruchu
-        {
-            DbContext.Issues.Update(newIssue);
-        }
-        else // Ak pridávame novú poruchu
-        {
-            Console.WriteLine(newIssue.RentalId);
-            await DbContext.Issues.AddAsync(newIssue);
-        }
-
-        await DbContext.SaveChangesAsync(); // Uložíme poruchu a získame IssueId
-
-        var uploadsFolder = Path.Combine("wwwroot", "uploads");
-        if (!Directory.Exists(uploadsFolder))
-        {
-            Directory.CreateDirectory(uploadsFolder);
-        }
-
-        // Uloženie obrázkov
-        foreach (var file in uploadedFiles)
-        {
-            try
-            {
-                var filePath = Path.Combine(uploadsFolder, file.Name);
-                await using var fileStream = new FileStream(filePath, FileMode.Create);
-                await file.OpenReadStream(MaxFileSize).CopyToAsync(fileStream);
-
-                var issueImage = new IssueImage
-                    {
-                        IssueId = newIssue.IssueId, 
-                        ImagePath = $"/uploads/{file.Name}"
-                    };
-
-                await DbContext.IssueImages.AddAsync(issueImage);
-            }
-            catch (Exception ex)
-            {
-                fileUploadError = $"Nahrávanie súboru {file.Name} zlyhalo: {ex.Message}";
-            }
-        }
-
-        await DbContext.SaveChangesAsync(); 
-
-        Navigation.NavigateTo("/issues-screen");
-    }
-
-    // Výber súborov
-    private async Task HandleFileSelected(InputFileChangeEventArgs e)
-    {
-        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-        if (!Directory.Exists(uploadsFolder))
-        {
-            Directory.CreateDirectory(uploadsFolder);
-        }
-
-        fileUploadError = null;
-        var files = e.GetMultipleFiles();
-
-        foreach (var file in files)
-        {
-            if (file.Size > MaxFileSize)
-            {
-                fileUploadError = $"Súbor {file.Name} prekračuje maximálnu veľkosť 512 KB.";
-                continue;
-            }
-
-            try
-            {
-                using var stream = file.OpenReadStream(MaxFileSize);
-                uploadedFiles.Add(file);
-            }
-            catch (IOException ex)
-            {
-                fileUploadError = $"Nahrávanie súboru {file.Name} zlyhalo: {ex.Message}";
-            }
-        }
-    }
-
-    // Navigácia
     private void NavigateBack()
     {
-        // Resetuje stav newIssue, kvôli Description null error - neviem, či je potrebné
-        newIssue = new Issue
-            {
-                RentalId = 1, // Default nájom
-                PropertyId = 1, // Default nehnuteľnosť
-                ReportDate = DateTime.Now,
-                StatusId = 1, // Default stav
-                Description = string.Empty // Default popis
-            };
-
         Navigation.NavigateTo("/issues-screen");
     }
 
-    // Odstránenie súboru fotky
-    private void RemoveFile(IBrowserFile file)
-    {
-        uploadedFiles.Remove(file);
-    }
-
-    public async Task<string> GetPropertyImageAsync(int propertyId)
-    {
-        return await PropertyService.GetPropertyImageAsync(propertyId);
-    }
 }

@@ -2,28 +2,38 @@
 .list-container {
     width: 90%;
     max-width: 1200px;
+    max-height: 78vh;
     margin: 20px auto;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow-y: auto !important;
+
 }
 
 
 .card {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    
     transition: box-shadow 0.3s ease-in-out;
-    border-radius: 30px;
+    border-radius: 40px;
     border: 1px solid #ddd;
     background-color: white;
-    padding: 15px;
+    padding: 24px;
+}
+.image-gallery {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.image-gallery img {
-    width: 200px;
-    height: 200px;
-    border-radius: 20px;
-    
-}
+    .image-gallery img {
+        width: 200px;
+        height: 200px;
+        border-radius: 10px;
+        object-fit: cover;
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
 
 .issue-details {
     margin-top: 25px;

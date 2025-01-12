@@ -24,6 +24,7 @@ html, body {
     height: 100%;
     overflow: hidden;
     
+    
 
     html.home-body, body.home-body {
         overflow-y: auto !important;
@@ -91,9 +92,8 @@ h1:focus {
 
     .nav-link.active {
         text-decoration: none;
-        font-weight: bold;
-        background-color: transparent; /* Volite¾né: bez pozadia */
-        color: black; /* Nastavte farbu pod¾a potreby */
+        background-color: transparent;
+        color: black; 
     }
 
     

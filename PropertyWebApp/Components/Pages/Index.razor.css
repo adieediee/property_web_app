@@ -1,6 +1,14 @@
 ﻿
 .home-body {
     background-image: url('img/7b09bc1c-7fcb-498f-b055-41229c3f14a8.jpg');
+    font-family: 'Albert Sans', sans-serif;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    margin: 0;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .home-page {

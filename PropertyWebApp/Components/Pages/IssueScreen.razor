@@ -36,10 +36,10 @@ else
             <div class="card">
                 <div class="issue-header" @onclick="() => ViewModel.ToggleDetails(issue.IssueId)">
                     <div class="card-left">
-                        <img class="property-image" src="@ViewModel.GetPropertyImage(issue.IssueId)" alt="Property Image" />
+                        <img class="property-image" src="@ViewModel.GetPropertyImage(issue.PropertyId)" alt="Property Image" />
                         <div class="card-text">
                             <h4 class="issue-title">@issue.Title</h4>
-                            <p class="issue-subtitle">@issue.Property.PropertyName @issue.Rental.TenantId</p>
+                            <p class="issue-subtitle">@issue.Property.PropertyName</p>
                         </div>
                     </div>
                     <div class="card-center">
@@ -76,21 +76,18 @@ else
                         </div>
                     </div>
                 }
-                @if (ViewModel.ShowConfirmDialog && issue.IssueId == ViewModel.IssueIdToDelete)
-                {
-                    <div class="confirm-dialog">
-                        <div class="dialog-content">
-                            <p>Chcete naozaj vymazať?</p>
-                            <div class="dialog-actions">
-                                <button class="confirm-btn" @onclick="ViewModel.ConfirmDeleteAsync">Áno</button>
-                                <button class="cancel-btn" @onclick="ViewModel.CancelDelete">Nie</button>
-                            </div>
-                        </div>
-                    </div>
-                }
+              
             </div>
         }
     </div>
+    <ConfirmDialog IsVisible="ViewModel.ShowConfirmDialog"
+                   Title="Potvrdenie"
+                   Message="Naozaj chcete vymazať túto poruchu?"
+                   ConfirmText="Vymazať"
+                   CancelText="Zrušiť"
+                   OnConfirm="ViewModel.ConfirmDeleteAsync"
+                   OnCancel="ViewModel.CancelDelete" />
+
 }
 
 

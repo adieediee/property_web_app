@@ -12,15 +12,15 @@
 
 @rendermode InteractiveServer
 
-<Toolbar SearchPlaceholder="Hľadaj poruchy..."
-         AddButtonText="Pridať poruchu"
+<Toolbar SearchPlaceholder="Hľadaj nehnuteľnosť..."
+         AddButtonText="Pridať nehnuteľnosť"
          AddButtonLink="GetAddButtonLink"
          OnSearch="ViewModel.PerformPropertySearch"
          OnSettingsClick="OpenSettings" />
 
 @if (ViewModel.Properties != null)
 {
-    <div class="flex h-screen">
+    <div class="flex h-screen overflow-auto">
         <!-- Ľavá strana - Zoznam kartičiek -->
         <div class="w-full  p-4">
             <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(20rem, max-content)); justify-content: start;">
@@ -71,7 +71,7 @@
                     <p><strong>Price:</strong> @ViewModel.SelectedProperty.Price €</p>
                 </div>
                 <div class="flex items-center gap-4 mt-6">
-                    <button class="px-4 py-2 bg-blue-500 text-white rounded-lg" @onclick="() => ViewModel.EditProperty()">Edit</button>
+                    <button class="px-4 py-2 bg-blue-500 text-white rounded-lg" @onclick="() => EditProperty()">Edit</button>
                     <button class="px-4 py-2 bg-red-500 text-white rounded-lg" @onclick="() => ViewModel.ShowDeleteConfirmation()">Delete</button>
                 </div>
             </div>
@@ -127,6 +127,21 @@
             //TODO redirect to add landlord
             return "/";
         }
-        
+
+    }
+
+    public void EditProperty()
+    {
+        if(UserStateService.Role == "Landlord")
+        {
+            if (ViewModel.SelectedProperty != null)
+            {
+                Navigation.NavigateTo($"/edit-property/{ViewModel.SelectedProperty.PropertyId}");
+            }
+        } else
+        {
+            //TODO redirect to add landlord
+        }
+
     }
 }

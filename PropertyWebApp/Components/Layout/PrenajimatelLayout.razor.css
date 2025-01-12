@@ -1,38 +1,35 @@
 ﻿
 .dashboard-body {
-    background-color: #E3EAE8;
+    background-color: #DDE5E9;
 }
 
 .nav-link {
-    text-decoration: none; /* Odstráni podčiarknutie pre všetky `NavLink` */
-    color: inherit; /* Dedí farbu z rodiča */
+    text-decoration: none;
+    color: inherit;
 }
 
     .nav-link.active {
-        text-decoration: none; /* Uistí sa, že ani aktívne odkazy nie sú podčiarknuté */
-        font-weight: bold; /* Voliteľné: zvýraznenie aktívneho odkazu */
-        background-color: #e9ecef; /* Voliteľné: pozadie pre aktívny odkaz */
+        text-decoration: none;
+        background-color: gray;
         border-radius: 8px;
         padding-left: 10px;
-        color: black; /* Nastavte farbu podľa potreby */
+        color: black;
     }
 
 .layout-container {
     display: flex;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .side-panel {
-    width: auto;
+    width: 185px;
     height: 90vh;
     background-color: #f8f9fa;
     padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius:24px;
     margin:20px;
     margin-right:0px;
-   
-    
 }
 
 .logo {
@@ -53,7 +50,7 @@
     text-decoration: none;
     display: flex;
     align-items: center;
-    padding: 10px;
+    margin-bottom: 20px;
     cursor: pointer;
     color: black;    
     width:fit-content;
@@ -61,23 +58,18 @@
 
     .menu-item:hover {
         /*TODO CUSTOM FARBA*/
-        background-color: gray; /* Zvýraznenie pri hover */
+        background-color: gray; 
     }
 
     .menu-item a {
-        text-decoration: none; /* Odstráni podčiarknutie z odkazu */
-        
+        text-decoration: none; 
         font-size: 16px;
         display: flex;
         align-items: center;
     }
 
         .menu-item a.active {
-            font-weight: bold; /* Zvýrazní aktívny odkaz */
-            background-color: #e9ecef; /* Zvýraznenie aktívneho odkazu */
-            border-radius: 8px;
-            padding-left: 10px;
-            color: black; /* Zachová pôvodnú farbu textu pre aktívny odkaz */
+            background-color: gray;
         }
 
     .menu-item i {
@@ -93,7 +85,7 @@
 .content-container {
     
     flex-grow: 1;
-    border-radius: 16px;
+    border-radius: 12px;
     height: 90vh;
     padding:20px;
 }
@@ -140,6 +132,8 @@
         padding: 0;
     }
 
+    
+
         .nav-menu ul li {
             margin-right: 20px;
         }
@@ -150,7 +144,7 @@
                 color: white;
                 display: flex;
                 align-items: center;
-                font-weight: bold;
+                
             }
 
 .login {

@@ -43,6 +43,11 @@ builder.Services.AddScoped(provider =>
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+//velkost suboru
+builder.Services.AddServerSideBlazor().AddHubOptions(options =>
+{
+    options.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10 MB
+});
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -73,6 +78,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStat
 builder.Services.AddScoped<IssueScreenViewModel>();
 builder.Services.AddScoped<TenantDashboardViewModel>();
 builder.Services.AddScoped<PropertyScreenViewModel>();
+builder.Services.AddScoped<EditIssueViewModel>();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

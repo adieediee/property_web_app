@@ -7,6 +7,7 @@
     using global::PropertyWebApp.Data;
     using global::PropertyWebApp.Data.ViewModels;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Internal;
     using Microsoft.Identity.Client;
 
     public class PropertyService
@@ -29,7 +30,7 @@
         {
             // Napríklad Entity Framework Core:
             using var dbContext = _dbContextFactory.CreateDbContext();
-            var properties =  await dbContext.Properties
+            var properties = await dbContext.Properties
                 .Include(properties => properties.PropertyImages)
                 .Where(p => p.IsAvailable) // Filtrovanie dostupných nehnuteľností
                 .ToListAsync();
@@ -62,26 +63,27 @@
 
         public async Task<List<PropertyViewModel>> LoadUserPropertyViewsAsync(string tenantId, string role)
         {
-           
+
             // Načítajte všetky nehnuteľnosti pre daného nájomcu
             //TODO dat pred napevno tenant
             var properties = await GetUserPropertiesAsync(tenantId, role);
 
             // Spracovanie dát mimo LINQ dotazu
             var propertyViewModels = new List<PropertyViewModel>();
-            
+
             foreach (var property in properties)
             {
                 string userName;
-                if(role == "Tenant")
+                if (role == "Tenant")
                 {
                     userName = await GetLandlordNameByProperty(property.PropertyId);
-                } else
+                }
+                else
                 {
                     userName = await GetTenantNameByProperty(property.PropertyId);
                 }
                 // Načítajte meno nájomcu pre danú nehnuteľnosť
-               
+
 
                 // Zostavte PropertyScreenViewModel
                 propertyViewModels.Add(new PropertyViewModel
@@ -89,7 +91,7 @@
                     PropertyId = property.PropertyId,
                     PropertyName = property.PropertyName,
                     City = property.City,
-                    
+
                     MainImage = property.PropertyImages.FirstOrDefault()?.ImagePath ?? "/img/default-placeholder-property.jpg",
                     Price = property.Price,
                     NumberOfBedrooms = property.NumberOfBedrooms,
@@ -113,7 +115,7 @@
                     PropertyId = p.PropertyId,
                     PropertyName = p.PropertyName,
                     City = p.City,
-                    
+
                     MainImage = p.PropertyImages.FirstOrDefault() != null ? p.PropertyImages.FirstOrDefault().ImagePath : "/img/default-placeholder-property.jpg",
                     Price = p.Price,
                     NumberOfBedrooms = p.NumberOfBedrooms,
@@ -141,7 +143,7 @@
                 PropertyId = p.PropertyId,
                 PropertyName = p.PropertyName,
                 City = p.City,
-                
+
                 MainImage = p.PropertyImages.FirstOrDefault()?.ImagePath ?? "/img/default-placeholder-property.jpg",
 
                 Price = p.Price,
@@ -169,17 +171,17 @@
                     .Include(p => p.PropertyImages)
                     .Include(p => p.Rentals)
                     .Include(p => p.Issues)
-                        .ThenInclude(i => i.Images) 
+                        .ThenInclude(i => i.Images)
                     .Include(p => p.Issues)
-                        .ThenInclude(i => i.TaggedIssues) 
+                        .ThenInclude(i => i.TaggedIssues)
                     .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
 
                 if (property == null)
                 {
-                    return false; 
+                    return false;
                 }
 
-                
+
                 foreach (var issue in property.Issues)
                 {
                     if (issue.Images != null)
@@ -210,7 +212,7 @@
                 await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                return true; 
+                return true;
             }
             catch (Exception ex)
             {
@@ -251,18 +253,19 @@
             if (tenantID != null) // Over, či TenantId existuje
             {
                 // Nájdeme používateľa podľa TenantId
-                var tenant =  await _dbContext.Users
+                var tenant = await _dbContext.Users
                     .Where(u => u.Id == tenantID)   // Filtrovanie podľa TenantId
                     .Select(u => u.UserName)        // Vyber UserName
                     .FirstOrDefaultAsync();
                 if (tenant != null)
                 {
                     return tenant;
-                } else
+                }
+                else
                 {
                     return "error";
                 }
-                    // Vráť výsledok
+                // Vráť výsledok
 
                 // Teraz môžeš použiť `tenant` (obsahuje UserName)
             }
@@ -270,7 +273,7 @@
             {
                 return ""; // Ak TenantId neexistuje, vráť prázdny reťazec
             }
-            
+
         }
         internal async Task<string> GetLandlordNameByProperty(int propertyID)
         {
@@ -307,5 +310,43 @@
             }
 
         }
+
+        public async Task<List<Property>> SearchPropertiesAsync(string location, string type, decimal? maxPrice)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            // Začiatok dotazu - získaj všetky nehnuteľnosti
+            var query = _dbContext.Properties
+                .Include(p => p.PropertyImages)
+                .Where(p => p.IsAvailable)
+                .AsQueryable();
+
+            // Filtruj podľa lokality, ak je zadaná
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                query = query.Where(p => p.City.Contains(location) || p.StreetName.Contains(location));
+            }
+
+            // Filtruj podľa typu nehnuteľnosti, ak je zadaný
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                query = query.Where(p => p.PropertyType.TypeName == type);
+            }
+
+            // Filtruj podľa maximálnej ceny, ak je zadaná
+            if (maxPrice.HasValue && maxPrice.Value > 0)
+            {
+                query = query.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            // Vykonaj dotaz a vráť výsledky
+            return await query.ToListAsync();
+        }
+        public async Task<List<PropertyType>> GetPropertyTypesAsync()
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.PropertyTypes.ToListAsync();
+        }
     }
+
+   
 }
