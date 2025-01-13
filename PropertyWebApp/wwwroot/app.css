@@ -100,6 +100,10 @@ h1:focus {
     overflow-y: auto !important;
     height: 83vh;
 }
+.scrollProperty {
+    overflow-y: auto !important;
+    height: 90vh;
+}
     
 /* FORMULAR NA PRIDAVANIE DO DATABAZKY */
 

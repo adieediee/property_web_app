@@ -5,12 +5,13 @@
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
 @using PropertyWebApp.Models.Services
+@using System.ComponentModel.DataAnnotations
 @inject IDbContextFactory<AppDbContext> DbContextFactory
 @inject NavigationManager Navigation
 @inject UserStateService UserStateService
 
 @rendermode InteractiveServer
-
+<div class="scrollProperty">
 <div class="w-full max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
     <!-- -->
     <div class="text-center mb-8">
@@ -133,7 +134,7 @@
         </div>
     </EditForm>
 </div>
-
+</div>
 
 
 @code {
@@ -205,9 +206,22 @@
 
             await DbContext.PropertyImages.AddAsync(propertyImage);
         }
+       var validationErrors = PropertyValidator.ValidateProperty(newProperty);
 
-        await DbContext.SaveChangesAsync();
-        Navigation.NavigateTo("/properties");
+        if (validationErrors.Any())
+        {
+           
+            foreach (var error in validationErrors)
+            {
+                Console.WriteLine(error); 
+            }
+        }
+        else
+        {
+            await DbContext.SaveChangesAsync();
+            Navigation.NavigateTo("/properties");
+        }
+        
     }
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
@@ -244,4 +258,52 @@
     {
         Navigation.NavigateTo("/properties");
     }
+
+    public class PropertyValidator
+    {
+        public static List<string> ValidateProperty(Property property)
+        {
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(property);
+
+            
+            Validator.TryValidateObject(property, validationContext, validationResults, true);
+
+            
+            if (property.TypeId <= 0)
+            {
+                validationResults.Add(new ValidationResult("Typ nehnuteľnosti je povinný.", new[] { nameof(property.TypeId) }));
+            }
+
+            if (string.IsNullOrWhiteSpace(property.PropertyOwnerId))
+            {
+                validationResults.Add(new ValidationResult("Informácia o vlastníkovi nehnuteľnosti je povinná.", new[] { nameof(property.PropertyOwnerId) }));
+            }
+
+            if (property.Price < 0 || property.Price > 1_000_000)
+            {
+                validationResults.Add(new ValidationResult("Cena musí byť v rozmedzí od 0 do 1 000 000.", new[] { nameof(property.Price) }));
+            }
+
+            if (property.Area < 1 || property.Area > 10_000)
+            {
+                validationResults.Add(new ValidationResult("Rozloha musí byť v rozmedzí od 1 do 10 000 m².", new[] { nameof(property.Area) }));
+            }
+
+            if (property.NumberOfBedrooms < 0 || property.NumberOfBedrooms > 20)
+            {
+                validationResults.Add(new ValidationResult("Počet spální musí byť v rozmedzí od 0 do 20.", new[] { nameof(property.NumberOfBedrooms) }));
+            }
+
+            if (property.NumberOfBathrooms < 0 || property.NumberOfBathrooms > 20)
+            {
+                validationResults.Add(new ValidationResult("Počet kúpeľní musí byť v rozmedzí od 0 do 20.", new[] { nameof(property.NumberOfBathrooms) }));
+            }
+
+            
+
+            return validationResults.Select(v => v.ErrorMessage).ToList();
+        }
+    }
+
 }
