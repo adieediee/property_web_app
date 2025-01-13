@@ -8,7 +8,7 @@ namespace PropertyWebApp.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // Existujúce DbSety
+        
         public DbSet<Issue> Issues { get; set; }
         public DbSet<IssueImage> IssueImages { get; set; }
         public DbSet<IssueStatus> IssueStatus { get; set; }
@@ -27,9 +27,9 @@ namespace PropertyWebApp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // Nezabudni na toto, aby Identity konfigurácie zostali funkčné
+            base.OnModelCreating(modelBuilder);
 
-            // Existujúce konfigurácie pre tvoje entity
+            
             modelBuilder.Entity<IssueStatus>()
                 .HasMany(s => s.Issues)
                 .WithOne(i => i.Status)
@@ -98,10 +98,10 @@ namespace PropertyWebApp.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MonthlyPayment>()
-                .HasOne(mp => mp.Rental) // Navigačná vlastnosť v MonthlyPayment
-                .WithMany(r => r.Payments) // Navigačná vlastnosť v Rental
-                .HasForeignKey(mp => mp.RentalId) // Cudzí kľúč v MonthlyPayment
-                .OnDelete(DeleteBehavior.Restrict); // Správanie pri vymazaní nájmu
+                .HasOne(mp => mp.Rental) 
+                .WithMany(r => r.Payments) 
+                .HasForeignKey(mp => mp.RentalId) 
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

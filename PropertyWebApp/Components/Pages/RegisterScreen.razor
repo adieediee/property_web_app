@@ -143,7 +143,7 @@
                 Email = registerModel.Email
             };
 
-        // Create user
+        // create 
         var result = await UserManager.CreateAsync(user, registerModel.Password);
 
         if (result.Succeeded)
@@ -155,7 +155,8 @@
 
             await UserManager.AddToRoleAsync(user, selectedRole);
 
-            // Add custom claims for first and last name
+            // pridava claimy pre meno
+            //TODO implementovat pouzivanie mena 
             await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("FirstName", registerModel.FirstName));
             await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("LastName", registerModel.LastName));
 

@@ -16,9 +16,9 @@ namespace PropertyWebApp.Models
         public Rental Rental { get; set; } // Navigation property to Rental
         public DateTime? PaymentDate { get; set; }
         public bool isPaid { get; set; }
-        public decimal RentAmount { get; set; } // Added for clarity
-        public decimal UtilitiesAmount { get; set; } // Added for clarity
-        public decimal TotalAmount => RentAmount + UtilitiesAmount; // Convenience property
+        public decimal RentAmount { get; set; } 
+        public decimal UtilitiesAmount { get; set; } 
+        public decimal TotalAmount => RentAmount + UtilitiesAmount; // Convenience property?? idk 
     }
 
 }

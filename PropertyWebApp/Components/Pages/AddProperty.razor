@@ -12,21 +12,21 @@
 @rendermode InteractiveServer
 
 <div class="w-full max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-    <!-- Header formulára -->
+    <!-- -->
     <div class="text-center mb-8">
         <h2 class="text-2xl font-semibold text-gray-800">@(PropertyId.HasValue ? "Upraviť nehnuteľnosť" : "Pridať novú nehnuteľnosť")</h2>
         <p class="text-gray-600">Vyplňte všetky potrebné údaje o nehnuteľnosti</p>
     </div>
 
-    <!-- Form -->
+    <!-- formular -->
     <EditForm Model="newProperty" OnValidSubmit="HandleValidSubmit" class="space-y-8">
         <AntiforgeryToken />
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <!-- Sekcie vedľa seba -->
+       
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Sekcia: Základné informácie -->
+           
             <div>
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">Základné informácie</h3>
                 <div class="space-y-4">
@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <!-- Sekcia: Dodatočné informácie -->
+            <!-- dodatocne-->
             <div>
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">Dodatočné informácie</h3>
                 <div class="space-y-4">
@@ -106,7 +106,7 @@
             </div>
         </div>
 
-        <!-- Sekcia: Obrázky -->
+        <!-- obrazky -->
         <div>
             <h3 class="text-lg font-semibold text-gray-700 mb-4">Obrázky nehnuteľnosti</h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -126,7 +126,7 @@
             </div>
         </div>
 
-        <!-- Akcie -->
+        <!-- actions -->
         <div class="flex justify-end gap-4 mt-6">
             <button class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100" @onclick="NavigateBack">Zrušiť</button>
             <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">@((PropertyId.HasValue) ? "Uložiť" : "Pridať")</button>
@@ -137,7 +137,7 @@
 
 
 @code {
-    //TODO opravit, lebo neukazuje nehnutelsnost. pridat landlordovi filtrovanie aj podla vytvorenych nehnutelnosti aj ked neexistuje rental
+    
     [Parameter]
     public int? PropertyId { get; set; }
     private List<PropertyType> PropertyTypes = new List<PropertyType>();
@@ -145,13 +145,13 @@
 
     private Property newProperty = new Property();
     private List<string> uploadedFiles = new List<string>();
-    private const long MaxFileSize = 512 * 1024 *1024; // 512 KB
+    private const long MaxFileSize = 512 * 1024 *1024; // 10MB
 
 
    protected override async Task OnInitializedAsync()
 {
         using var DbContext = DbContextFactory.CreateDbContext();
-        // Načítanie typov nehnuteľností
+        
     PropertyTypes = await DbContext.PropertyTypes.ToListAsync();
 
     if (UserStateService.Role != "Landlord")

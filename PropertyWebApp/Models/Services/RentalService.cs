@@ -19,13 +19,13 @@ public class RentalService
         return rentals;
     }
 
-    // Retrieve all monthly payments for a tenant
+    
     public async Task<List<MonthlyPayment>> GetMonthlyPaymentsAsync(string userId, string role)
     {
         IQueryable<MonthlyPayment> query = _dbContext.MonthlyPayments
-            .Include(mp => mp.Rental); // Zahrnutie prenájmu
+            .Include(mp => mp.Rental); 
 
-        // Dynamické filtrovanie podľa role
+        
         if (role == "Tenant")
         {
             query = query.Where(mp => mp.Rental.TenantId == userId);
@@ -35,11 +35,11 @@ public class RentalService
             //query = query.Where(mp => mp.Rental.PropertyOwnerId == userId);
         }
 
-        // Načítanie výsledkov
+        
         return await query.ToListAsync();
     }
 
-    // Check if all rents are paid for the current month
+  
     public async Task<bool> AreAllRentsPaidForTenantAsync(string tenantId, DateTime currentMonth)
     {
         var rentals = await _dbContext.Rentals
@@ -56,10 +56,10 @@ public class RentalService
 
             if (!isPaid)
             {
-                return false; // If any rental is unpaid, return false
+                return false; 
             }
         }
 
-        return true; // All rents are paid
+        return true; 
     }
 }
