@@ -123,7 +123,7 @@ namespace PropertyWebApp
                         {
                             PropertyName = "Moderný byt v centre",
                             IsAvailable = false,
-                            TypeId = apartmentTypeId.Value, // Dynamicky získané TypeId
+                            TypeId = apartmentTypeId.Value, 
                             ListingDate = DateTime.Now.AddDays(-30),
                             Description = "Priestranný 2-izbový byt s balkónom v centre mesta.",
                             StreetName = "Hlavná 1",
@@ -144,7 +144,7 @@ namespace PropertyWebApp
                         {
                             PropertyName = "Rodinný dom v tichom prostredí",
                             IsAvailable = false,
-                            TypeId = houseTypeId.Value, // Dynamicky získané TypeId
+                            TypeId = houseTypeId.Value, 
                             ListingDate = DateTime.Now.AddDays(-60),
                             Description = "Štýlový rodinný dom s veľkou záhradou.",
                             StreetName = "Záhradná 12",
@@ -165,7 +165,7 @@ namespace PropertyWebApp
     {
         PropertyName = "Luxusná chata v horách",
         IsAvailable = true,
-        TypeId = chaletTypeId.Value, // Dynamicky získané TypeId
+        TypeId = chaletTypeId.Value, 
         ListingDate = DateTime.Now.AddDays(-15),
         Description = "Krásna chata v horách s výhľadom na panorámu Tatier.",
         StreetName = "Horská 5",
@@ -187,7 +187,7 @@ namespace PropertyWebApp
     {
         PropertyName = "Malý domček pri jazere",
         IsAvailable = true,
-        TypeId = houseTypeId.Value, // Dynamicky získané TypeId
+        TypeId = houseTypeId.Value, 
         ListingDate = DateTime.Now.AddDays(-45),
         Description = "Útulný domček ideálny na víkendové pobyty pri vode.",
         StreetName = "Jazerná 9",
@@ -208,7 +208,7 @@ namespace PropertyWebApp
     {
         PropertyName = "Podkrovný byt s výhľadom na mesto",
         IsAvailable = true,
-        TypeId = apartmentTypeId.Value, // Dynamicky získané TypeId
+        TypeId = apartmentTypeId.Value, 
         ListingDate = DateTime.Now.AddDays(-10),
         Description = "Štýlový podkrovný byt s moderným zariadením a krásnym výhľadom.",
         StreetName = "Vyhliadková 3",
@@ -231,7 +231,7 @@ namespace PropertyWebApp
                     await context.SaveChangesAsync();
                 }
 
-                // PropertyImages
+                
                 if (!context.PropertyImages.Any())
                 {
                     var propertyImages = new List<PropertyImage>
@@ -252,8 +252,7 @@ namespace PropertyWebApp
                 if (!context.Rentals.Any())
                 {
                    
-                    //var id = tenant.Id;
-                    //var id2 = landlord.Id;
+                    
                     var rentals = new List<Rental>()
                     {
                         new Rental
@@ -282,7 +281,7 @@ namespace PropertyWebApp
                     // MonthlyPayments
                     foreach (var rental in rentals)
                     {
-                        for (int i = 1; i <= 6; i++) // Generuj platby na posledných 6 mesiacov
+                        for (int i = 1; i <= 6; i++) 
                         {
                             var paymentDate = DateTime.Now.AddMonths(-i);
 
@@ -292,9 +291,9 @@ namespace PropertyWebApp
                                 PaymentDate = paymentDate,
                                 RentAmount = 500,
                                 UtilitiesAmount = 150,
-                                isPaid = i % 2 == 0 // Napríklad: každý druhý mesiac je zaplatený
+                                isPaid = i % 2 == 0 
                             };
-                            //TODO add property owner to property
+                            
                             context.MonthlyPayments.Add(payment);
 
                         }

@@ -19,11 +19,11 @@
     </a>
     <section class="bg-white dark:bg-gray-900">
         <div class="flex justify-center min-h-screen">
-            <!-- Left image -->
+            <!-- letf img -->
             <div class="hidden bg-cover lg:block lg:w-2/5" style="background-image: url('https://images.unsplash.com/photo-1606660265514-358ebbadc80d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1575&q=80');">
             </div>
 
-            <!-- Login form -->
+            <!-- login formular -->
             <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
                 <div class="w-full">
                     <h1 class="text-2xl font-semibold tracking-wider text-gray-800 capitalize dark:text-white">
@@ -44,14 +44,14 @@
                     <form method="post" class="mt-6">
                         @Html.AntiForgeryToken()
                         <div class="grid grid-cols-1 gap-6">
-                            <!-- Email -->
+                            <!-- email -->
                             <div>
                                 <label for="email" class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Email</label>
                                 <input id="email" name="email" type="email" placeholder="Zadaj svoj email" required
                                        class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 focus:ring focus:ring-blue-300">
                             </div>
 
-                            <!-- Password -->
+                            <!-- password -->
                             <div>
                                 <label for="password" class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Heslo</label>
                                 <input id="password" name="password" type="password" placeholder="Zadaj svoje heslo" required
@@ -59,7 +59,7 @@
                             </div>
                         </div>
 
-                        <!-- Remember me and forgot password -->
+                        <!-- remember me -->
                         <div class="flex justify-between items-center mt-4">
                             <div>
                                 <input type="checkbox" id="remember" name="remember" class="text-blue-500 focus:ring focus:ring-blue-300">
@@ -68,7 +68,7 @@
                             <a href="#" class="text-sm text-blue-500 hover:underline dark:text-blue-400">Zabudnuté heslo?</a>
                         </div>
 
-                        <!-- Submit button -->
+                        <!-- submit -->
                         <div class="mt-6">
                             <button type="submit" class="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
                                 <span>Prihlásiť sa</span>

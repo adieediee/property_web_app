@@ -8,7 +8,7 @@
 @attribute [Authorize]
 
 <div class="min-h-screen pr-4 pl-4">
-    <!-- Header -->
+    <!-- hlavicka -->
     <div class="flex justify-between items-center mb-2">
         <h1 class="text-3xl font-bold">Ahoj, @UserStateService.UserName!</h1>
 
@@ -18,9 +18,9 @@
     </div>
     <p class="mb-6">Tu nájdeš informácie o prenajatých nehnuteľnostiach.</p>
 
-    <!-- Top Cards -->
+    <!-- karty -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-        <!-- Nezaplatená platba -->
+        <!-- nezaplatena platba -->
         <div class="bg-white p-6 rounded-3xl">
             <div class="flex h-10 gap-4 items-center mb-4">
                 <img class="h-12 w-max" src="/img/icons/color/payment-due.png" />
@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <!-- Properties Card -->
+    <!-- karta nehnutelnosti -->
     <div class="bg-white p-6 rounded-3xl mb-6 gap-4">
         <div class="flex h-10 gap-4 items-center mb-4">
             <img class="h-12 w-max" src="/img/icons/color/property.png" />
@@ -66,9 +66,9 @@
         </div>
     </div>
 
-    <!-- Last Transactions a Issues -->
+    <!-- posledne transakcie -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Last Transactions -->
+        
         <div class="bg-white p-6 rounded-3xl mb-0">
             <div class="flex h-10 gap-4 items-center mb-4">
                 <img class="h-12 w-max" src="/img/icons/color/payment-done.png" />
@@ -78,12 +78,12 @@
                 @foreach (var transaction in ViewModel.Payments)
                 {
                     <div class="flex items-center space-x-3">
-                        <!-- Obrázok nehnuteľnosti -->
+                        <!-- obr -->
                         <img src="@ViewModel.GetPropertyImage(transaction.Rental.PropertyId)"
                              alt="Property Image"
                              class="w-12 h-12 rounded-full object-cover" />
 
-                        <!-- TODO NAME Informácie o transakcii -->
+                        <!-- TODO NAME info o transakcii -->
                         <div class="flex-grow">
                             <div class="font-bold text-base text-gray-800">
                                 Platba
@@ -91,14 +91,14 @@
                             <div class="text-sm text-gray-500">@transaction.PaymentDate</div>
                         </div>
 
-                        <!-- Suma nájmu -->
+                        <!-- najom -->
                         <div class="font-bold text-base text-green-600">@transaction.RentAmount</div>
                     </div>
                 }
             </div>
         </div>
 
-        <!-- Recent Issues -->
+        <!-- nedavne issues -->
         <div class="bg-white p-6 rounded-3xl w-full">
             <div class="flex h-10 gap-4 items-center mb-4">
                 <img class="h-12 w-max" src="/img/icons/color/issue.png" />
@@ -109,7 +109,7 @@
                 {
                     <div class="flex gap-10">
                         <div class="grid grid-cols-2 items-center py-1 w-full">
-                            <!-- Základné informácie -->
+                            <!-- zakladne info -->
                             <div class="flex items-center gap-3">
                                 <img src="@ViewModel.GetPropertyImage(issue.Rental.PropertyId)"
                                      alt="Property Image"
@@ -120,7 +120,7 @@
                                 </div>
                             </div>
 
-                            <!-- Informácie o nehnuteľnosti -->
+                            <!-- info o nehnutelnosti -->
                             <div class="flex items-center justify-center gap-2">
                                 <img src="@ViewModel.GetPropertyImage(issue.Rental.PropertyId)"
                                      alt="Property Image"
@@ -128,7 +128,7 @@
                                 <p class="text-gray-800">@issue.Property.PropertyName</p>
                             </div>
                         </div>
-                        <!-- Status -->
+                        <!-- status -->
                         <div class="flex items-center w-20 left-0">
                             <span class="font-bold text-base text-green-600">@issue.Status.StatusName</span>
                         </div>
@@ -147,6 +147,7 @@
 
     private async Task ShowPropertyDetails(int propertyId)
     {
+        //TODO implement
         Console.WriteLine($"Zobraziť detaily pre nehnuteľnosť ID: {propertyId}");
     }
 }

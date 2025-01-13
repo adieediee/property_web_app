@@ -4,6 +4,7 @@
 @inject NavigationManager Navigation
 @inject RoleManager<IdentityRole> RoleManager
 @using System.ComponentModel.DataAnnotations
+@using PropertyWebApp.Models.Services
 @rendermode InteractiveServer
 
 <PageTitle>Registrácia</PageTitle>
@@ -131,6 +132,14 @@
 
     private async Task HandleRegister()
     {
+        var validator = new RegisterValidator(UserManager);
+        var validationErrors = await validator.ValidateRegisterModel(registerModel);
+
+        if (validationErrors.Any())
+        {
+            errorMessage = string.Join(", ", validationErrors);
+            return;
+        }
         if (registerModel.Password != registerModel.ConfirmPassword)
         {
             errorMessage = "Heslá sa nezhodujú.";
@@ -143,7 +152,7 @@
                 Email = registerModel.Email
             };
 
-        // Create user
+        // create 
         var result = await UserManager.CreateAsync(user, registerModel.Password);
 
         if (result.Succeeded)
@@ -155,7 +164,8 @@
 
             await UserManager.AddToRoleAsync(user, selectedRole);
 
-            // Add custom claims for first and last name
+            // pridava claimy pre meno
+            //TODO implementovat pouzivanie mena 
             await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("FirstName", registerModel.FirstName));
             await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("LastName", registerModel.LastName));
 
@@ -188,3 +198,5 @@
         public string ConfirmPassword { get; set; } = string.Empty;
     }
 }
+
+

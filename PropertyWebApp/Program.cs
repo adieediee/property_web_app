@@ -39,7 +39,7 @@ builder.Services.AddScoped(provider =>
 });
 
 
-// Registrácia Identity služieb
+// Identity sluzby
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
@@ -136,13 +136,13 @@ using (var scope = app.Services.CreateScope())
 
     //delete pre vyvoj
     //dbContext.Database.EnsureDeleted();
-    // Zabezpeè, že databáza existuje
+    // zabezpeci ze databaza existuje
     dbContext.Database.Migrate();
 
-    // AK je databaya prazdna
-    if (!dbContext.Users.Any() && !dbContext.Roles.Any()) // Kontroluj pod¾a tabuliek, ktoré seeduješ
+    // AK je databaza prazdna
+    if (!dbContext.Users.Any() && !dbContext.Roles.Any()) 
     {
-        // Naseeduj databázu, ak je prázdna
+        // seed databazy
        await DatabaseSeeder.Seed(app.Services);
     }
 }
@@ -151,7 +151,7 @@ using (var scope = app.Services.CreateScope())
     var userStateService = scope.ServiceProvider.GetRequiredService<UserStateService>();
     var authenticationStateProvider = scope.ServiceProvider.GetRequiredService<AuthenticationStateProvider>();
 
-    // Inicializuj meno používate¾a
+    
    // await userStateService.InitializeAsync(authenticationStateProvider);
 }
 
