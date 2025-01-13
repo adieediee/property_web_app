@@ -22,25 +22,25 @@
         <div class="form-section">
             <h3>@(ViewModel.NewIssue.IssueId > 0 ? "Upraviť poruchu" : "Pridať novú poruchu")</h3>
 
-            <!-- Názov poruchy -->
+            <!--nazov -->
             <div class="form-group">
                 <label for="title">Názov poruchy</label>
                 <InputText id="title" class="styled-input" placeholder="Zadaj názov poruchy" @bind-Value="@ViewModel.NewIssue.Title" />
                 <ValidationMessage For="@(() => ViewModel.NewIssue.Title)" />
             </div>
 
-            <!-- Popis poruchy -->
+            <!-- popisy -->
             <div class="form-group">
                 <label for="description">Popis poruchy</label>
                 <InputTextArea id="description" class="styled-input desc" placeholder="Zadaj popis poruchy" @bind-Value="@ViewModel.NewIssue.Description" />
                 <ValidationMessage For="@(() => ViewModel.NewIssue.Description)" />
             </div>
 
-            <!-- Výber nehnuteľnosti -->
+            <!-- proeprty -->
             <div class="form-group">
                 <label for="rentalId" class="block text-sm font-medium text-gray-700 mb-2">Vyber nehnuteľnosť</label>
                 <div class="relative">
-                    <!-- Dropdown Button -->
+                    <!-- button -->
                     <button type="button" class="w-full bg-white border border-gray-300 rounded-full shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             @onclick="ViewModel.ToggleDropdown">
                         <div class="flex items-center">
@@ -56,7 +56,7 @@
                         </div>
                     </button>
 
-                    <!-- Dropdown Menu -->
+                    <!-- menu dropdown -->
                     @if (ViewModel.IsDropdownOpen)
                     {
                         <div class="absolute mt-2 w-full bg-white rounded-md shadow-lg max-h-60 overflow-y-auto z-50 border border-gray-300">
@@ -89,7 +89,7 @@
                 </div>
             </div>
 
-            <!-- Akcie -->
+            <!-- akcie-->
             <div class="actions">
                 <button class="btn-back" @onclick="NavigateBack">Zrušiť</button>
                 <button type="submit" class="btn-next" onclick="">@((IssueId.HasValue) ? "Uložiť" : "Pridať")</button>
@@ -97,7 +97,7 @@
         </div>
        
 
-        <!-- Sekcia na nahrávanie súborov -->
+        <!-- uploads -->
         <div class="upload-section">
             <h3>Nahrať súbory pre poruchu</h3>
             <div class="upload-dropzone">

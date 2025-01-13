@@ -5,28 +5,29 @@
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
 @using PropertyWebApp.Models.Services
+@using System.ComponentModel.DataAnnotations
 @inject IDbContextFactory<AppDbContext> DbContextFactory
 @inject NavigationManager Navigation
 @inject UserStateService UserStateService
 
 @rendermode InteractiveServer
-
+<div class="scrollProperty">
 <div class="w-full max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-    <!-- Header formulára -->
+    <!-- -->
     <div class="text-center mb-8">
         <h2 class="text-2xl font-semibold text-gray-800">@(PropertyId.HasValue ? "Upraviť nehnuteľnosť" : "Pridať novú nehnuteľnosť")</h2>
         <p class="text-gray-600">Vyplňte všetky potrebné údaje o nehnuteľnosti</p>
     </div>
 
-    <!-- Form -->
+    <!-- formular -->
     <EditForm Model="newProperty" OnValidSubmit="HandleValidSubmit" class="space-y-8">
         <AntiforgeryToken />
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <!-- Sekcie vedľa seba -->
+       
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Sekcia: Základné informácie -->
+           
             <div>
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">Základné informácie</h3>
                 <div class="space-y-4">
@@ -65,7 +66,7 @@
                 </div>
             </div>
 
-            <!-- Sekcia: Dodatočné informácie -->
+            <!-- dodatocne-->
             <div>
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">Dodatočné informácie</h3>
                 <div class="space-y-4">
@@ -106,7 +107,7 @@
             </div>
         </div>
 
-        <!-- Sekcia: Obrázky -->
+        <!-- obrazky -->
         <div>
             <h3 class="text-lg font-semibold text-gray-700 mb-4">Obrázky nehnuteľnosti</h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -126,18 +127,18 @@
             </div>
         </div>
 
-        <!-- Akcie -->
+        <!-- actions -->
         <div class="flex justify-end gap-4 mt-6">
             <button class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100" @onclick="NavigateBack">Zrušiť</button>
             <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">@((PropertyId.HasValue) ? "Uložiť" : "Pridať")</button>
         </div>
     </EditForm>
 </div>
-
+</div>
 
 
 @code {
-    //TODO opravit, lebo neukazuje nehnutelsnost. pridat landlordovi filtrovanie aj podla vytvorenych nehnutelnosti aj ked neexistuje rental
+    
     [Parameter]
     public int? PropertyId { get; set; }
     private List<PropertyType> PropertyTypes = new List<PropertyType>();
@@ -145,13 +146,13 @@
 
     private Property newProperty = new Property();
     private List<string> uploadedFiles = new List<string>();
-    private const long MaxFileSize = 512 * 1024 *1024; // 512 KB
+    private const long MaxFileSize = 512 * 1024 *1024; // 10MB
 
 
    protected override async Task OnInitializedAsync()
 {
         using var DbContext = DbContextFactory.CreateDbContext();
-        // Načítanie typov nehnuteľností
+        
     PropertyTypes = await DbContext.PropertyTypes.ToListAsync();
 
     if (UserStateService.Role != "Landlord")
@@ -205,9 +206,22 @@
 
             await DbContext.PropertyImages.AddAsync(propertyImage);
         }
+       var validationErrors = PropertyValidator.ValidateProperty(newProperty);
 
-        await DbContext.SaveChangesAsync();
-        Navigation.NavigateTo("/properties");
+        if (validationErrors.Any())
+        {
+           
+            foreach (var error in validationErrors)
+            {
+                Console.WriteLine(error); 
+            }
+        }
+        else
+        {
+            await DbContext.SaveChangesAsync();
+            Navigation.NavigateTo("/properties");
+        }
+        
     }
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
@@ -244,4 +258,52 @@
     {
         Navigation.NavigateTo("/properties");
     }
+
+    public class PropertyValidator
+    {
+        public static List<string> ValidateProperty(Property property)
+        {
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(property);
+
+            
+            Validator.TryValidateObject(property, validationContext, validationResults, true);
+
+            
+            if (property.TypeId <= 0)
+            {
+                validationResults.Add(new ValidationResult("Typ nehnuteľnosti je povinný.", new[] { nameof(property.TypeId) }));
+            }
+
+            if (string.IsNullOrWhiteSpace(property.PropertyOwnerId))
+            {
+                validationResults.Add(new ValidationResult("Informácia o vlastníkovi nehnuteľnosti je povinná.", new[] { nameof(property.PropertyOwnerId) }));
+            }
+
+            if (property.Price < 0 || property.Price > 1_000_000)
+            {
+                validationResults.Add(new ValidationResult("Cena musí byť v rozmedzí od 0 do 1 000 000.", new[] { nameof(property.Price) }));
+            }
+
+            if (property.Area < 1 || property.Area > 10_000)
+            {
+                validationResults.Add(new ValidationResult("Rozloha musí byť v rozmedzí od 1 do 10 000 m².", new[] { nameof(property.Area) }));
+            }
+
+            if (property.NumberOfBedrooms < 0 || property.NumberOfBedrooms > 20)
+            {
+                validationResults.Add(new ValidationResult("Počet spální musí byť v rozmedzí od 0 do 20.", new[] { nameof(property.NumberOfBedrooms) }));
+            }
+
+            if (property.NumberOfBathrooms < 0 || property.NumberOfBathrooms > 20)
+            {
+                validationResults.Add(new ValidationResult("Počet kúpeľní musí byť v rozmedzí od 0 do 20.", new[] { nameof(property.NumberOfBathrooms) }));
+            }
+
+            
+
+            return validationResults.Select(v => v.ErrorMessage).ToList();
+        }
+    }
+
 }

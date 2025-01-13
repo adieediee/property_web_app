@@ -36,7 +36,7 @@ namespace PropertyWebApp.Components.Pages
            
             if (_userStateService.UserName != "" )
             {
-                // Presmerujte prihláseného používateľa na /account
+                
                 return RedirectToPage("/Logout");
             }
 
@@ -65,7 +65,7 @@ namespace PropertyWebApp.Components.Pages
                  await _userStateService.SetUserInfo(user?.UserName ?? "Neznámy",user.Id);
                 await _userStateService.SetRole(role[0]);
 
-                return Redirect("/"); // Presmerovanie po úspešnom prihlásení
+                return Redirect("/"); 
             }
 
             ErrorMessage = result.IsLockedOut

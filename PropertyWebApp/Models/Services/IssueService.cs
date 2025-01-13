@@ -92,21 +92,23 @@
             {
                 using var dbContext = _dbContextFactory.CreateDbContext();
 
-                // Validácia
+                // validacia
                 await ValidateIssueAsync(issue);
 
-                if (issue.IssueId == 0) // Nový záznam
+                if (issue.IssueId == 0) 
                 {
                     await dbContext.Issues.AddAsync(issue);
                 }
-                else // Aktualizácia existujúceho záznamu
+                else 
                 {
                     dbContext.Issues.Update(issue);
                 }
 
                 await dbContext.SaveChangesAsync();
             }
-            // Validácia poruchy
+            
+
+            //validacia poruchy
             public async Task ValidateIssueAsync(Issue issue)
             {
                 using var dbContext = _dbContextFactory.CreateDbContext();
@@ -140,7 +142,7 @@
                 .Include(i => i.Property)
                 .Include(i => i.Rental)
                 .Include(i => i.Status)
-                .Where(i => i.Status.StatusName != "Vyriešené"); // Nezahrňujeme vyriešené problémy
+                .Where(i => i.Status.StatusName != "Vyriešené"); 
                 
 
                 if (role == "Tenant")
@@ -161,11 +163,11 @@
             {
                 using var dbContext = _dbContextFactory.CreateDbContext();
                 var issues = await dbContext.Issues
-                    .Include(i => i.Property) // Include Property details for display
+                    .Include(i => i.Property) 
                     .Where(i =>
-                        i.Rental.TenantId == tenantId && // Issues belong to the tenant's rentals
-                        i.Status.StatusName == "Vyriešené") // Issue status is not "Vyriešené" (or resolved)
-                    .OrderByDescending(i => i.ReportDate) // Order by latest reported issues
+                        i.Rental.TenantId == tenantId && 
+                        i.Status.StatusName == "Vyriešené") 
+                    .OrderByDescending(i => i.ReportDate) 
                     .ToListAsync();
                 return issues.Count;
             }

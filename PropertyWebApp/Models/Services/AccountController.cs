@@ -17,7 +17,7 @@ namespace PropertyWebApp.Models.Services
         [HttpGet]
         public IActionResult Login()
         {
-            return View(); // Zobrazí prihlasovací formulár
+            return View(); 
         }
 
         [HttpPost]
@@ -28,7 +28,7 @@ namespace PropertyWebApp.Models.Services
                 var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home"); // Úspešné prihlásenie
+                    return RedirectToAction("Index", "Home"); 
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -46,7 +46,7 @@ namespace PropertyWebApp.Models.Services
         [HttpGet]
         public IActionResult Register()
         {
-            return View(); // Zobrazí registračný formulár
+            return View(); 
         }
 
         [HttpPost]
@@ -59,7 +59,7 @@ namespace PropertyWebApp.Models.Services
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home"); // Úspešná registrácia
+                    return RedirectToAction("Index", "Home"); 
                 }
 
                 foreach (var error in result.Errors)

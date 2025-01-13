@@ -18,15 +18,15 @@ namespace PropertyWebApp.Components.Pages
 
         public void OnGet()
         {
-            // The GET request simply renders the confirmation page
+            //TODO treba ju vobec v buducnsti pouzivat?
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _signInManager.SignOutAsync(); // Perform the logout
-            _userStateService.Clear(); // Clear the user state
+            await _signInManager.SignOutAsync(); 
+            _userStateService.Clear(); 
 
-            return RedirectToPage("/Login"); // Redirect to the Login page
+            return RedirectToPage("/Login"); 
         }
     }
 }
