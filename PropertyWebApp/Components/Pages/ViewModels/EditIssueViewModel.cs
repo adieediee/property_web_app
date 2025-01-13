@@ -39,7 +39,7 @@
 
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
-            // Load Available Tags
+     
             AvailableTags = await dbContext.Tags.ToListAsync();
 
             if (issueId.HasValue)
@@ -100,10 +100,8 @@
         await dbContext.Issues.AddAsync(NewIssue);
     }
 
-    // Uloženie zmien pre získanie IssueId
     await dbContext.SaveChangesAsync();
 
-    // Upload obrázkov
     string uploadsFolder = Path.Combine("wwwroot", "uploads");
     if (!Directory.Exists(uploadsFolder))
     {
@@ -132,15 +130,12 @@
         }
     }
 
-    // Spracovanie tagov
     var existingTaggedIssues = await dbContext.TaggedIssues
         .Where(ti => ti.IssueId == NewIssue.IssueId)
         .ToListAsync();
 
-    // Odstránenie existujúcich tagov
     dbContext.TaggedIssues.RemoveRange(existingTaggedIssues);
 
-    // Pridanie vybraných tagov
     foreach (var tag in SelectedTags)
     {
         if (!existingTaggedIssues.Any(ti => ti.TagId == tag.TagId))
@@ -153,10 +148,9 @@
         }
     }
 
-    // Uloženie zmien
+
     await dbContext.SaveChangesAsync();
 
-    // Navigácia späť
     _navigationManager.NavigateTo("/issues-screen");
 }
 

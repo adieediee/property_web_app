@@ -28,7 +28,7 @@ namespace PropertyWebApp.Components.Pages.ViewModels
         {
             PropertyTypes = await _propertyService.GetPropertyTypesAsync();
             AvailableProperties = await _propertyService.GetAvailablePropertiesAsync();
-            FilteredProperties = AvailableProperties; // Default filter
+            FilteredProperties = AvailableProperties; 
         }
 
         public async Task HandleSearchAsync()

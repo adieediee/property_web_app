@@ -1,4 +1,4 @@
-﻿/* Kontajner pre zoznam */
+﻿
 .list-container {
     width: 90%;
     max-width: 1200px;
@@ -39,22 +39,19 @@
     margin-top: 25px;
 }
 
-/* Kartička */
+
 .issue-header {
-    display: flex; /* Horizontálne rozloženie */
-    align-items: center; /* Vertikálne zarovnanie všetkých prvkov */
-    gap: 15px; /* Priestor medzi hlavnými sekciami */
-   
-
-    .card:hover {
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-/* Obrázok a názvy */
+    display: flex; /* horizontal rozlozenie */
+    align-items: center; /* vertikal */
+    gap: 15px; 
+}
+.card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 .card-left {
     display: flex;
     align-items: center;
-    gap: 10px; /* Priestor medzi obrázkom a textami */
+    gap: 10px; 
     width: 35%;
 }
 
@@ -63,12 +60,12 @@
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
-    background-color: #ddd; /* Placeholder farba */
+    background-color: #ddd; 
 }
 
 .card-text {
     display: flex;
-    flex-direction: column; /* Texty pod sebou */
+    flex-direction: column; 
     justify-content: center;
     width: 100%
 }
@@ -86,16 +83,15 @@
     margin: 0;
 }
 
-/* Stredná časť: dátum, tagy, cena */
+
 .card-center {
     display: flex;
-   
-    gap: 50px; /* Priestor medzi dátumom, tagmi a cenou */
-    flex: 1; /* Zaberie dostupný priestor */
-    justify-content: start; /* Zarovná na stred horizontálne */
+    gap: 50px; 
+    flex: 1; /* zaberie dostup priestor */
+    justify-content: start; /* na stred horizontal */
     align-items: flex-start;
-    text-align: left; /* Text zarovnaný doľava */
-    min-width: 200px; /* Minimálna šírka */
+    text-align: left; 
+    min-width: 200px; 
 }
 
 
@@ -129,12 +125,12 @@
     margin: 0;
 }
 
-/* Pravá sekcia: stav a menu */
+/* pravy popup */
 .card-right {
-    display: flex; /* Zarovná stav a menu vedľa seba */
-    align-items: center; /* Vertikálne zarovnanie na stred */
-    gap: 10px; /* Priestor medzi stavom a tlačidlom */
-    justify-content: flex-end; /* Zarovnané napravo */
+    display: flex; 
+    align-items: center; /
+    gap: 10px;
+    justify-content: flex-end; /* zarovna napravo */
 }
 
 .status {
@@ -142,7 +138,7 @@
     font-size: 14px;
     color: white;
     border-radius: 20px;
-    background-color: red; /* Príklad farby stavu */
+    background-color: red; 
 }
 
 .menu-btn {
@@ -153,7 +149,6 @@
     color: #999;
 }
 
-/* Dropdown menu */
 .dropdown {
     position: relative;
 }
@@ -198,7 +193,6 @@
     display: block;
 }
 
-/* Toolbar */
 .toolbar {
     display: flex;
     justify-content: space-between;
@@ -210,7 +204,6 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Kruhové tlačidlá */
 .circle-btn {
     width: 40px;
     height: 40px;
@@ -235,49 +228,4 @@
         color: #333;
     }
 
-/* Kontajner pre vyhľadávanie */
-.search-container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    max-width: 400px;
-    position: relative;
-}
 
-.search-input {
-    flex-grow: 1;
-    padding: 10px 15px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    outline: none;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-    .search-input:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    }
-
-.search-btn {
-    position: absolute;
-    right: 5px;
-    width: 30px;
-    height: 30px;
-    border: none;
-    border-radius: 50%;
-    background-color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
-
-    .search-btn:hover {
-        background-color: #555;
-    }
-
-    .search-btn i {
-        color: white;
-        font-size: 14px;
-    }

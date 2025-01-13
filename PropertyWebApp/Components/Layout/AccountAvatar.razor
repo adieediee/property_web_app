@@ -28,31 +28,13 @@
         Console.WriteLine("TOGGLE");
         accountPanel = !accountPanel;
     }
-    protected override async Task OnInitializedAsync()
-    {
-        
-        //if (!UserStateService.Initizalized)
-        {
-            //var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-           //var user = authState.User;
-
-           // if (user.Identity != null && user.Identity.IsAuthenticated)
-            {
-                //var currentUser = await UserManager.FindByNameAsync(user.Identity.Name);
-                //UserStateService.SetUserName(currentUser?.UserName ?? "");
-               // UserStateService.SetInitialized();
-            }
-        }
-    }
+    
 
     private async Task Logout()
     {
         try
         {
-            // Perform sign-out
             await SignInManager.SignOutAsync();
-
-            // Redirect to the home page or login page after logout
             NavigationManager.NavigateTo("/login", forceLoad: true);
         }
         catch (Exception ex)

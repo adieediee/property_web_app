@@ -9,29 +9,22 @@
 
 
 <AuthorizeView>
-    <!-- Obsah pre autorizovaných používateľov -->
     <Authorized>
         <nav class="relative bg-white shadow dark:bg-gray-800">
             <div class="container px-6 py-4 mx-auto">
                 <div class="lg:flex lg:items-center lg:justify-between">
                     <div class="flex items-center justify-between">
-                       <PropertyWebApp.Components.Reusable.LogoHome/>
-
-                       
+                       <PropertyWebApp.Components.Reusable.LogoHome/>  
                     </div>
-
-                    <!-- Obsah menu -->
+                    <!-- menu -->
                     <div class="lg:flex lg:items-center">
                         <div class="flex flex-col lg:flex-row lg:items-center lg:mx-8">
                             
                             <a href="/tenant-dashboard" class="px-3 py-2 mx-3 mt-2 text-gray-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 Dashboard
                             </a>
-                           
                             
                         </div>
-
-                        <!-- Dropdown menu pre profil -->
                         <AccountAvatar></AccountAvatar>
                     </div>
                 </div>
@@ -41,7 +34,7 @@
        
     </Authorized>
 
-    <!-- Obsah pre neautorizovaných používateľov -->
+    <!-- neautorizovani-->
     <NotAuthorized>
         <nav class="bg-white shadow dark:bg-gray-800">
             <div class="container px-6 py-4 mx-auto">
@@ -78,10 +71,8 @@
 
     private async Task Logout()
     {
-        // Odhlási používateľa
         await SignInManager.SignOutAsync();
 
-        // Presmeruje používateľa na prihlasovaciu stránku alebo hlavnú stránku
         NavigationManager.NavigateTo("/login");
     }
 

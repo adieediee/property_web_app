@@ -45,8 +45,7 @@ public class TenantDashboardViewModel
         {
             TenantName = await LoadTenantNameAsync(tenantId);
         }
-       
-        // Load properties rented by the tenant
+
         Properties = await _propertyService.LoadUserPropertyViewsAsync(tenantId, _userStateService.Role);
         foreach (var property in Properties)
         {
@@ -56,7 +55,6 @@ public class TenantDashboardViewModel
             }
         }
 
-        // Load unresolved issues
         var issues = await _issueService.GetUnresolvedIssuesByTenantIdAsync(tenantId, _userStateService.Role);
         UnresolvedIssues = issues
             .OrderByDescending(i => i.ReportDate)
@@ -76,7 +74,7 @@ public class TenantDashboardViewModel
 
         TotalMonthlyRent = Payments.Sum(p => p.TotalAmount);
 
-        // Find upcoming payment
+        //TODO opodmienkovat
         if (UserRole == "Landlord")
         {
             UpcomingPayment = Payments
@@ -91,14 +89,14 @@ public class TenantDashboardViewModel
             .FirstOrDefault();
         }
         
-        // Check if all rents for the current month are paid
+        
         var currentMonth = DateTime.Now;
         AreAllRentsPaid = await _rentalService.AreAllRentsPaidForTenantAsync(tenantId, currentMonth);
 
-        // Calculate resolved issues count
+        
         ResolvedIssuesCount = await _issueService.GetResolvedIssuesCountByTenantIdAsync(tenantId);
 
-        // Generate notifications
+       
         Notifications = GenerateNotifications();
     }
 
@@ -132,7 +130,6 @@ public class TenantDashboardViewModel
     {
         //TODO
         return "";
-
     }
 
 
@@ -156,8 +153,6 @@ public class TenantDashboardViewModel
 
     private async Task<string> LoadTenantNameAsync(string tenantId)
     {
-        // Example logic for retrieving tenant's name
-        // Replace with actual logic based on your setup
         return $"Tenant {tenantId}";
     }
 }

@@ -67,12 +67,7 @@ namespace PropertyWebApp.Components.Pages.ViewModels
             return property?.PropertyName ?? "Unknown";
         }
 
-        public decimal? GetIssueCost(int issueId)
-        {
-            //TODO dorobit issue cost - tabulka repair
-            //return _issueService.GetIssueByIdAsync(issueId).Result.
-            return issueId * 2;
-        }
+       
         public void ToggleDetails(int issueId)
         {
             ExpandedIssueId = ExpandedIssueId == issueId ? null : issueId;
@@ -99,6 +94,7 @@ namespace PropertyWebApp.Components.Pages.ViewModels
 
                 if (success)
                 {
+                    //TODO
                     //await LoadIssuesAsync();
                 }
                 else
