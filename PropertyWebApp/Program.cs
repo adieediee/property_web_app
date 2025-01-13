@@ -79,6 +79,7 @@ builder.Services.AddScoped<IssueScreenViewModel>();
 builder.Services.AddScoped<TenantDashboardViewModel>();
 builder.Services.AddScoped<PropertyScreenViewModel>();
 builder.Services.AddScoped<EditIssueViewModel>();
+builder.Services.AddScoped<HomePageViewModel>();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

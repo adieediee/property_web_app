@@ -62,13 +62,18 @@ public class TenantDashboardViewModel
             .OrderByDescending(i => i.ReportDate)
             .Take(2)
             .ToList();
-
-        // Load monthly payments for all rentals associated with the tenant
+        
+        
         Payments = (await _rentalService.GetMonthlyPaymentsAsync(tenantId, _userStateService.Role))
-        .Where(p => p.isPaid) // Filtrovanie iba zaplatených platieb
-        .OrderByDescending(p => p.PaymentDate) // Usporiadanie podľa najnovšieho dátumu
-        .Take(2) // Výber iba dvoch najnovších
+        .Where(p => p.isPaid) 
+        .OrderByDescending(p => p.PaymentDate) 
+        .Take(2) 
         .ToList();
+
+        
+
+
+
         TotalMonthlyRent = Payments.Sum(p => p.TotalAmount);
 
         // Find upcoming payment

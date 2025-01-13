@@ -27,21 +27,21 @@
                 <h2 class="text-lg font-semibold items-center">Najbližšia nezaplatená platba</h2>
             </div>
             <div class="flex items-end">
-                <p class="text-gray-600 text-6xl">500</p>
-                <p class="text-gray-600 text-3xl">.00 €</p>
-                <p class="text-gray-600 ml-auto text-xl">15.01.2025</p>
+                <p class="text-gray-600 text-6xl">@(ViewModel.Payments.Count != 0 ? "500" : "")</p>
+                <p class="text-gray-600 text-3xl">@(ViewModel.Payments.Count != 0 ? ".00 €" : "")</p>
+                <p class="text-gray-600 ml-auto text-xl">@(ViewModel.Payments.Count != 0 ? "15.1.2025" : "") </p>
             </div>
         </div>
 
-        <!-- Placeholder pre ďalšie karty -->
+        <!-- TODO dalsie karty -->
         <div class="bg-white p-4 rounded-3xl">
             <h2 class="text-lg font-semibold mb-2">Placeholder karta 1</h2>
-            <p class="text-gray-600">Obsah podľa potreby</p>
+            <p class="text-gray-600"></p>
         </div>
 
         <div class="bg-white p-4 rounded-3xl">
             <h2 class="text-lg font-semibold mb-2">Placeholder karta 2</h2>
-            <p class="text-gray-600">Obsah podľa potreby</p>
+            <p class="text-gray-600"></p>
         </div>
     </div>
 
@@ -50,7 +50,9 @@
         <div class="flex h-10 gap-4 items-center mb-4">
             <img class="h-12 w-max" src="/img/icons/color/property.png" />
             <h2 class="text-lg font-semibold items-center">Moje nehnuteľnosti</h2>
-            <button class="bg-gray-100 p-2 pr-4 pl-4 rounded-3xl ml-auto">Zobraz všetko</button>
+            <a href="/properties" class="bg-gray-100 p-2 pr-4 pl-4 rounded-3xl ml-auto">
+            Zobraz všetko
+            </a>
         </div>
         <div class="flex gap-4">
             @foreach (var property in ViewModel.Properties)
@@ -84,7 +86,7 @@
                         <!-- TODO NAME Informácie o transakcii -->
                         <div class="flex-grow">
                             <div class="font-bold text-base text-gray-800">
-                                Name
+                                Platba
                             </div>
                             <div class="text-sm text-gray-500">@transaction.PaymentDate</div>
                         </div>

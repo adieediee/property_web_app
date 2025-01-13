@@ -12,13 +12,16 @@
         public class IssueService
         {
             private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
+            private readonly UserStateService _userStateService;
 
-            public IssueService(IDbContextFactory<AppDbContext> dbContextFactory)
+            public IssueService(IDbContextFactory<AppDbContext> dbContextFactory, UserStateService userStateService)
             {
                 _dbContextFactory = dbContextFactory;
+                _userStateService = userStateService;
             }
             public async Task<List<Issue>> GetIssuesAsync(string id)
             {
+
                 using var dbContext = _dbContextFactory.CreateDbContext();
                 var issues = await dbContext.Issues
                     .Include(i => i.Images)
@@ -30,7 +33,14 @@
                         .ThenInclude(t => t.Tag)
                     .AsNoTracking()
                     .ToListAsync();
-                return issues.Where(i => i.Rental.TenantId == id).ToList();
+                if(_userStateService.Role == "Landlord")
+                {
+                    return issues.Where(i => i.Property.PropertyOwnerId == id).ToList();
+                } else
+                {
+                    return issues.Where(i => i.Rental.TenantId == id).ToList();
+                }
+                
             }
 
             public async Task<Issue> GetIssueByIdAsync(int issueId)

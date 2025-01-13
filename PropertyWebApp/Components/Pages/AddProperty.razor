@@ -5,7 +5,7 @@
 @using PropertyWebApp.Data
 @using PropertyWebApp.Models
 @using PropertyWebApp.Models.Services
-@inject AppDbContext DbContext
+@inject IDbContextFactory<AppDbContext> DbContextFactory
 @inject NavigationManager Navigation
 @inject UserStateService UserStateService
 
@@ -32,34 +32,34 @@
                 <div class="space-y-4">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">Názov nehnuteľnosti *</label>
-                        <InputText id="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj názov nehnuteľnosti" @bind-Value="newProperty.PropertyName" />
+                        <InputText id="name" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj názov nehnuteľnosti" @bind-Value="newProperty.PropertyName" />
                         <ValidationMessage For="() => newProperty.PropertyName" class="text-red-500 text-sm mt-1" />
                     </div>
                     <div>
                         <label for="description" class="block text-sm font-medium text-gray-700">Popis *</label>
-                        <InputTextArea id="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Popis nehnuteľnosti" @bind-Value="newProperty.Description" />
+                        <InputTextArea id="description" rows="3" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Popis nehnuteľnosti" @bind-Value="newProperty.Description" />
                         <ValidationMessage For="() => newProperty.Description" class="text-red-500 text-sm mt-1" />
                     </div>
                     <div>
                         <label for="street" class="block text-sm font-medium text-gray-700">Ulica *</label>
-                        <InputText id="street" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj ulicu" @bind-Value="newProperty.StreetName" />
+                        <InputText id="street" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj ulicu" @bind-Value="newProperty.StreetName" />
                         <ValidationMessage For="() => newProperty.StreetName" class="text-red-500 text-sm mt-1" />
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="city" class="block text-sm font-medium text-gray-700">Mesto *</label>
-                            <InputText id="city" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj mesto" @bind-Value="newProperty.City" />
+                            <InputText id="city" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj mesto" @bind-Value="newProperty.City" />
                             <ValidationMessage For="() => newProperty.City" class="text-red-500 text-sm mt-1" />
                         </div>
                         <div>
                             <label for="psc" class="block text-sm font-medium text-gray-700">PSČ *</label>
-                            <InputText id="psc" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj PSČ" @bind-Value="newProperty.PostalCode" />
+                            <InputText id="psc" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj PSČ" @bind-Value="newProperty.PostalCode" />
                             <ValidationMessage For="() => newProperty.PostalCode" class="text-red-500 text-sm mt-1" />
                         </div>
                     </div>
                     <div>
                         <label for="country" class="block text-sm font-medium text-gray-700">Krajina *</label>
-                        <InputText id="country" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj krajinu" @bind-Value="newProperty.Country" />
+                        <InputText id="country" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj krajinu" @bind-Value="newProperty.Country" />
                         <ValidationMessage For="() => newProperty.Country" class="text-red-500 text-sm mt-1" />
                     </div>
                 </div>
@@ -71,27 +71,35 @@
                 <div class="space-y-4">
                     <div>
                         <label for="price" class="block text-sm font-medium text-gray-700">Cena (€) *</label>
-                        <InputNumber id="price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj cenu" @bind-Value="newProperty.Price" />
+                        <InputNumber id="price" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj cenu" @bind-Value="newProperty.Price" />
                         <ValidationMessage For="() => newProperty.Price" class="text-red-500 text-sm mt-1" />
                     </div>
                     <div>
                         <label for="area" class="block text-sm font-medium text-gray-700">Rozloha (m²) *</label>
-                        <InputNumber id="area" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj rozlohu" @bind-Value="newProperty.Area" />
+                        <InputNumber id="area" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj rozlohu" @bind-Value="newProperty.Area" />
                         <ValidationMessage For="() => newProperty.Area" class="text-red-500 text-sm mt-1" />
                     </div>
                     <div>
                         <label for="bedrooms" class="block text-sm font-medium text-gray-700">Počet spální *</label>
-                        <InputNumber id="bedrooms" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj počet spální" @bind-Value="newProperty.NumberOfBedrooms" />
+                        <InputNumber id="bedrooms" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj počet spální" @bind-Value="newProperty.NumberOfBedrooms" />
                         <ValidationMessage For="() => newProperty.NumberOfBedrooms" class="text-red-500 text-sm mt-1" />
                     </div>
                     <div>
                         <label for="bathrooms" class="block text-sm font-medium text-gray-700">Počet kúpeľní *</label>
-                        <InputNumber id="bathrooms" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj počet kúpeľní" @bind-Value="newProperty.NumberOfBathrooms" />
+                        <InputNumber id="bathrooms" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj počet kúpeľní" @bind-Value="newProperty.NumberOfBathrooms" />
                         <ValidationMessage For="() => newProperty.NumberOfBathrooms" class="text-red-500 text-sm mt-1" />
                     </div>
                     <div>
                         <label for="type" class="block text-sm font-medium text-gray-700">Typ nehnuteľnosti *</label>
-                        <InputNumber id="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Zadaj typ ID" @bind-Value="newProperty.TypeId" />
+                        <select id="type"
+                                class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                @bind="newProperty.TypeId">
+                            <option value="">Vyberte typ nehnuteľnosti</option>
+                            @foreach (var type in PropertyTypes)
+                            {
+                                <option value="@type.TypeId">@type.TypeName</option>
+                            }
+                        </select>
                         <ValidationMessage For="() => newProperty.TypeId" class="text-red-500 text-sm mt-1" />
                     </div>
                 </div>
@@ -132,21 +140,28 @@
     //TODO opravit, lebo neukazuje nehnutelsnost. pridat landlordovi filtrovanie aj podla vytvorenych nehnutelnosti aj ked neexistuje rental
     [Parameter]
     public int? PropertyId { get; set; }
+    private List<PropertyType> PropertyTypes = new List<PropertyType>();
+
 
     private Property newProperty = new Property();
     private List<string> uploadedFiles = new List<string>();
-    private const long MaxFileSize = 512 * 1024; // 512 KB
+    private const long MaxFileSize = 512 * 1024 *1024; // 512 KB
 
 
-    protected override void OnInitialized()
+   protected override async Task OnInitializedAsync()
+{
+        using var DbContext = DbContextFactory.CreateDbContext();
+        // Načítanie typov nehnuteľností
+    PropertyTypes = await DbContext.PropertyTypes.ToListAsync();
+
+    if (UserStateService.Role != "Landlord")
     {
-        if (UserStateService.Role != "Landlord")
-        {
-            Navigation.NavigateTo("/issues-screen");
-        }
+        Navigation.NavigateTo("/issues-screen");
     }
+}
     protected override async Task OnParametersSetAsync()
     {
+        using var DbContext = DbContextFactory.CreateDbContext();
         if (PropertyId.HasValue)
         {
             var existingProperty = await DbContext.Properties
@@ -163,6 +178,7 @@
 
     private async Task HandleValidSubmit()
     {
+        using var DbContext = DbContextFactory.CreateDbContext();
         if (PropertyId.HasValue)
         {
             DbContext.Properties.Update(newProperty);

@@ -35,6 +35,7 @@
         public async Task InitializeAsync(int? issueId)
         {
             AvailableProperties = await _propertyService.LoadMyProperties();
+            AvailableProperties = AvailableProperties.Where(p => p.Rentals.Any()).ToList();
 
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 

@@ -22,10 +22,15 @@
 @if (ViewModel.Properties != null)
 {
     
+
+    
     <div class="flex h-screen ">
         <!-- Ľavá strana - Zoznam kartičiek -->
         
         <div class="w-full  p-4">
+            <div class="scroll">
+
+            
             <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(20rem, max-content)); justify-content: start;">
                 @foreach (var property in ViewModel.FilteredProperties)
                 {
@@ -58,12 +63,19 @@
                 }
                 
             </div>
-        </div>
+            </div>
         
+        </div>
         <!-- Pravá strana - Detaily nehnuteľnosti -->
         @if (ViewModel.SelectedProperty != null)
         {
-            <div class="hidden lg:block w-full h-max bg-white p-4 rounded-3xl m-4">
+            <div class="hidden lg:block w-full h-max bg-white p-4 rounded-3xl m-4 relative">
+                <!-- Krúžok s krížikom -->
+                <button class="absolute top-8 left-8 w-8 h-8 bg-white text-gray-800 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100"
+                        @onclick="() => ViewModel.HidePropertyDetails()">
+                    <span class="text-xl font-bold">&times;</span>
+                </button>
+
                 <img class="w-full h-64 object-cover rounded-2xl mb-4" src="@ViewModel.SelectedProperty.MainImage" alt="Property Image">
                 <h2 class="text-xl font-bold text-gray-800">@ViewModel.SelectedProperty.PropertyName</h2>
                 <p class="mt-2 text-gray-600">@ViewModel.SelectedProperty.Description</p>
@@ -74,9 +86,11 @@
                     <p><strong>Price:</strong> @ViewModel.SelectedProperty.Price €</p>
                 </div>
                 <div class="flex items-center gap-4 mt-6">
-                    
-                    <button class="px-4 py-2 bg-blue-500 text-white rounded-lg" @onclick="() => EditProperty()">Edit</button>
-                    <button class="px-4 py-2 bg-red-500 text-white rounded-lg" @onclick="() => ViewModel.ShowDeleteConfirmation()">Delete</button>
+                    @if (UserStateService.Role == "Landlord")
+                    {
+                        <button class="px-4 py-2 bg-blue-500 text-white rounded-lg" @onclick="() => EditProperty()">Edit</button>
+                        <button class="px-4 py-2 bg-red-500 text-white rounded-lg" @onclick="() => ViewModel.ShowDeleteConfirmation()">Delete</button>
+                    }
                 </div>
             </div>
         }

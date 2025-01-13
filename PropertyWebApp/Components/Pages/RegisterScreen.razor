@@ -59,7 +59,8 @@
 
                 <EditForm Model="registerModel" OnValidSubmit="HandleRegister" FormName="RegisterForm">
                     <DataAnnotationsValidator />
-                    <ValidationSummary />
+                    
+                    
 
                     <div class="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2">
                         <div>
@@ -82,13 +83,13 @@
 
                         <div>
                             <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Heslo</label>
-                            <InputText InputType="password" placeholder="••••••••" class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 focus:ring focus:ring-blue-300" @bind-Value="registerModel.Password" />
+                            <InputText type="password" placeholder="••••••••" class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 focus:ring focus:ring-blue-300" @bind-Value="registerModel.Password" />
                             <ValidationMessage For="() => registerModel.Password" />
                         </div>
 
                         <div>
                             <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Potvrdenie hesla</label>
-                            <InputText InputType="password" placeholder="••••••••" class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 focus:ring focus:ring-blue-300" @bind-Value="registerModel.ConfirmPassword" />
+                            <InputText type="password" placeholder="••••••••" class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 focus:ring focus:ring-blue-300" @bind-Value="registerModel.ConfirmPassword" />
                             <ValidationMessage For="() => registerModel.ConfirmPassword" />
                         </div>
                     </div>
@@ -101,6 +102,8 @@
                             </svg>
                         </button>
                     </div>
+
+                  
                 </EditForm>
 
                 <p class="mt-6 text-gray-500 dark:text-gray-400">
@@ -156,7 +159,7 @@
             await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("FirstName", registerModel.FirstName));
             await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("LastName", registerModel.LastName));
 
-            Navigation.NavigateTo("/role-selection");
+            Navigation.NavigateTo("/", true);
         }
         else
         {

@@ -41,8 +41,12 @@
         {
             SelectedProperty = await _propertyService.GetPropertyViewByIdAsync(propertyId);
         }
+        public void HidePropertyDetails()
+        {
+            SelectedProperty = null;
+        }
 
-       
+
 
         public void ShowDeleteConfirmation()
         {

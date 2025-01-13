@@ -26,8 +26,7 @@ html, body {
     
     
 
-    html.home-body, body.home-body {
-        overflow-y: auto !important;
+   
     }
 
  .btn-link {
@@ -86,8 +85,8 @@ h1:focus {
     border-color: #929292;
 }
 .nav-link {
-    text-decoration: none; /* Odstr·ni podËiarknutie */
-    color: inherit; /* Zachov· dedenie farby z rodiËa */
+    text-decoration: none;
+    color: inherit; 
 }
 
     .nav-link.active {
@@ -96,11 +95,16 @@ h1:focus {
         color: black;
     }
 
+
+.scroll {
+    overflow-y: auto !important;
+    height: 83vh;
+}
     
 /* FORMULAR NA PRIDAVANIE DO DATABAZKY */
 
 
-/* ät˝l formul·ra */
+
 .form-section {
     margin: 20px 0;
     background-color: #ffffff;
@@ -111,10 +115,10 @@ h1:focus {
 
 
 
-/* ät˝l vstupn˝ch polÌ */
+
 .styled-input {
-    box-sizing: border-box; /* ZabezpeËÌ, ûe padding a border neovplyvnia öÌrku */
-    width: calc(100%); /* Kompenzuje prÌpadn˝ padding kontajnera */
+    box-sizing: border-box; 
+    width: calc(100%); 
     padding: 20px 20px;
     border: 1px solid #000000;
     border-radius: 30px;
@@ -124,17 +128,16 @@ h1:focus {
     transition: all 0.3s ease;
 }
     .styled-input.desc {
-        height: 150px; /* NastavÌ fixn˙ v˝öku na 150px */
-        resize: none; /* Zabr·ni meniù veækosù */
+        height: 150px; 
+        resize: none;
     }
 
-    /* Placeholder öt˝l */
+    
     .styled-input::placeholder {
         color: #999999;
         font-size: 14px;
     }
 
-    /* ät˝l pri zameranÌ (focus) */
     .styled-input:focus {
         border-color: #0073e6;
         background-color: #ffffff;
@@ -142,10 +145,6 @@ h1:focus {
         box-shadow: 0 0 5px rgba(0, 115, 230, 0.5);
     }
 
-
-
-
-/* Chyby overenia */
 .validation-message {
     font-size: 12px;
     color: #e74c3c;

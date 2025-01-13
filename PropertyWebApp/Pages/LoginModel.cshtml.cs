@@ -65,7 +65,7 @@ namespace PropertyWebApp.Components.Pages
                  await _userStateService.SetUserInfo(user?.UserName ?? "Neznámy",user.Id);
                 await _userStateService.SetRole(role[0]);
 
-                return Redirect("/test"); // Presmerovanie po úspešnom prihlásení
+                return Redirect("/"); // Presmerovanie po úspešnom prihlásení
             }
 
             ErrorMessage = result.IsLockedOut
