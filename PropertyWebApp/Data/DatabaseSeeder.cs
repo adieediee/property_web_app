@@ -98,6 +98,8 @@ namespace PropertyWebApp
                 var houseTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Dom")?.TypeId;
                 var chaletTypeId = context.PropertyTypes.FirstOrDefault(pt => pt.TypeName == "Chata")?.TypeId;
 
+                var landlord = await userManager.FindByEmailAsync("landlord@example.com");
+                var tenant = await userManager.FindByEmailAsync("tenant@example.com");
                 //  Properties
                 if (!context.Properties.Any())
                 {
@@ -120,7 +122,9 @@ namespace PropertyWebApp
                             NumberOfBedrooms = 2,
                             NumberOfBathrooms = 1,
                             IsFurnished = true,
-                            ParkingAvailable = false
+                            ParkingAvailable = false,
+
+                            PropertyOwnerId = landlord.Id
                         },
                         new Property
                         {
@@ -139,7 +143,9 @@ namespace PropertyWebApp
                             NumberOfBedrooms = 4,
                             NumberOfBathrooms = 2,
                             IsFurnished = false,
-                            ParkingAvailable = true
+                            ParkingAvailable = true,
+
+                            PropertyOwnerId = landlord.Id
                         },
                              new Property
     {
@@ -158,7 +164,9 @@ namespace PropertyWebApp
         NumberOfBedrooms = 3,
         NumberOfBathrooms = 2,
         IsFurnished = true,
-        ParkingAvailable = true
+        ParkingAvailable = true,
+
+        PropertyOwnerId = landlord.Id
     },
     
     new Property
@@ -178,7 +186,9 @@ namespace PropertyWebApp
         NumberOfBedrooms = 1,
         NumberOfBathrooms = 1,
         IsFurnished = true,
-        ParkingAvailable = true
+        ParkingAvailable = true,
+
+        PropertyOwnerId = landlord.Id
     },
     new Property
     {
@@ -197,7 +207,9 @@ namespace PropertyWebApp
         NumberOfBedrooms = 2,
         NumberOfBathrooms = 1,
         IsFurnished = true,
-        ParkingAvailable = false
+        ParkingAvailable = false,
+
+        PropertyOwnerId = landlord.Id
     },
                     };
 
@@ -225,8 +237,7 @@ namespace PropertyWebApp
                 //  Rentals
                 if (!context.Rentals.Any())
                 {
-                    var landlord = await userManager.FindByEmailAsync("landlord@example.com");
-                    var tenant = await userManager.FindByEmailAsync("tenant@example.com");
+                   
                     //var id = tenant.Id;
                     //var id2 = landlord.Id;
                     var rentals = new List<Rental>()
@@ -238,7 +249,7 @@ namespace PropertyWebApp
                             EndDate = DateTime.Now.AddMonths(-3),
                             //PaymentDay = 15,
                             TenantId = tenant.Id,
-                            PropertyOwnerId = landlord.Id
+                             
                         },
                         new Rental
                         {
@@ -248,7 +259,7 @@ namespace PropertyWebApp
                             EndDate = DateTime.Now.AddMonths(-4),
                             //PaymentDay = 1,
                             TenantId = tenant.Id,
-                            PropertyOwnerId = landlord.Id
+                            
                         }
                     };
 
@@ -269,7 +280,7 @@ namespace PropertyWebApp
                                 UtilitiesAmount = 150,
                                 isPaid = i % 2 == 0 // Napríklad: každý druhý mesiac je zaplatený
                             };
-
+                            //TODO add property owner to property
                             context.MonthlyPayments.Add(payment);
 
                         }

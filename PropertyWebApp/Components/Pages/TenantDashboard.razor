@@ -81,10 +81,10 @@
                              alt="Property Image"
                              class="w-12 h-12 rounded-full object-cover" />
 
-                        <!-- Informácie o transakcii -->
+                        <!-- TODO NAME Informácie o transakcii -->
                         <div class="flex-grow">
                             <div class="font-bold text-base text-gray-800">
-                                @ViewModel.GetPropertyName(transaction.Rental.PropertyId)
+                                Name
                             </div>
                             <div class="text-sm text-gray-500">@transaction.PaymentDate</div>
                         </div>
@@ -123,7 +123,7 @@
                                 <img src="@ViewModel.GetPropertyImage(issue.Rental.PropertyId)"
                                      alt="Property Image"
                                      class="w-8 h-8 rounded-full object-cover" />
-                                <p class="text-gray-800">@ViewModel.GetPropertyName(issue.PropertyId)</p>
+                                <p class="text-gray-800">@issue.Property.PropertyName</p>
                             </div>
                         </div>
                         <!-- Status -->

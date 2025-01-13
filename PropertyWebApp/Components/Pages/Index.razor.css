@@ -11,6 +11,10 @@
     overflow-y: auto;
 }
 
+#resultSection {
+    scroll-margin-top: 20px; /* Výška hlavičky */
+}
+
 .home-page {
     
     padding: 100px 0px;

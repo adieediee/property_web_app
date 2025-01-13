@@ -26,6 +26,7 @@
         {
             Properties = await _propertyService.LoadUserPropertyViewsAsync(_userStateService.Id, _userStateService.Role);
             FilteredProperties = Properties;
+            
         }
 
         public void PerformPropertySearch(string query)

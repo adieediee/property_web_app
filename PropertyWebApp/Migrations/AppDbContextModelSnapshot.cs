@@ -393,6 +393,10 @@ namespace PropertyWebApp.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("PropertyOwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("StreetName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -402,6 +406,8 @@ namespace PropertyWebApp.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("PropertyId");
+
+                    b.HasIndex("PropertyOwnerId");
 
                     b.HasIndex("TypeId");
 
@@ -460,10 +466,6 @@ namespace PropertyWebApp.Migrations
 
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
-
-                    b.Property<string>("PropertyOwnerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -729,11 +731,19 @@ namespace PropertyWebApp.Migrations
 
             modelBuilder.Entity("PropertyWebApp.Models.Property", b =>
                 {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "PropertyOwner")
+                        .WithMany()
+                        .HasForeignKey("PropertyOwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("PropertyWebApp.Models.PropertyType", "PropertyType")
                         .WithMany("Properties")
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PropertyOwner");
 
                     b.Navigation("PropertyType");
                 });

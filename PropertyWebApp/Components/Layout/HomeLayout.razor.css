@@ -25,7 +25,11 @@
     .logo img {
         height: 45px; 
     }
-
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
 .nav-menu {
     flex: 1 1 auto;

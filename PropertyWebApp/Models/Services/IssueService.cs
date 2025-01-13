@@ -139,7 +139,7 @@
                 }
                  else if (role == "Landlord")
                 {
-                    query = query.Where(i => i.Rental.PropertyOwnerId == userId);
+                    query = query.Where(i => i.Property.PropertyOwner.Id == userId);
                 }
 
                 return await query

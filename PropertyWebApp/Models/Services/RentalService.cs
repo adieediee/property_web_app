@@ -32,7 +32,7 @@ public class RentalService
         }
         else if (role == "Landlord")
         {
-            query = query.Where(mp => mp.Rental.PropertyOwnerId == userId);
+            //query = query.Where(mp => mp.Rental.PropertyOwnerId == userId);
         }
 
         // Načítanie výsledkov

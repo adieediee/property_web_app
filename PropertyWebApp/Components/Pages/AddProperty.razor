@@ -164,6 +164,11 @@
             await DbContext.Properties.AddAsync(newProperty);
         }
 
+        if (!PropertyId.HasValue)
+        {
+            newProperty.PropertyOwnerId =  UserStateService.Id;
+        }
+
         await DbContext.SaveChangesAsync();
 
         foreach (var filePath in uploadedFiles)

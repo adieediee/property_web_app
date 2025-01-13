@@ -11,7 +11,7 @@ namespace PropertyWebApp.Models
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int PropertyId { get; set; } // FK to Property
-        public string PropertyOwnerId { get; set; } // FK to User
+        //public string PropertyOwnerId { get; set; } // FK to User
         public string TenantId { get; set; } // FK to User
 
         // Navigation properties

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -41,9 +42,6 @@ namespace PropertyWebApp.Models
         [StringLength(50, ErrorMessage = "Krajina mÙûe maù maxim·lne 50 znakov.")]
         public string Country { get; set; }
 
-        
-        
-
         [Range(0, 1_000_000, ErrorMessage = "Cena musÌ byù v rozmedzÌ od 0 do 1 000 000.")]
         public decimal Price { get; set; }
 
@@ -62,10 +60,16 @@ namespace PropertyWebApp.Models
         [Required(ErrorMessage = "Inform·cia o parkovanÌ je povinn·.")]
         public bool ParkingAvailable { get; set; }
 
+        public string PropertyOwnerId { get; set; } // FK to PropertyOwner (IdentityUser)
+
+        public IdentityUser PropertyOwner { get; set; }
+
         // Navigation properties
         public PropertyType PropertyType { get; set; }
         public ICollection<PropertyImage> PropertyImages { get; set; }
         public ICollection<Issue> Issues { get; set; }
         public ICollection<Rental> Rentals { get; set; }
+
+        
     }
 }

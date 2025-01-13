@@ -37,6 +37,12 @@ namespace PropertyWebApp.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Property>()
+                .HasOne(p => p.PropertyOwner) 
+                .WithMany() 
+                .HasForeignKey(p => p.PropertyOwnerId) 
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Property>()
                 .HasOne(p => p.PropertyType)
                 .WithMany(pt => pt.Properties)
                 .HasForeignKey(p => p.TypeId)

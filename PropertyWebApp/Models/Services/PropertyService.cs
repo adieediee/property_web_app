@@ -55,7 +55,7 @@
             }
             else if (role == "Landlord")
             {
-                query = query.Where(p => p.Rentals.Any(r => r.PropertyOwnerId == userId));
+                query = query.Where(p => p.PropertyOwnerId == userId);
             }
 
             return await query.ToListAsync();
@@ -282,14 +282,14 @@
             // Získaj TenantId pre konkrétnu Property
             var tenantID = _dbContext.Rentals
                 .Where(r => r.PropertyId == propertyID)
-                .Select(r => r.PropertyOwnerId) // Vyber TenantId
+                .Select(r => r.Property.PropertyOwner) // Vyber TenantId
                 .FirstOrDefault();       // Vráť prvý záznam (alebo null)
 
             if (tenantID != null) // Over, či TenantId existuje
             {
                 // Nájdeme používateľa podľa TenantId
                 var tenant = await _dbContext.Users
-                    .Where(u => u.Id == tenantID)   // Filtrovanie podľa TenantId
+                    .Where(u => u.Id == tenantID.Id)   // Filtrovanie podľa TenantId
                     .Select(u => u.UserName)        // Vyber UserName
                     .FirstOrDefaultAsync();
                 if (tenant != null)

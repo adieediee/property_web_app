@@ -142,7 +142,7 @@ using (var scope = app.Services.CreateScope())
     if (!dbContext.Users.Any() && !dbContext.Roles.Any()) // Kontroluj pod¾a tabuliek, ktoré seeduješ
     {
         // Naseeduj databázu, ak je prázdna
-        await DatabaseSeeder.Seed(app.Services);
+       await DatabaseSeeder.Seed(app.Services);
     }
 }
 using (var scope = app.Services.CreateScope())
