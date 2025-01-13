@@ -92,8 +92,8 @@ h1:focus {
 
     .nav-link.active {
         text-decoration: none;
-        background-color: transparent;
-        color: black; 
+        
+        color: black;
     }
 
     

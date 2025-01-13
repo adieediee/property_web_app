@@ -311,7 +311,7 @@
 
         }
 
-        public async Task<List<Property>> SearchPropertiesAsync(string location, string type, decimal? maxPrice)
+        public async Task<List<Property>> SearchPropertiesAsync(string name, string location, string type, decimal? maxPrice)
         {
             await using var _dbContext = _dbContextFactory.CreateDbContext();
             // Začiatok dotazu - získaj všetky nehnuteľnosti
@@ -319,6 +319,11 @@
                 .Include(p => p.PropertyImages)
                 .Where(p => p.IsAvailable)
                 .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(p => p.PropertyName.Contains(name));
+            }
 
             // Filtruj podľa lokality, ak je zadaná
             if (!string.IsNullOrWhiteSpace(location))
@@ -346,7 +351,16 @@
             await using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.PropertyTypes.ToListAsync();
         }
+        public async Task GetPropertyType(int propertyID)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var propertyType = await _dbContext.Properties
+                .Where(pt => pt.PropertyId == propertyID)
+                .FirstOrDefaultAsync();
+
+        }
     }
 
+   
    
 }

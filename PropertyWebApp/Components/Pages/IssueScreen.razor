@@ -14,8 +14,10 @@
 <Toolbar SearchPlaceholder="Hľadaj poruchy..."
          AddButtonText="Pridať poruchu"
          AddButtonLink="/edit-issue/"
+         ShowAddButton="true"
          OnSearch="PerformIssueSearch"
          OnSettingsClick="OpenSettings" />
+
 
 
 
@@ -53,11 +55,11 @@ else
                                 }
                             }
                         </div>
-                        <p class="issue-cost">@ViewModel.GetIssueCost(issue.IssueId)?.ToString("F2") €</p>
+                        <p class="issue-cost"> - €</p>
                     </div>
                     <div class="card-right">
                         <span class="status" style="background-color:@issue.Status.Color">@issue.Status.StatusName</span>
-                        <button class="menu-btn">⋮</button>
+                        
                     </div>
                 </div>
                 @if (ViewModel.ExpandedIssueId == issue.IssueId)
@@ -72,10 +74,14 @@ else
                             }
                            
                         </div>
-                            <div class="ml-auto flex flex-col items-center gap-2">
-                           
-                            <a href="/edit-issue/@issue.IssueId" class="edit-btn">Edit</a>
-                                <button class="delete-btn" @onclick="() => ViewModel.DisplayConfirmDialog(issue.IssueId)">Delete</button>
+                            <div class="ml-auto flex flex-col items-center gap-4">
+
+                                <a href="/edit-issue/@issue.IssueId" class="hover:bg-gray-200 p-2 rounded-md">
+                                    <img src="/img/icons/edit.png" alt="Edit" class="w-6 h-6 " />
+                                </a>
+                                <button class="hover:bg-gray-200 p-2 rounded-md" @onclick="() => ViewModel.DisplayConfirmDialog(issue.IssueId)">
+                                    <img src="/img/icons/delete.png" alt="Delete" class="w-6 h-6" />
+                                </button>
                         </div>
                             </div>
                     </div>

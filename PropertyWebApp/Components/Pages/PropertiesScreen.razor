@@ -14,9 +14,10 @@
 
 <Toolbar SearchPlaceholder="Hľadaj nehnuteľnosť..."
          AddButtonText="Pridať nehnuteľnosť"
-         AddButtonLink="edit-property"
+         ShowAddButton="false"
          OnSearch="ViewModel.PerformPropertySearch"
          OnSettingsClick="OpenSettings" />
+
 
 @if (ViewModel.Properties != null)
 {
@@ -73,6 +74,7 @@
                     <p><strong>Price:</strong> @ViewModel.SelectedProperty.Price €</p>
                 </div>
                 <div class="flex items-center gap-4 mt-6">
+                    
                     <button class="px-4 py-2 bg-blue-500 text-white rounded-lg" @onclick="() => EditProperty()">Edit</button>
                     <button class="px-4 py-2 bg-red-500 text-white rounded-lg" @onclick="() => ViewModel.ShowDeleteConfirmation()">Delete</button>
                 </div>

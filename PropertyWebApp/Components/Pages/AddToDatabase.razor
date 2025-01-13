@@ -11,6 +11,7 @@
 
 @inject EditIssueViewModel ViewModel
 @inject NavigationManager Navigation
+@inject UserStateService UserStateService
 
 @rendermode InteractiveServer
 
@@ -123,7 +124,8 @@
             }
         </div>
     </EditForm>
-</div>
+    </div>
+
 @code {
 
 
@@ -131,6 +133,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+       
         await ViewModel.InitializeAsync(IssueId);
     }
 

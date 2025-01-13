@@ -1,7 +1,4 @@
-﻿
-
-
-<div class="flex items-center justify-between  pr-4 pb-4 pl-4 rounded-full">
+﻿<div class="flex items-center justify-between  pr-4 pb-4 pl-4 rounded-full">
     <!-- Search Input -->
     <div class="flex items-center w-1/2 rounded-full bg-white h-16 pr-2">
         <div class="flex w-full ml-4">
@@ -14,12 +11,10 @@
                 <img src="/img/icons/Magnifying-glass.png" alt="Search" class="" />
             </button>
         </div>
-        
-        
     </div>
     <div class="flex items-center gap-8">
         <!-- Add Button -->
-        @if (!string.IsNullOrWhiteSpace(AddButtonText) && !string.IsNullOrWhiteSpace(AddButtonLink))
+        @if (ShowAddButton && !string.IsNullOrWhiteSpace(AddButtonText) && !string.IsNullOrWhiteSpace(AddButtonLink))
         {
             <a href="@AddButtonLink"
                class="flex items-center bg-white rounded-full px-6 py-3 hover:bg-gray-100 transition h-16">
@@ -34,11 +29,9 @@
     </div>
 </div>
 
-
-
 @code {
     [Parameter]
-    public EventCallback<string> OnSearch { get; set; } 
+    public EventCallback<string> OnSearch { get; set; }
 
     [Parameter]
     public string SearchPlaceholder { get; set; } = "Vyhľadaj...";
@@ -50,7 +43,10 @@
     public string AddButtonLink { get; set; } = "/";
 
     [Parameter]
-    public EventCallback OnSettingsClick { get; set; } 
+    public bool ShowAddButton { get; set; } = true; // Nový parameter
+
+    [Parameter]
+    public EventCallback OnSettingsClick { get; set; }
 
     private string SearchQuery { get; set; } = string.Empty;
 

@@ -137,6 +137,14 @@
     private List<string> uploadedFiles = new List<string>();
     private const long MaxFileSize = 512 * 1024; // 512 KB
 
+
+    protected override void OnInitialized()
+    {
+        if (UserStateService.Role != "Landlord")
+        {
+            Navigation.NavigateTo("/issues-screen");
+        }
+    }
     protected override async Task OnParametersSetAsync()
     {
         if (PropertyId.HasValue)

@@ -14,6 +14,7 @@
         border-radius: 8px;
         padding-left: 10px;
         color: black;
+        background-color: #ebebeb;
     }
 
 .layout-container {
@@ -26,7 +27,7 @@
     width: 185px;
     height: 90vh;
     background-color: #f8f9fa;
-    padding: 20px;
+    padding: 10px;
     border-radius:24px;
     margin:20px;
     margin-right:0px;
@@ -53,12 +54,14 @@
     margin-bottom: 20px;
     cursor: pointer;
     color: black;    
-    width:fit-content;
+    width: auto;
+    padding: 10px;
 }
 
     .menu-item:hover {
         /*TODO CUSTOM FARBA*/
-        background-color: gray; 
+        background-color: #ebebeb; 
+border-radius: 12px;
     }
 
     .menu-item a {
@@ -69,7 +72,7 @@
     }
 
         .menu-item a.active {
-            background-color: gray;
+            background-color: #ebebeb;
         }
 
     .menu-item i {
