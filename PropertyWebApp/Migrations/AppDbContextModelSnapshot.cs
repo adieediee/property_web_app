@@ -500,13 +500,21 @@ namespace PropertyWebApp.Migrations
 
             modelBuilder.Entity("PropertyWebApp.Models.TaggedIssue", b =>
                 {
+                    b.Property<int>("TaggedIssueId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaggedIssueId"));
+
                     b.Property<int>("IssueId")
                         .HasColumnType("int");
 
                     b.Property<int>("TagId")
                         .HasColumnType("int");
 
-                    b.HasKey("IssueId");
+                    b.HasKey("TaggedIssueId");
+
+                    b.HasIndex("IssueId");
 
                     b.HasIndex("TagId");
 

@@ -64,16 +64,20 @@ else
                 {
                     <div class="issue-details">
                         <p class="issue-description">@issue.Description</p>
+                        <div class="flex items-center">
                         <div class="image-gallery">
                             @foreach (var image in issue.Images ?? Enumerable.Empty<IssueImage>())
                             {
                                 <img src="@image.ImagePath" alt="Obrázok poruchy" class="image-box" />
                             }
+                           
                         </div>
-                        <div class="card-actions">
-                            <button class="delete-btn" @onclick="() => ViewModel.DisplayConfirmDialog(issue.IssueId)">Delete</button>
+                            <div class="ml-auto flex flex-col items-center gap-2">
+                           
                             <a href="/edit-issue/@issue.IssueId" class="edit-btn">Edit</a>
+                                <button class="delete-btn" @onclick="() => ViewModel.DisplayConfirmDialog(issue.IssueId)">Delete</button>
                         </div>
+                            </div>
                     </div>
                 }
               

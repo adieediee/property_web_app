@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PropertyWebApp.Data;
 using PropertyWebApp.Models;
@@ -62,8 +63,21 @@ namespace PropertyWebApp
 
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-               
 
+                if (!context.Tags.Any())
+                {
+                    var tags = new List<Tag>
+                    {
+                        new Tag { TagName = "Elektrina" },
+                        new Tag { TagName = "Voda" },
+                        new Tag { TagName = "Kúrenie" },
+                        new Tag { TagName = "Okná" },
+                        new Tag { TagName = "Strecha" }
+                    };
+
+                    context.Tags.AddRange(tags);
+                    await context.SaveChangesAsync();
+                }
 
                 // IssueStatus
                 if (!context.IssueStatus.Any())

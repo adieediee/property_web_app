@@ -115,7 +115,7 @@ h1:focus {
 .styled-input {
     box-sizing: border-box; /* Zabezpeèí, že padding a border neovplyvnia šírku */
     width: calc(100%); /* Kompenzuje prípadný padding kontajnera */
-    padding: 12px 15px;
+    padding: 20px 20px;
     border: 1px solid #000000;
     border-radius: 30px;
     font-size: 14px;

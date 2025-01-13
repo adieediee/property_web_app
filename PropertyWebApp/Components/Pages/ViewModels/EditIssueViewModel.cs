@@ -22,7 +22,10 @@
         public bool IsDropdownOpen { get; set; } = false;
         private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
 
-        public EditIssueViewModel(IDbContextFactory<AppDbContext> dbContextFactory, PropertyService propertyService, NavigationManager navigationManager )
+        public List<Tag> AvailableTags { get; set; } = new();
+        public List<Tag> SelectedTags { get; set; } = new();
+
+        public EditIssueViewModel(IDbContextFactory<AppDbContext> dbContextFactory, PropertyService propertyService, NavigationManager navigationManager)
         {
             _dbContextFactory = dbContextFactory;
             _propertyService = propertyService;
@@ -35,15 +38,22 @@
 
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
+            // Load Available Tags
+            AvailableTags = await dbContext.Tags.ToListAsync();
+
             if (issueId.HasValue)
             {
                 var existingIssue = await dbContext.Issues
                     .Include(i => i.Images)
+                    .Include(i => i.TaggedIssues)
+                        .ThenInclude(ti => ti.Tag)
+                        .AsNoTracking()
                     .FirstOrDefaultAsync(i => i.IssueId == issueId.Value);
 
                 if (existingIssue != null)
                 {
                     NewIssue = existingIssue;
+                    SelectedTags = existingIssue.TaggedIssues.Select(ti => ti.Tag).ToList();
                 }
             }
             else
@@ -72,56 +82,83 @@
         }
 
         public async Task HandleValidSubmitAsync()
+{
+    using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+    if (!await ValidateIssueAsync(NewIssue, dbContext))
+    {
+        return;
+    }
+
+    if (NewIssue.IssueId > 0)
+    {
+        dbContext.Issues.Update(NewIssue);
+    }
+    else
+    {
+        await dbContext.Issues.AddAsync(NewIssue);
+    }
+
+    // Uloženie zmien pre získanie IssueId
+    await dbContext.SaveChangesAsync();
+
+    // Upload obrázkov
+    string uploadsFolder = Path.Combine("wwwroot", "uploads");
+    if (!Directory.Exists(uploadsFolder))
+    {
+        Directory.CreateDirectory(uploadsFolder);
+    }
+
+    foreach (var file in UploadedFiles)
+    {
+        try
         {
-            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            var filePath = Path.Combine(uploadsFolder, file.Name);
+            await using var fileStream = new FileStream(filePath, FileMode.Create);
+            await file.OpenReadStream(MaxFileSize).CopyToAsync(fileStream);
 
-            if (!await ValidateIssueAsync(NewIssue, dbContext))
+            var issueImage = new IssueImage
             {
-                return;
-            }
+                IssueId = NewIssue.IssueId,
+                ImagePath = $"/uploads/{file.Name}"
+            };
 
-            if (NewIssue.IssueId > 0)
-            {
-                dbContext.Issues.Update(NewIssue);
-            }
-            else
-            {
-                await dbContext.Issues.AddAsync(NewIssue);
-            }
-
-            await dbContext.SaveChangesAsync();
-
-            string uploadsFolder = Path.Combine("wwwroot", "uploads");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            foreach (var file in UploadedFiles)
-            {
-                try
-                {
-                    var filePath = Path.Combine(uploadsFolder, file.Name);
-                    await using var fileStream = new FileStream(filePath, FileMode.Create);
-                    await file.OpenReadStream(MaxFileSize).CopyToAsync(fileStream);
-
-                    var issueImage = new IssueImage
-                    {
-                        IssueId = NewIssue.IssueId,
-                        ImagePath = $"/uploads/{file.Name}"
-                    };
-
-                    await dbContext.IssueImages.AddAsync(issueImage);
-                }
-                catch (Exception ex)
-                {
-                    FileUploadError = $"Nahrávanie súboru {file.Name} zlyhalo: {ex.Message}";
-                }
-            }
-
-            await dbContext.SaveChangesAsync();
-            _navigationManager.NavigateTo("/issues-screen");
+            await dbContext.IssueImages.AddAsync(issueImage);
         }
+        catch (Exception ex)
+        {
+            FileUploadError = $"Nahrávanie súboru {file.Name} zlyhalo: {ex.Message}";
+        }
+    }
+
+    // Spracovanie tagov
+    var existingTaggedIssues = await dbContext.TaggedIssues
+        .Where(ti => ti.IssueId == NewIssue.IssueId)
+        .ToListAsync();
+
+    // Odstránenie existujúcich tagov
+    dbContext.TaggedIssues.RemoveRange(existingTaggedIssues);
+
+    // Pridanie vybraných tagov
+    foreach (var tag in SelectedTags)
+    {
+        if (!existingTaggedIssues.Any(ti => ti.TagId == tag.TagId))
+        {
+            dbContext.TaggedIssues.Add(new TaggedIssue
+            {
+                IssueId = NewIssue.IssueId,
+                TagId = tag.TagId
+            });
+        }
+    }
+
+    // Uloženie zmien
+    await dbContext.SaveChangesAsync();
+
+    // Navigácia späť
+    _navigationManager.NavigateTo("/issues-screen");
+}
+
 
         public async Task HandleFileSelected(InputFileChangeEventArgs e)
         {
@@ -169,6 +206,17 @@
 
             return true;
         }
-    }
 
+        public void ToggleTag(Tag tag)
+        {
+            if (SelectedTags.Contains(tag))
+            {
+                SelectedTags.Remove(tag);
+            }
+            else
+            {
+                SelectedTags.Add(tag);
+            }
+        }
+    }
 }

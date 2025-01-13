@@ -40,7 +40,7 @@
                 <label for="rentalId" class="block text-sm font-medium text-gray-700 mb-2">Vyber nehnuteľnosť</label>
                 <div class="relative">
                     <!-- Dropdown Button -->
-                    <button type="button" class="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    <button type="button" class="w-full bg-white border border-gray-300 rounded-full shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             @onclick="ViewModel.ToggleDropdown">
                         <div class="flex items-center">
                             @if (ViewModel.SelectedProperty != null)
@@ -72,6 +72,21 @@
                 </div>
                 <ValidationMessage For="@(() => ViewModel.NewIssue.RentalId)" class="text-red-500 text-sm mt-1" />
             </div>
+            <!-- issues -->
+            <div class="form-group">
+                <label for="tags" class="block text-sm font-medium text-gray-700 mb-2">Vyberte značky</label>
+                <div class="flex flex-wrap gap-2">
+                    @foreach (var tag in ViewModel.AvailableTags)
+                    {
+                        <button type="button"
+                                class="px-3 py-1 rounded-full border border-gray-300 transition-colors duration-200
+                           @((ViewModel.SelectedTags.Contains(tag)) ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700")"
+                                @onclick="() => ViewModel.ToggleTag(tag)">
+                            @tag.TagName
+                        </button>
+                    }
+                </div>
+            </div>
 
             <!-- Akcie -->
             <div class="actions">
@@ -79,6 +94,7 @@
                 <button type="submit" class="btn-next" onclick="">@((IssueId.HasValue) ? "Uložiť" : "Pridať")</button>
             </div>
         </div>
+       
 
         <!-- Sekcia na nahrávanie súborov -->
         <div class="upload-section">
