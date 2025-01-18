@@ -155,7 +155,7 @@
 }
 
 
-        public async Task HandleFileSelected(InputFileChangeEventArgs e)
+        public void HandleFileSelected(InputFileChangeEventArgs e)
         {
             FileUploadError = null;
             var files = e.GetMultipleFiles();

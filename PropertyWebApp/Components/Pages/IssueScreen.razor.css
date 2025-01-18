@@ -8,12 +8,10 @@
     flex-direction: column;
     gap: 20px;
     overflow-y: auto !important;
-
 }
 
 
 .card {
-    
     transition: box-shadow 0.3s ease-in-out;
     border-radius: 40px;
     border: 1px solid #ddd;
@@ -31,14 +29,12 @@
         height: 200px;
         border-radius: 10px;
         object-fit: cover;
-        
         margin-top: 20px;
     }
 
 .issue-details {
     margin-top: 25px;
 }
-
 
 .issue-header {
     display: flex; /* horizontal rozlozenie */

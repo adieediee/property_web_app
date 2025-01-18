@@ -76,10 +76,10 @@
                 <h2 class="text-xl font-bold text-gray-800">@ViewModel.SelectedProperty.PropertyName</h2>
                 <p class="mt-2 text-gray-600">@ViewModel.SelectedProperty.Description</p>
                 <div class="grid grid-cols-2 gap-4 mt-4">
-                    <p><strong>Bedrooms:</strong> @ViewModel.SelectedProperty.NumberOfBedrooms</p>
-                    <p><strong>Bathrooms:</strong> @ViewModel.SelectedProperty.NumberOfBathrooms</p>
-                    <p><strong>Area:</strong> @ViewModel.SelectedProperty.Area m²</p>
-                    <p><strong>Price:</strong> @ViewModel.SelectedProperty.Price €</p>
+                    <p><strong>Počet spální:</strong> @ViewModel.SelectedProperty.NumberOfBedrooms</p>
+                    <p><strong>Počet kúpeľní:</strong> @ViewModel.SelectedProperty.NumberOfBathrooms</p>
+                    <p><strong>Rozloha:</strong> @ViewModel.SelectedProperty.Area m²</p>
+                    <p><strong>Cena:</strong> @ViewModel.SelectedProperty.Price €</p>
                 </div>
                 <div class="flex items-center gap-4 mt-6">
                     @if (UserStateService.Role == "Landlord")
